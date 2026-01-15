@@ -10,6 +10,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
+import frc.lib.util.FeedforwardGains;
+import frc.lib.util.PIDGains;
 
 public class Constants {
 
@@ -22,12 +24,12 @@ public class Constants {
         RadiansPerSecondPerSecond.of(80 * Math.PI);
 
     public static final PIDGains TURN_PID = new PIDGains.Builder().kp(0.4).kd(0).build();
-    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build();
+    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build();//.225
 
     public static final FeedforwardGains TURN_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.45).build();
     public static final FeedforwardGains DRIVE_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.225).build();
+        new FeedforwardGains.Builder().kv(2.3).build();
 
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(
