@@ -61,8 +61,8 @@ public class swerve extends SubsystemBase {
 
   public void setIsBlue(Boolean allianceColour) {
     isBlue = allianceColor;
-    simHeading = (isBlue ? new Rotation2d() : new Rotation2d(Math.PI));
-    estimatedPose = new Pose2d(0, 0, simHeading);
+    estHeading = (isBlue ? new Rotation2d() : new Rotation2d(Math.PI));
+    estimatedPose = new Pose2d(0, 0, estHeading);
   }
 
   @Override
@@ -106,10 +106,10 @@ public class swerve extends SubsystemBase {
 
   private SwerveModulePosition[] modulePosition() {
     return new SwerveModulePosition[] {
-      modules.frontLeftModule.getSimDrivePosition(),
-      modules.frontRightModule.getSimDrivePosition(),
-      modules.backLeftModule.getSimDrivePosition(),
-      modules.backRightModule.getSimDrivePosition()
+      modules.frontLeftModule.getEstDrivePosition(),
+      modules.frontRightModule.getEstDrivePosition(),
+      modules.backLeftModule.getEstDrivePosition(),
+      modules.backRightModule.getEstDrivePosition()
     };
   }
 

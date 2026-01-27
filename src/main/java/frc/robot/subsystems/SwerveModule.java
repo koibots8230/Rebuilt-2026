@@ -22,7 +22,7 @@ public class SwerveModule extends SubsystemBase {
   private Current driveMotorCurrent;
   private Voltage driveMotorVoltage;
   private LinearVelocity driveMotorVelocity;
-  private Distance driveMotorPosition;
+  private Meters driveMotorPosition;
 
   private Angle turnSetpointAngle;
   private Current turnMotorCurrent;
@@ -99,8 +99,8 @@ public class SwerveModule extends SubsystemBase {
     
     driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
     driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Volts);
-    driveMotorVelocity = driveEncoder.getVelocity();
-    driveMotorPosition = driveEncoder.getPosition();
+    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), MetersPerSecond);
+    driveMotorPosition = Meters.ofBaseUnits(driveEncoder.getPosition(), Meters);
     
     turnSetpointAngle = Radians.of(0);
     
@@ -112,19 +112,46 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setState(SwerveModuleState state) {
+    state.optimize(turnMotorPosition);
+    state.speedMetersPerSecond *= Math.cos(state.angle.getRadians() - turnMotorPosition.getRadians());
 
+    driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+
+    driveSetpointVelocity = MetersPerSecond.of(state.speedMetersPerSecond);
+    turnSetpointAngle = Radians.of(state.angle.getRadians());
   }
 
   @Override
   public void periodic() {
+    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
+    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Volts);
+    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), MetersPerSecond);
+    driveMotorPosition = Meters.ofBaseUnits(driveEncoder.getPosition(), Meters);
 
+    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Amps);
+    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Volts);
+    turnMotorVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), RadiansPerSecond);
+    turnMotorPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offsetAngle.getRadians());
+
+    goalState = new State(MathUtil.angleModulus(turnSetpointAngle.in(Radians)) + offsetAngle.getRadians(), 0);
+
+    motorSetpoint = profile.calculate(1 / RobotConstants.CLOCK, motorSetpoint, goalState);
+
+    driveController.setReference(driveSetpointVelocity.in(MetersPerSecond), ControlType.kVelocity);
+
+    turnController.setReference(
+      motorSetpoint.position,
+      ControlType.kPosition,
+      ClosedLoopSlot.kSlot0,
+      turnFeedforward.calculate(motorSetpoint.velocity)
+    );
   } 
 
   public SwerveModuleState getState() {
     return new SwerveModuleState(driveMotorVelocity, turnMotorPosition);
   }
 
-  public SwerveModulePosition getSimDrivePosition() {
+  public SwerveModulePosition getEstDrivePosition() {
     return new SwerveModulePosition(driveMotorPosition, turnMotorPosition);
   }
 }
