@@ -5,8 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.Pivot;
 
 @Logged
 public class RobotContainer {
@@ -15,12 +16,14 @@ public class RobotContainer {
   
   private final Swerve swerve;
   private final Intake intake;
+  private final Pivot pivot;
 
   public RobotContainer(boolean isReal) {
     controller = new XboxController(0);
 
     swerve = new Swerve(isReal);
     intake = new Intake();
+    pivot = new Pivot();
 
     configureBindings();
   }
@@ -30,9 +33,18 @@ public class RobotContainer {
       swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX)
     );
 
-    Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
+    final Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(-0.35));
     intakeButton.onFalse(intake.setSpeedCommand(0));
+
+    Trigger pivotUp = new Trigger(() -> controller.getRightY() > 0.15);
+    pivotUp.onTrue(pivot.setSpeedCommand(0.15));
+
+    Trigger pivotDown = new Trigger(() -> controller.getRightY() < -0.15);
+    pivotDown.onTrue(pivot.setSpeedCommand(-0.15));
+
+    Trigger pivotOff = new Trigger(() -> controller.getRightY() > - 0.15 && controller.getRightY() < 0.15);
+    pivotOff.onTrue(pivot.setSpeedCommand(0));
   }
 
   public Command getAutonomousCommand() {
