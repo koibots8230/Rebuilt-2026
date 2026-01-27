@@ -30,7 +30,7 @@ public class RobotContainer {
       swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX)
     );
 
-    Trigger intakeButton = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
+    Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(-0.35));
     intakeButton.onFalse(intake.setSpeedCommand(0));
   }
