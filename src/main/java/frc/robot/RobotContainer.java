@@ -37,13 +37,13 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(-0.35));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
-    Trigger pivotUp = new Trigger(() -> controller.getRightY() > 0.15);
+    Trigger pivotUp = new Trigger(() -> controller.getLeftBumperButtonPressed() == true);
     pivotUp.onTrue(pivot.setSpeedCommand(0.15));
 
-    Trigger pivotDown = new Trigger(() -> controller.getRightY() < -0.15);
+    Trigger pivotDown = new Trigger(() -> controller.getRightBumperButtonPressed() == true);
     pivotDown.onTrue(pivot.setSpeedCommand(-0.15));
 
-    Trigger pivotOff = new Trigger(() -> controller.getRightY() > - 0.15 && controller.getRightY() < 0.15);
+    Trigger pivotOff = new Trigger(() -> controller.getLeftBumperButtonPressed() == false  && controller.getRightBumperButtonPressed() == false);
     pivotOff.onTrue(pivot.setSpeedCommand(0));
   }
 
