@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
@@ -18,6 +23,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -59,7 +65,7 @@ public class Climber extends SubsystemBase {
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
-    setpoint = ClimberConstants.DOWN_POSITION;
+    setpoint = ClimberConstants.DOWN_POSITION.in(Meters);
 
     position = encoder.getPosition();
     velocity = encoder.getVelocity();
@@ -67,7 +73,7 @@ public class Climber extends SubsystemBase {
     profile =
         new TrapezoidProfile(
             new TrapezoidProfile.Constraints(
-                ClimberConstants.VELOCITY_CONSTRAINT, ClimberConstants.ACCELERATION_CONSTRAINT));
+                ClimberConstants.VELOCITY_CONSTRAINT.in(MetersPerSecond), ClimberConstants.ACCELERATION_CONSTRAINT.in(MetersPerSecondPerSecond)));
     goal = new TrapezoidProfile.State(0, 0);
     motorSetpoint = new TrapezoidProfile.State(0, 0);
 
@@ -75,11 +81,15 @@ public class Climber extends SubsystemBase {
 
     feedForward =
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
+
+    config.encoder.positionConversionFactor((Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
+    config.encoder.velocityConversionFactor((ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches)) / 60);
+
   }
 
   @Override
   public void periodic() {
-    motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK.in(Seconds), motorSetpoint, goal);
 
     controller.setSetpoint(motorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
@@ -94,7 +104,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK.in(Seconds), motorSetpoint, goal);
   }
 
   private void setGoal(double position, LinearVelocity velocity) {
@@ -103,12 +113,12 @@ public class Climber extends SubsystemBase {
 
   public Command raiseClimbCommand() {
     return Commands.runOnce(
-        () -> this.setGoal(ClimberConstants.RAISED_POSITION, ClimberConstants.RAISED_VELOCITY),
+        () -> this.setGoal(ClimberConstants.RAISED_POSITION.in(Meters), ClimberConstants.RAISED_VELOCITY),
         this);
   }
 
   public Command lowerClimbCommand() {
     return Commands.runOnce(
-        () -> this.setGoal(ClimberConstants.DOWN_POSITION, ClimberConstants.DOWN_VELOCITY), this);
+        () -> this.setGoal(ClimberConstants.DOWN_POSITION.in(Meters), ClimberConstants.DOWN_VELOCITY), this);
   }
 }
