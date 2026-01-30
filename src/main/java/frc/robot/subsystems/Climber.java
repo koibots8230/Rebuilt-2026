@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
 
     private Current current;
     private Voltage voltage;
-    
+
     private double velocity;
     private double setpoint;
     private double position;
@@ -91,6 +91,11 @@ public class Climber extends SubsystemBase {
         voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
         setpoint = goal.position;
         feedForward.calculate((motorSetpoint.velocity));
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
     }
 
     private void setGoal(double position, LinearVelocity velocity) {
