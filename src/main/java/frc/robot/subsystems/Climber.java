@@ -83,7 +83,7 @@ public class Climber extends SubsystemBase {
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
 
     config.encoder.positionConversionFactor((Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
-    config.encoder.velocityConversionFactor((ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches)) / 60);
+    config.encoder.velocityConversionFactor((ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches)) / (ClimberConstants.GEAR_RATIO * 60));
 
   }
 
