@@ -5,14 +5,13 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -28,86 +27,88 @@ import frc.robot.Constants.RobotConstants;
 
 @Logged
 public class Climber extends SubsystemBase {
-    @NotLogged private final SparkMax motor;
-    @NotLogged private final SparkClosedLoopController controller;
-    @NotLogged private final SparkMaxConfig config;
-    @NotLogged private final RelativeEncoder encoder;
-    @NotLogged private final TrapezoidProfile profile;
-    @NotLogged private final SimpleMotorFeedforward feedForward;
+  @NotLogged private final SparkMax motor;
+  @NotLogged private final SparkClosedLoopController controller;
+  @NotLogged private final SparkMaxConfig config;
+  @NotLogged private final RelativeEncoder encoder;
+  @NotLogged private final TrapezoidProfile profile;
+  @NotLogged private final SimpleMotorFeedforward feedForward;
 
-    private Current current;
-    private Voltage voltage;
+  private Current current;
+  private Voltage voltage;
 
-    private double velocity;
-    private double setpoint;
-    private double position;
+  private double velocity;
+  private double setpoint;
+  private double position;
 
-    private TrapezoidProfile.State goal;
-    private TrapezoidProfile.State motorSetpoint;
-    
-    public Climber() {
-        motor = new SparkMax(ClimberConstants.MOTOR_ID, MotorType.kBrushless);
-        config = new SparkMaxConfig();
+  private TrapezoidProfile.State goal;
+  private TrapezoidProfile.State motorSetpoint;
 
-        config.closedLoop.p(ClimberConstants.CLIMBER_PID.kp);
-        config.closedLoop.feedForward.kV(ClimberConstants.CLIMBER_FF.kv);
+  public Climber() {
+    motor = new SparkMax(ClimberConstants.MOTOR_ID, MotorType.kBrushless);
+    config = new SparkMaxConfig();
 
-        config.idleMode(IdleMode.kBrake);
-        config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
-        config.inverted(false);
+    config.closedLoop.p(ClimberConstants.CLIMBER_PID.kp);
+    config.closedLoop.feedForward.kV(ClimberConstants.CLIMBER_FF.kv);
 
-        encoder = motor.getEncoder();
+    config.idleMode(IdleMode.kBrake);
+    config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
+    config.inverted(false);
 
-        current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
-        voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
-        setpoint = ClimberConstants.DOWN_POSITION;
+    encoder = motor.getEncoder();
 
-        position = encoder.getPosition();
-        velocity = encoder.getVelocity();
+    current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
+    voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
+    setpoint = ClimberConstants.DOWN_POSITION;
 
-        profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(ClimberConstants.VELOCITY_CONSTRAINT, ClimberConstants.ACCELERATION_CONSTRAINT));
-        goal = new TrapezoidProfile.State(0,0);
-        motorSetpoint = new TrapezoidProfile.State(0,0);
+    position = encoder.getPosition();
+    velocity = encoder.getVelocity();
 
-        controller = motor.getClosedLoopController();
+    profile =
+        new TrapezoidProfile(
+            new TrapezoidProfile.Constraints(
+                ClimberConstants.VELOCITY_CONSTRAINT, ClimberConstants.ACCELERATION_CONSTRAINT));
+    goal = new TrapezoidProfile.State(0, 0);
+    motorSetpoint = new TrapezoidProfile.State(0, 0);
 
-        feedForward = new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
-    
-    }
+    controller = motor.getClosedLoopController();
 
-    @Override
-    public void periodic() {
-        motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
+    feedForward =
+        new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
+  }
 
-        controller.setSetpoint(
-            motorSetpoint.position,
-            ControlType.kPosition,
-            ClosedLoopSlot.kSlot0);
+  @Override
+  public void periodic() {
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
 
-        position = encoder.getPosition();
-        velocity = encoder.getVelocity();
+    controller.setSetpoint(motorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
-        current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
-        voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
-        setpoint = goal.position;
-        feedForward.calculate((motorSetpoint.velocity));
-    }
+    position = encoder.getPosition();
+    velocity = encoder.getVelocity();
 
-    @Override
-    public void simulationPeriodic() {
-        motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
-    }
+    current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
+    voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
+    setpoint = goal.position;
+    feedForward.calculate((motorSetpoint.velocity));
+  }
 
-    private void setGoal(double position, LinearVelocity velocity) {
-        goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
-    }
+  @Override
+  public void simulationPeriodic() {
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
+  }
 
-    public Command raiseClimbCommand() {
-        return Commands.runOnce(() -> setGoal(ClimberConstants.RAISED_POSITION, ClimberConstants.RAISED_VELOCITY));
-    }
+  private void setGoal(double position, LinearVelocity velocity) {
+    goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
+  }
 
-    public Command lowerClimbCommand() {
-        return Commands.runOnce(() -> setGoal(ClimberConstants.DOWN_POSITION, ClimberConstants.DOWN_VELOCITY));
-    }
+  public Command raiseClimbCommand() {
+    return Commands.runOnce(
+        () -> this.setGoal(ClimberConstants.RAISED_POSITION, ClimberConstants.RAISED_VELOCITY),
+        this);
+  }
 
+  public Command lowerClimbCommand() {
+    return Commands.runOnce(
+        () -> this.setGoal(ClimberConstants.DOWN_POSITION, ClimberConstants.DOWN_VELOCITY), this);
+  }
 }
