@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
@@ -17,7 +18,10 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.RobotConstants;
@@ -29,9 +33,11 @@ public class Climber extends SubsystemBase {
     @NotLogged private final SparkMaxConfig config;
     @NotLogged private final RelativeEncoder encoder;
     @NotLogged private final TrapezoidProfile profile;
+    @NotLogged private final SimpleMotorFeedforward feedForward;
 
     private Current current;
     private Voltage voltage;
+    
     private double velocity;
     private double setpoint;
     private double position;
@@ -65,10 +71,11 @@ public class Climber extends SubsystemBase {
 
         controller = motor.getClosedLoopController();
 
-
+        feedForward = new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
     
     }
 
+    @Override
     public void periodic() {
         motorSetpoint = profile.calculate(RobotConstants.CLOCK, motorSetpoint, goal);
 
@@ -77,11 +84,25 @@ public class Climber extends SubsystemBase {
             ControlType.kPosition,
             ClosedLoopSlot.kSlot0);
 
+        position = encoder.getPosition();
+        velocity = encoder.getVelocity();
+
+        current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
+        voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
+        setpoint = goal.position;
+        feedForward.calculate((motorSetpoint.velocity));
+    }
+
+    private void setGoal(double position, LinearVelocity velocity) {
+        goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
+    }
+
+    public Command raiseClimbCommand() {
+        return Commands.runOnce(() -> setGoal(ClimberConstants.RAISED_POSITION, ClimberConstants.RAISED_VELOCITY));
+    }
+
+    public Command lowerClimbCommand() {
+        return Commands.runOnce(() -> setGoal(ClimberConstants.DOWN_POSITION, ClimberConstants.DOWN_VELOCITY));
     }
 
 }
-
-    /* todo
-     * buttons
-     * change goal state
-     */
