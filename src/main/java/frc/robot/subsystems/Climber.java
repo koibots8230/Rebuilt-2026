@@ -54,9 +54,6 @@ public class Climber extends SubsystemBase {
     motor = new SparkMax(ClimberConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
 
-    config.closedLoop.p(ClimberConstants.CLIMBER_PID.kp);
-    config.closedLoop.feedForward.kV(ClimberConstants.CLIMBER_FF.kv);
-
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
     config.inverted(false);
@@ -91,7 +88,7 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK.in(Seconds), motorSetpoint, goal);
 
-    controller.setSetpoint(motorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    controller.setSetpoint(motorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, feedForward.calculate((motorSetpoint.velocity)));
 
     position = encoder.getPosition();
     velocity = encoder.getVelocity();
@@ -99,7 +96,6 @@ public class Climber extends SubsystemBase {
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
     setpoint = goal.position;
-    feedForward.calculate((motorSetpoint.velocity));
   }
 
   @Override
