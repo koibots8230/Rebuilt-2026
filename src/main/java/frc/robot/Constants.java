@@ -16,7 +16,7 @@ public class Constants {
         public static final FeedforwardGains FEEDFORWARD =
             new FeedforwardGains.Builder().kv(0.0).build();
         public static final int MOTOR_PORT = 0;
-        public static final Current CURRENT_LIMIT = Amps.of(40);
+        public static final Current CURRENT_LIMIT = Amps.of(80);
 
     }
 }
