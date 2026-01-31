@@ -16,7 +16,7 @@ public class Constants {
   }
 
   public static class PivotConstants {
-    public static final int MOTOR_ID = 10;
+    public static final int MOTOR_ID = 11;
     public static final Current CURRENT_LIMIT = Amps.of(60);
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
