@@ -12,19 +12,21 @@ import frc.lib.util.PIDGains;
 
 public class Constants {
   public static class IntakeConstants {
+    public static final Current CURRENT_LIMIT = Amps.of(60);
     public static final int MOTOR_ID = 10;
   }
 
   public static class PivotConstants {
-    public static final int MOTOR_ID = 11;
-    public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0).kg(0).build();
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(90);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
+    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
+    public static final FeedforwardGains FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0).kg(0).build();
+    public static final double CONVERSION_FACTOR = Math.PI * 2;
+    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
+    public static final Current CURRENT_LIMIT = Amps.of(60);
+    public static final int MOTOR_ID = 11;
   }
 
   public static class RobotConstants {

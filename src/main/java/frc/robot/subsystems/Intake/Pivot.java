@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -44,6 +45,8 @@ public class Pivot extends SubsystemBase {
     config = new SparkMaxConfig();
     config.smartCurrentLimit((int) PivotConstants.CURRENT_LIMIT.in(Amps));
     config.closedLoop.p(PivotConstants.PID.kp);
+    config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    config.absoluteEncoder.positionConversionFactor(PivotConstants.CONVERSION_FACTOR);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     pid = motor.getClosedLoopController();
     profile =
