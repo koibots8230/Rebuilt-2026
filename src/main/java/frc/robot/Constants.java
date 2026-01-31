@@ -12,6 +12,7 @@ import frc.lib.util.PIDGains;
 
 public class Constants {
   public static class IntakeConstants {
+    public static final double SPEED = 0.35;
     public static final Current CURRENT_LIMIT = Amps.of(60);
     public static final int MOTOR_ID = 10;
   }
