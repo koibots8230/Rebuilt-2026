@@ -1,16 +1,15 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -24,22 +23,23 @@ import frc.robot.Constants.IndexerConstants;
 @Logged
 public class Indexer extends SubsystemBase {
 
-  @NotLogged
-  private final SparkMax motor;
+  @NotLogged private final SparkMax motor;
 
   private Voltage voltage;
   private AngularVelocity velocity;
   private Current current;
 
   public Indexer() {
-    var motorConfig = new SparkMaxConfig()
-        .inverted(true)
-        .smartCurrentLimit(IndexerConstants.MAX_MOTOR_CURRENT_AMPS)
-        .idleMode(IdleMode.kBrake);
+    var motorConfig =
+        new SparkMaxConfig()
+            .inverted(true)
+            .smartCurrentLimit(IndexerConstants.MAX_MOTOR_CURRENT_AMPS)
+            .idleMode(IdleMode.kBrake);
 
     this.motor = new SparkMax(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
 
-    this.motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    this.motor.configure(
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // Initialising current state
     readValues();
