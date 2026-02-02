@@ -26,7 +26,6 @@ public class RobotContainer {
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
-
   }
 
   public Command getAutonomousCommand() {
