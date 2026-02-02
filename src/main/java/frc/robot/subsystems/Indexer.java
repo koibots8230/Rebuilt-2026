@@ -1,27 +1,69 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.RPM;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IndexerConstants;
 
+@Logged
 public class Indexer extends SubsystemBase {
+
+  @NotLogged
   private final SparkMax motor;
 
-  public Indexer() {
-    motor = new SparkMax(IntakeConstants.MOTOR_ID, MotorType.kBrushless);
+  private Voltage voltage;
+  private AngularVelocity velocity;
+  private Current current;
 
-    // motor.resetToFactory() how do I make sure that the motor are in the state
-    // that we want
+  public Indexer() {
+    var motorConfig = new SparkMaxConfig()
+        .inverted(true)
+        .smartCurrentLimit(IndexerConstants.MAX_MOTOR_CURRENT_AMPS)
+        .idleMode(IdleMode.kBrake);
+
+    this.motor = new SparkMax(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
+
+    this.motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // Initialising current state
+    readValues();
   }
 
-  private void setSpeed(double percent) {
-    motor.set(percent);
+  @Override
+  public void periodic() {
+    readValues();
+  }
 
-    SmartDashboard.putString("INDEXER CURRENT SPEED", Double.toString(percent));
+  public void readValues() {
+    this.current = Amps.of(this.motor.getOutputCurrent());
+    this.voltage = Volts.of(this.motor.getAppliedOutput());
+    this.velocity = RPM.of(this.motor.getEncoder().getVelocity());
+  }
+
+  public void printValues() {
+    System.out.printf("Current: %s", this.current.toShortString());
+    System.out.printf("Voltage: %s", this.voltage.toShortString());
+    System.out.printf("Velocity: %s", this.velocity.toShortString());
+  }
+
+  private void setSpeed(double speedPercent) {
+    this.motor.set(speedPercent);
   }
 
   public Command setSpeedCommand(double percent) {
