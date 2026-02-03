@@ -56,12 +56,6 @@ public class Indexer extends SubsystemBase {
     this.velocity = RPM.of(this.motor.getEncoder().getVelocity());
   }
 
-  public void printValues() {
-    System.out.printf("Current: %s", this.current.toShortString());
-    System.out.printf("Voltage: %s", this.voltage.toShortString());
-    System.out.printf("Velocity: %s", this.velocity.toShortString());
-  }
-
   private void setSpeed(double speedPercent) {
     this.motor.set(speedPercent);
   }
