@@ -125,7 +125,7 @@ public class Swerve extends SubsystemBase {
     modules.backLeft.periodic();
     modules.backRight.periodic();
 
-    gyroAngle = gyro.getRotation2d().plus(Rotation2d.k180deg);
+    gyroAngle = gyro.getRotation2d();
 
     measuredStates[0] = modules.frontLeft.getModuleState();
     measuredStates[1] = modules.frontRight.getModuleState();

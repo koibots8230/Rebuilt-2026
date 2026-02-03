@@ -19,6 +19,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final Swerve swerve;
 
   public RobotContainer() {
     climber = new Climber();
@@ -26,6 +27,7 @@ public class RobotContainer {
     indexer = new Indexer();
     intake = new Intake();
     pivot = new Pivot();
+    swerve = new Swerve(true);
 
     controller = new XboxController(0);
 
@@ -33,6 +35,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    swerve.setDefaultCommand(swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
+    
     Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
@@ -53,7 +57,7 @@ public class RobotContainer {
     shootTrigger.onTrue(
         Commands.parallel(
             shooter.setVelocityCommand(ShooterConstants.SHOOT_SPEED),
-            indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
+            indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
   }
