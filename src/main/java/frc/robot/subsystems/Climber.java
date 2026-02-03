@@ -88,7 +88,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    motorSetpoint = profile.calculate(RobotConstants.CLOCK.in(Seconds), motorSetpoint, goal);
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
 
     controller.setSetpoint(
         motorSetpoint.position,
@@ -106,7 +106,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    motorSetpoint = profile.calculate(RobotConstants.CLOCK.in(Seconds), motorSetpoint, goal);
+    motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
   }
 
   private void setGoal(double position, LinearVelocity velocity) {
