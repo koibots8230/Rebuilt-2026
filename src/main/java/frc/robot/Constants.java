@@ -11,13 +11,12 @@ import frc.lib.util.FeedforwardGains;
 import frc.lib.util.PIDGains;
 
 public class Constants {
-  public class RobotConstants {}
 
   public static class IndexerConstants {
     public static final int MOTOR_ID = 10;
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
   }
-  
+
   public static class IntakeConstants {
     public static final double SPEED = 0.35;
     public static final Current CURRENT_LIMIT = Amps.of(60);
