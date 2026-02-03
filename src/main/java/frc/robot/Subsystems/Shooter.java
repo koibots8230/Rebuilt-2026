@@ -1,12 +1,12 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -56,7 +56,7 @@ public class Shooter extends SubsystemBase {
   }
 
   private void setVelocity(AngularVelocity velocity) {
-    motorController.setSetPoint(velocity.in(RPM), ControlType.kVelocity);
+    motorController.setSetpoint(velocity.in(RPM), ControlType.kVelocity);
     // Deprecated
     setpoint = velocity;
   }
