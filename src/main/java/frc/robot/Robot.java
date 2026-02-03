@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    m_robotContainer = new RobotContainer(Robot.isReal());
+    m_robotContainer = new RobotContainer();
 
     DataLogManager.start();
     Epilogue.bind(this);

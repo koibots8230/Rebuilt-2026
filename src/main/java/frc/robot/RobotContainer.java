@@ -1,42 +1,30 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.Pivot;
+import frc.robot.subsystems.Shooter;
 
 @Logged
 public class RobotContainer {
 
-  private final XboxController controller;
+  @NotLogged private final CommandXboxController controller;
+  private final Shooter shooter;
 
-  private final Intake intake;
-  private final Pivot pivot;
-
-  public RobotContainer(boolean isReal) {
-    controller = new XboxController(0);
-
-    intake = new Intake();
-    pivot = new Pivot();
+  public RobotContainer() {
+    shooter = new Shooter();
+    controller = new CommandXboxController(0);
 
     configureBindings();
   }
 
   private void configureBindings() {
-    final Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
-    intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
-    intakeButton.onFalse(intake.setSpeedCommand(0));
-
-    Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
-
-    Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+    Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
+    shootTrigger.whileTrue(shooter.setVelocityCommand(Constants.ShooterConstants.SHOOT_SPEED));
+    shootTrigger.onFalse(shooter.setVelocityCommand(edu.wpi.first.units.Units.RPM.of(0)));
   }
 
   public Command getAutonomousCommand() {

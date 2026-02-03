@@ -1,6 +1,8 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -38,5 +40,15 @@ public class Constants {
 
   public static class RobotConstants {
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
+  }
+
+  public static class ShooterConstants {
+
+    public static final AngularVelocity SHOOT_SPEED = RPM.of(3000);
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.0).build();
+    public static final int MOTOR_PORT = 0;
+    public static final Current CURRENT_LIMIT = Amps.of(80);
   }
 }
