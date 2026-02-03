@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 
