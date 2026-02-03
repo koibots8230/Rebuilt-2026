@@ -1,6 +1,21 @@
 package frc.robot.subsystems;
 
-public class swerve extends SubsystemBase {
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+import frc.robot.Constants.SwerveConstants;
+
+public class Swerve extends SubsystemBase {
 
   private boolean isBlue;
   private Pose2d odometryPose;
@@ -39,7 +54,7 @@ public class swerve extends SubsystemBase {
     }
   }
 
-  public swerve() {
+  public Swerve() {
     gyro = new Pigeon2(10);
     modules = new Modules();
 
@@ -59,13 +74,12 @@ public class swerve extends SubsystemBase {
 
   }
 
-  public void setIsBlue(Boolean allianceColour) {
+  public void setIsBlue(Boolean allianceColor) {
     isBlue = allianceColor;
-    estHeading = (isBlue ? new Rotation2d() : new Rotation2d(Math.PI));
-    estimatedPose = new Pose2d(0, 0, estHeading);
+    Rotation2d estHeading = (isBlue ? new Rotation2d() : new Rotation2d(Math.PI));
+    odometryPose = new Pose2d(0, 0, estHeading);
   }
 
-  @Override
   public void periodic() {
     modules.frontLeftModule.periodic();
     modules.frontRightModule.periodic();
@@ -87,9 +101,9 @@ public class swerve extends SubsystemBase {
 
   private void fieldRelitiveDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      x.in(MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
-      y.in(MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
-      omega.in(RotationsPerSecond) * SwerveConstants.MAX_ANGULAR_VELOCITY.baseUnitMagnitude(),
+      x.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
+      y.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
+      omega.in(Units.RotationsPerSecond) * SwerveConstants.MAX_ANGULAR_VELOCITY.baseUnitMagnitude(),
       gyroAngle
     );
 
@@ -119,7 +133,8 @@ public class swerve extends SubsystemBase {
         MetersPerSecond.of(MathUtil.applyDeadband(x.getAsDouble(), 0.07)),
         MetersPerSecond.of(MathUtil.applyDeadband(y.getAsDouble(), 0.07)),
         RotationsPerSecond.of(MathUtil.applyDeadband((omega.getAsDouble()), 0.07))
-      ), this
+      ), 
+      this
     );
   }
 

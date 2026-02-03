@@ -1,15 +1,35 @@
 package frc.robot.subsystems;
 
+import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.SwerveConstants;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+
 public class SwerveModule extends SubsystemBase {
   
-  private final SparkMax turnMotor;
-  private final SparkMax driveMotor;
-  private final AbsoluteEncoder turnEncoder;
-  private final RelativweEncoder driveEncoder;
-  private final SparkMaxConfig turnConfig;
-  private final SparkMaxConfig driveConfig;
-  private final SparkClosedLoopController turnController;
+  private final SparkFlex driveMotor;
+  private final RelativeEncoder driveEncoder;
+  private final SparkFlexConfig driveConfig;
   private final SparkClosedLoopController driveController;
+
+  private final SparkMax turnMotor;
+  private final AbsoluteEncoder turnEncoder;
+  private final SparkMaxConfig turnConfig;
+  private final SparkClosedLoopController turnController;
   
   private final Rotation2d offsetAngle;
   private SimpleMotorFeedforward turnFeedforward;
@@ -22,7 +42,7 @@ public class SwerveModule extends SubsystemBase {
   private Current driveMotorCurrent;
   private Voltage driveMotorVoltage;
   private LinearVelocity driveMotorVelocity;
-  private Meters driveMotorPosition;
+  private Distance driveMotorPosition;
 
   private Angle turnSetpointAngle;
   private Current turnMotorCurrent;
@@ -42,7 +62,7 @@ public class SwerveModule extends SubsystemBase {
       offsetAngle = new Rotation2d((3 * Math.PI) / 2.0);
     }
 
-    driveMotor = new SparkFlex(driveMotorID, MotorType.kBrushless);
+    driveMotor = new Spark(driveMotorID, MotorType.kBrushless);
     driveController = driveMotor.getClosedLoopController();
     driveEncoder = driveMotor.getEncoder();
     driveConfig = new SparkFlexConfig();
@@ -91,22 +111,22 @@ public class SwerveModule extends SubsystemBase {
     motorSetpoint = new TrapezoidProfile.State(0, 0);
 
     turnFeedforward = new SimpleMotorFeedforward(
-      Constants.SwerveConstants.TURN_KS, 
-      Constants.SwerveConstants.TURN_KV
+      SwerveConstants.TURN_KS, 
+      SwerveConstants.TURN_KV
     );
 
-    driveSetpointVelocity = LinearVelocity.ofBaseUnits(0, MetersPerSecond);
+    driveSetpointVelocity = LinearVelocity.ofBaseUnits(0, Units.MetersPerSecond);
     
-    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
-    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Volts);
-    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), MetersPerSecond);
-    driveMotorPosition = Meters.ofBaseUnits(driveEncoder.getPosition(), Meters);
+    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Units.Amps);
+    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Units.Volts);
+    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), Units.MetersPerSecond);
+    driveMotorPosition = Distance.ofBaseUnits(driveEncoder.getPosition(), Units.Meters);
     
-    turnSetpointAngle = Radians.of(0);
+    turnSetpointAngle = Units.Radians.of(0);
     
-    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Amps);
-    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Volts);
-    turnMotorVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), RadiansPerSecond);
+    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Units.Amps);
+    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Units.Volts);
+    turnMotorVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
     turnMotorPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offsetAngle.getRadians());
 
   }
@@ -117,27 +137,27 @@ public class SwerveModule extends SubsystemBase {
 
     driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
 
-    driveSetpointVelocity = MetersPerSecond.of(state.speedMetersPerSecond);
-    turnSetpointAngle = Radians.of(state.angle.getRadians());
+    driveSetpointVelocity = Units.MetersPerSecond.of(state.speedMetersPerSecond);
+    turnSetpointAngle = Units.Radians.of(state.angle.getRadians());
   }
 
   @Override
   public void periodic() {
-    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
-    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Volts);
-    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), MetersPerSecond);
-    driveMotorPosition = Meters.ofBaseUnits(driveEncoder.getPosition(), Meters);
+    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Units.Amps);
+    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Units.Volts);
+    driveMotorVelocity = LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), Units.MetersPerSecond);
+    driveMotorPosition = Distance.ofBaseUnits(driveEncoder.getPosition(), Units.Meters);
 
-    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Amps);
-    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Volts);
-    turnMotorVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), RadiansPerSecond);
+    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Units.Amps);
+    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Units.Volts);
+    turnMotorVelocity = AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
     turnMotorPosition = Rotation2d.fromRadians(turnEncoder.getPosition() - offsetAngle.getRadians());
 
-    goalState = new State(MathUtil.angleModulus(turnSetpointAngle.in(Radians)) + offsetAngle.getRadians(), 0);
+    goalState = new State(MathUtil.angleModulus(turnSetpointAngle.in(Units.Radians)) + offsetAngle.getRadians(), 0);
 
     motorSetpoint = profile.calculate(1 / RobotConstants.CLOCK, motorSetpoint, goalState);
 
-    driveController.setReference(driveSetpointVelocity.in(MetersPerSecond), ControlType.kVelocity);
+    driveController.setReference(driveSetpointVelocity.in(Units.MetersPerSecond), ControlType.kVelocity);
 
     turnController.setReference(
       motorSetpoint.position,
