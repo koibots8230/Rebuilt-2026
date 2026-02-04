@@ -20,7 +20,7 @@ public class Constants {
     public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(27.5));
 
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
-  } 
+  }
 
   public static class IndexerConstants {
     public static final double SHOOTING_SPEED = 0.5;
@@ -124,5 +124,4 @@ public class Constants {
 
     public static final int MOTOR_ID = 12;
   }
-
 }

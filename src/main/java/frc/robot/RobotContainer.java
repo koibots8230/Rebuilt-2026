@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 @Logged
 public class RobotContainer {
@@ -57,7 +56,7 @@ public class RobotContainer {
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
-    
+
     swerve.setDefaultCommand(
         swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
   }
