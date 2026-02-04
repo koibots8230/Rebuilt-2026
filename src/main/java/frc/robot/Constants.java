@@ -83,7 +83,6 @@ public class Constants {
     public static final Current DRIVE_CURRENT_LIMIT = Amps.of(80);
     public static final Current TURN_CURRENT_LIMIT = Amps.of(30);
 
-    // These are placeholder IDs; replace with actual motor IDs
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 2;
     public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
     public static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
