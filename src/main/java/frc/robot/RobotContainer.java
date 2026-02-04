@@ -5,26 +5,24 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 
 @Logged
 public class RobotContainer {
 
   @NotLogged private final CommandXboxController controller;
-  private final Shooter shooter;
+  private final Swerve swerve;
 
   public RobotContainer() {
-    shooter = new Shooter();
     controller = new CommandXboxController(0);
+    swerve = new Swerve();
 
     configureBindings();
   }
 
   private void configureBindings() {
-    Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
-    shootTrigger.whileTrue(shooter.setVelocityCommand(Constants.ShooterConstants.SHOOT_SPEED));
-    shootTrigger.onFalse(shooter.setVelocityCommand(edu.wpi.first.units.Units.RPM.of(0)));
+    swerve.setDefaultCommand(
+        swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
   }
 
   public Command getAutonomousCommand() {

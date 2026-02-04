@@ -2,11 +2,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -24,53 +22,7 @@ public class Constants {
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
   }
 
-  public static class IndexerConstants {
-    public static final int MOTOR_ID = 10;
-    public static final int MAX_MOTOR_CURRENT_AMPS = 60;
-  }
-
-  public static class IntakeConstants {
-    public static final double SPEED = 0.35;
-    public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 10;
-  }
-
-  public static class PivotConstants {
-    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(90);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0).kg(0).build();
-    public static final double CONVERSION_FACTOR = Math.PI * 2;
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
-    public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 11;
-  }
-
-  public static class ShooterConstants {
-    public static final AngularVelocity SHOOT_SPEED = RPM.of(3000);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0).build();
-    public static final int MOTOR_PORT = 0;
-    public static final Current CURRENT_LIMIT = Amps.of(80);
-  }
-
   public static class SwerveConstants {
-
-    // These are placeholder IDs; replace with actual motor IDs
-    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 3;
-    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 4;
-    public static final int BACK_LEFT_DRIVE_MOTOR_ID = 5;
-    public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 7;
-
-    public static final int FRONT_LEFT_TURN_MOTOR_ID = 2;
-    public static final int BACK_LEFT_TURN_MOTOR_ID = 6;
-    public static final int BACK_RIGHT_TURN_MOTOR_ID = 8;
-
-    public static final int GYRO_ID = 9;
 
     public static final LinearVelocity MAX_LINEAR_VELOCITY =
         LinearVelocity.ofBaseUnits(.2, MetersPerSecond);
@@ -103,5 +55,18 @@ public class Constants {
 
     public static final Current DRIVE_CURRENT_LIMIT = Amps.of(80);
     public static final Current TURN_CURRENT_LIMIT = Amps.of(30);
+
+    // These are placeholder IDs; replace with actual motor IDs
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 2;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
+    public static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
+    public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
+
+    public static final int FRONT_LEFT_TURN_MOTOR_ID = 1;
+    public static final int BACK_LEFT_TURN_MOTOR_ID = 3;
+    public static final int BACK_RIGHT_TURN_MOTOR_ID = 5;
+    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 7;
+
+    public static final int GYRO_ID = 9;
   }
 }
