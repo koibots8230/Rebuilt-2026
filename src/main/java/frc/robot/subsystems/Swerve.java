@@ -3,10 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
+import java.util.function.DoubleSupplier;
 
 public class Swerve extends SubsystemBase {
 
@@ -31,11 +29,11 @@ public class Swerve extends SubsystemBase {
   private SwerveModuleState[] messuredModuleStates;
   private ChassisSpeeds chassisSpeeds;
   private Rotation2d gyroAngle;
-  
+
   private final SwerveDrivePoseEstimator odometry;
   private final Pigeon2 gyro;
   private final Modules modules;
-  
+
   public class Modules {
     final SwerveModule frontLeftModule;
     final SwerveModule frontRightModule;
@@ -43,22 +41,19 @@ public class Swerve extends SubsystemBase {
     final SwerveModule backRightModule;
 
     public Modules() {
-      frontLeftModule = new SwerveModule(
-        SwerveConstants.FRONT_LEFT_DRIVE_MOTOR_ID, 
-        SwerveConstants.FRONT_LEFT_TURN_MOTOR_ID
-      );
-      frontRightModule = new SwerveModule(
-        SwerveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID, 
-        SwerveConstants.FRONT_RIGHT_TURN_MOTOR_ID
-      );
-      backLeftModule = new SwerveModule(
-        SwerveConstants.BACK_LEFT_DRIVE_MOTOR_ID, 
-        SwerveConstants.BACK_LEFT_TURN_MOTOR_ID
-      );
-      backRightModule = new SwerveModule(
-        SwerveConstants.BACK_RIGHT_DRIVE_MOTOR_ID, 
-        SwerveConstants.BACK_RIGHT_TURN_MOTOR_ID
-      );
+      frontLeftModule =
+          new SwerveModule(
+              SwerveConstants.FRONT_LEFT_DRIVE_MOTOR_ID, SwerveConstants.FRONT_LEFT_TURN_MOTOR_ID);
+      frontRightModule =
+          new SwerveModule(
+              SwerveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
+              SwerveConstants.FRONT_RIGHT_TURN_MOTOR_ID);
+      backLeftModule =
+          new SwerveModule(
+              SwerveConstants.BACK_LEFT_DRIVE_MOTOR_ID, SwerveConstants.BACK_LEFT_TURN_MOTOR_ID);
+      backRightModule =
+          new SwerveModule(
+              SwerveConstants.BACK_RIGHT_DRIVE_MOTOR_ID, SwerveConstants.BACK_RIGHT_TURN_MOTOR_ID);
     }
   }
 
@@ -67,19 +62,15 @@ public class Swerve extends SubsystemBase {
     modules = new Modules();
 
     odometryPose = new Pose2d();
-    gyroAngle = new gyro.getRotation2d();
+    gyroAngle = gyro.getRotation2d();
     chassisSpeeds = new ChassisSpeeds();
 
     setpointStates = new SwerveModuleState[4];
     messuredModuleStates = new SwerveModuleState[4];
 
-    odometry = new SwerveDrivePoseEstimator(
-      SwerveConstants.KINEMATICS, 
-      gyroAngle, 
-      modulePosition(), 
-      odometryPose
-    );
-
+    odometry =
+        new SwerveDrivePoseEstimator(
+            SwerveConstants.KINEMATICS, gyroAngle, modulePosition(), odometryPose);
   }
 
   public void setIsBlue(Boolean allianceColor) {
@@ -100,31 +91,31 @@ public class Swerve extends SubsystemBase {
     messuredModuleStates[2] = modules.backLeftModule.getState();
     messuredModuleStates[3] = modules.backRightModule.getState();
 
-    odometryPose = odometry.update(
-      isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), 
-      modulePosition()
-    );
+    odometryPose =
+        odometry.update(
+            isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
 
     gyroAngle = gyro.getRotation2d();
   }
 
   private void fieldRelitiveDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {
-    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      x.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
-      y.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
-      omega.in(Units.RotationsPerSecond) * SwerveConstants.MAX_ANGULAR_VELOCITY.baseUnitMagnitude(),
-      gyroAngle
-    );
+    chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            x.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
+            y.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
+            omega.in(Units.RotationsPerSecond)
+                * SwerveConstants.MAX_ANGULAR_VELOCITY.baseUnitMagnitude(),
+            gyroAngle);
 
-  setpointStates = SwerveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+    setpointStates = SwerveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-  SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, SwerveConstants.MAX_LINEAR_VELOCITY);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        setpointStates, SwerveConstants.MAX_LINEAR_VELOCITY);
 
-  modules.frontLeftModule.setState(setpointStates[0]);
-  modules.frontRightModule.setState(setpointStates[1]);
-  modules.backLeftModule.setState(setpointStates[2]);
-  modules.backRightModule.setState(setpointStates[3]);
-  
+    modules.frontLeftModule.setState(setpointStates[0]);
+    modules.frontRightModule.setState(setpointStates[1]);
+    modules.backLeftModule.setState(setpointStates[2]);
+    modules.backRightModule.setState(setpointStates[3]);
   }
 
   private SwerveModulePosition[] modulePosition() {
@@ -138,12 +129,11 @@ public class Swerve extends SubsystemBase {
 
   public Command driveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega) {
     return Commands.run(
-      () -> fieldRelitiveDrive(
-        MetersPerSecond.of(MathUtil.applyDeadband(x.getAsDouble(), 0.07)),
-        MetersPerSecond.of(MathUtil.applyDeadband(y.getAsDouble(), 0.07)),
-        RotationsPerSecond.of(MathUtil.applyDeadband((omega.getAsDouble()), 0.07))
-      ), 
-      this
-    );
+        () ->
+            fieldRelitiveDrive(
+                MetersPerSecond.of(MathUtil.applyDeadband(x.getAsDouble(), 0.07)),
+                MetersPerSecond.of(MathUtil.applyDeadband(y.getAsDouble(), 0.07)),
+                RotationsPerSecond.of(MathUtil.applyDeadband((omega.getAsDouble()), 0.07))),
+        this);
   }
 }
