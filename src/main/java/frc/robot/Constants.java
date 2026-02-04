@@ -20,7 +20,7 @@ public class Constants {
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
 
-    public static final int MOTOR_ID = 10;
+    public static final int MOTOR_ID = 14;
   }
 
   public static class IntakeConstants {
@@ -39,17 +39,27 @@ public class Constants {
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
     public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
     public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 11;
+    public static final int MOTOR_ID = 12;
   }
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity SHOOT_SPEED = RPM.of(3000);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains FEEDFORWARD =
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
+    public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
+
+    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.0).build();
-    public static final int MOTOR_PORT = 0;
-    public static final Current CURRENT_LIMIT = Amps.of(80);
+
+    public static final PIDGains INTAKE_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains INTAKE_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.0).build();
+
+    public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
+    public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
+
+    public static final int FLYWHEEL_MOTOR_ID = 11;
+    public static final int INTAKE_MOTOR_ID = 13;
   }
 
   public static class ClimberConstants {
@@ -78,7 +88,7 @@ public class Constants {
     public static final Distance WHEEL_DIAMETER =
         Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
 
-    public static final int MOTOR_ID = 12;
+    public static final int MOTOR_ID = 60;
   }
 
   public static class RobotConstants {

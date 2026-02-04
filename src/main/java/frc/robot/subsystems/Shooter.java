@@ -10,7 +10,9 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -22,46 +24,77 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  @NotLogged private final SparkFlex motor;
-  @NotLogged private final SparkFlexConfig motorConfig;
-  @NotLogged private final SparkClosedLoopController motorController;
-  private Voltage voltage;
-  private AngularVelocity velocity;
-  private Current current;
-  private AngularVelocity setpoint;
+  @NotLogged private final SparkMax flywheelMotor;
+  @NotLogged private final SparkMaxConfig flywheelMotorConfig;
+  @NotLogged private final SparkClosedLoopController flywheelMotorController;
+  @NotLogged private final SparkFlex intakeMotor;
+  @NotLogged private final SparkFlexConfig intakeMotorConfig;
+  @NotLogged private final SparkClosedLoopController intakeMotorController;
+
+  private Voltage flywheelVoltage;
+  private AngularVelocity flywheelVelocity;
+  private Current flywheelCurrent;
+  private AngularVelocity flywheelSetpoint;
+
+  private Voltage intakeVoltage;
+  private AngularVelocity intakeVelocity;
+  private Current intakeCurrent;
+  private AngularVelocity intakeSetpoint;
 
   public Shooter() {
-    motor = new SparkFlex(ShooterConstants.MOTOR_PORT, MotorType.kBrushless);
-    motorConfig = new SparkFlexConfig();
-    motorConfig.closedLoop.p(ShooterConstants.PID.kp);
-    motorConfig.closedLoop.feedForward.kV(ShooterConstants.FEEDFORWARD.kv);
+    flywheelMotor = new SparkMax(ShooterConstants.FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+    flywheelMotorConfig = new SparkMaxConfig();
+    flywheelMotorConfig.closedLoop.p(ShooterConstants.FLYWHEEL_PID.kp);
+    flywheelMotorConfig.closedLoop.feedForward.kV(ShooterConstants.FLYWHEEL_FEEDFORWARD.kv);
 
-    motorConfig.smartCurrentLimit((int) ShooterConstants.CURRENT_LIMIT.in(Amps));
-    motorConfig.inverted(true);
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // I don't know why this is angry, but it is.
-    motorController = motor.getClosedLoopController();
+    flywheelMotorConfig.smartCurrentLimit((int) ShooterConstants.FLYWHEEL_CURRENT_LIMIT.in(Amps));
+    flywheelMotorConfig.inverted(true);
+    flywheelMotor.configure(
+        flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    voltage = Volts.of(0);
-    velocity = RPM.of(0);
-    current = Amps.of(0);
-    setpoint = RPM.of(0);
+    flywheelMotorController = flywheelMotor.getClosedLoopController();
+    flywheelVoltage = Volts.of(0);
+    flywheelVelocity = RPM.of(0);
+    flywheelCurrent = Amps.of(0);
+    flywheelSetpoint = RPM.of(0);
+
+    intakeMotor = new SparkFlex(ShooterConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    intakeMotorConfig = new SparkFlexConfig();
+    intakeMotorConfig.closedLoop.p(ShooterConstants.INTAKE_PID.kp);
+    intakeMotorConfig.closedLoop.feedForward.kV(ShooterConstants.INTAKE_FEEDFORWARD.kv);
+
+    intakeMotorConfig.smartCurrentLimit((int) ShooterConstants.INTAKE_CURRENT_LIMIT.in(Amps));
+    intakeMotorConfig.inverted(true);
+    intakeMotor.configure(
+        intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    intakeMotorController = intakeMotor.getClosedLoopController();
+    intakeVoltage = Volts.of(0);
+    intakeVelocity = RPM.of(0);
+    intakeCurrent = Amps.of(0);
+    intakeSetpoint = RPM.of(0);
   }
 
   @Override
   public void periodic() {
-    voltage = Volts.of(motor.getAppliedOutput() * motor.getBusVoltage());
-    velocity = RPM.of(motor.getEncoder().getVelocity());
-    current = Amps.of(motor.getOutputCurrent());
+    flywheelVoltage = Volts.of(flywheelMotor.getAppliedOutput() * flywheelMotor.getBusVoltage());
+    flywheelVelocity = RPM.of(flywheelMotor.getEncoder().getVelocity());
+    flywheelCurrent = Amps.of(flywheelMotor.getOutputCurrent());
+
+    intakeVoltage = Volts.of(intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage());
+    intakeVelocity = RPM.of(intakeMotor.getEncoder().getVelocity());
+    intakeCurrent = Amps.of(intakeMotor.getOutputCurrent());
   }
 
-  private void setVelocity(AngularVelocity velocity) {
-    motorController.setSetpoint(velocity.in(RPM), ControlType.kVelocity);
-    // Deprecated
-    setpoint = velocity;
+  private void shootCommand(AngularVelocity intakeVelocity, AngularVelocity flywheelVelocity) {
+    flywheelMotorController.setSetpoint(flywheelVelocity.in(RPM), ControlType.kVelocity);
+    intakeMotorController.setSetpoint(intakeVelocity.in(RPM), ControlType.kVelocity);
+    flywheelSetpoint = flywheelVelocity;
+    intakeSetpoint = intakeVelocity;
   }
 
-  public Command setVelocityCommand(AngularVelocity velocity) {
-    return Commands.runOnce(() -> setVelocity(velocity), this);
+  public Command setVelocityCommand(
+      AngularVelocity intakeVelocity, AngularVelocity flywheelVelocity) {
+    return Commands.runOnce(() -> shootCommand(intakeVelocity, flywheelVelocity), this);
   }
 }
