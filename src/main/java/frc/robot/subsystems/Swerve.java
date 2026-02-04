@@ -1,6 +1,11 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -13,6 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
@@ -47,7 +55,7 @@ public class Swerve extends SubsystemBase {
         SwerveConstants.BACK_LEFT_DRIVE_MOTOR_ID, 
         SwerveConstants.BACK_LEFT_TURN_MOTOR_ID
       );
-      new SwerveModule(
+      backRightModule = new SwerveModule(
         SwerveConstants.BACK_RIGHT_DRIVE_MOTOR_ID, 
         SwerveConstants.BACK_RIGHT_TURN_MOTOR_ID
       );
@@ -55,7 +63,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Swerve() {
-    gyro = new Pigeon2(10);
+    gyro = new Pigeon2(SwerveConstants.GYRO_ID);
     modules = new Modules();
 
     odometryPose = new Pose2d();
@@ -80,6 +88,7 @@ public class Swerve extends SubsystemBase {
     odometryPose = new Pose2d(0, 0, estHeading);
   }
 
+  @Override
   public void periodic() {
     modules.frontLeftModule.periodic();
     modules.frontRightModule.periodic();
@@ -137,5 +146,4 @@ public class Swerve extends SubsystemBase {
       this
     );
   }
-
 }
