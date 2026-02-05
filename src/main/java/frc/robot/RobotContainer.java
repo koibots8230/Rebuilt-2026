@@ -16,14 +16,16 @@ public class RobotContainer {
   @NotLogged private final XboxController controller;
   private final Climber climber;
   private final Swerve swerve;
+  private final Shooter shooter;
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
 
   public RobotContainer() {
     climber = new Climber();
-    indexer = new Indexer();
     intake = new Intake();
+    shooter = new Shooter();
+    indexer = new Indexer();
     pivot = new Pivot();
     swerve = new Swerve();
 

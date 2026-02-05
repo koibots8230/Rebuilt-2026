@@ -17,6 +17,7 @@ import frc.lib.util.FeedforwardGains;
 import frc.lib.util.PIDGains;
 
 public class Constants {
+
   public static class RobotConstants {
     public static final Distance ROBOT_WIDTH = Meters.of(Units.inchesToMeters(27.5));
     public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(27.5));

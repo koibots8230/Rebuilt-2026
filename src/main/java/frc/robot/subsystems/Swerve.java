@@ -34,6 +34,8 @@ public class Swerve extends SubsystemBase {
   private final Pigeon2 gyro;
   private final Modules modules;
 
+  private Rotation2d simHeading;
+
   public class Modules {
     final SwerveModule frontLeftModule;
     final SwerveModule frontRightModule;
@@ -96,6 +98,17 @@ public class Swerve extends SubsystemBase {
             isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
 
     gyroAngle = gyro.getRotation2d();
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    simHeading = simHeading.plus(new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * 0.02));
+    gyroAngle = simHeading;
+
+    modules.frontLeftModule.simulationPeriodic();
+    modules.frontRightModule.simulationPeriodic();
+    modules.backLeftModule.simulationPeriodic();
+    modules.backRightModule.simulationPeriodic();
   }
 
   private void fieldRelitiveDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {

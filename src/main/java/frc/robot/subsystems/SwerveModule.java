@@ -57,6 +57,7 @@ public class SwerveModule extends SubsystemBase {
   private Voltage driveMotorVoltage;
   private LinearVelocity driveMotorVelocity;
   private Distance driveMotorPosition;
+  private Distance simDrivePosition;
 
   private Angle turnSetpointAngle;
   private Current turnMotorCurrent;
@@ -124,13 +125,14 @@ public class SwerveModule extends SubsystemBase {
         new SimpleMotorFeedforward(
             SwerveConstants.TURN_FEEDFORWARD.ks, SwerveConstants.TURN_FEEDFORWARD.kv);
 
-    driveSetpointVelocity = LinearVelocity.ofBaseUnits(0, Units.MetersPerSecond);
+    driveSetpointVelocity = Units.MetersPerSecond.of(0);
 
-    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Units.Amps);
-    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Units.Volts);
-    driveMotorVelocity =
-        LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), Units.MetersPerSecond);
-    driveMotorPosition = Distance.ofBaseUnits(driveEncoder.getPosition(), Units.Meters);
+    driveMotorCurrent = Units.Amps.of(driveMotor.getOutputCurrent());
+    driveMotorVoltage = Units.Volts.of(driveMotor.getBusVoltage());
+    driveMotorVelocity = Units.MetersPerSecond.of(driveEncoder.getVelocity());
+    driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
+
+    simDrivePosition = Units.Meters.of(0);
 
     turnSetpointAngle = Units.Radians.of(0);
 
@@ -155,18 +157,17 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
-    driveMotorCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Units.Amps);
-    driveMotorVoltage = Voltage.ofBaseUnits(driveMotor.getBusVoltage(), Units.Volts);
-    driveMotorVelocity =
-        LinearVelocity.ofBaseUnits(driveEncoder.getVelocity(), Units.MetersPerSecond);
-    driveMotorPosition = Distance.ofBaseUnits(driveEncoder.getPosition(), Units.Meters);
 
-    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Units.Amps);
-    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Units.Volts);
-    turnMotorVelocity =
-        AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
+    driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
+    driveMotorVelocity = Units.MetersPerSecond.of(driveEncoder.getVelocity());
+    driveMotorCurrent = Units.Amps.of(driveMotor.getOutputCurrent());
+    driveMotorVoltage = Units.Volts.of(driveMotor.getBusVoltage());
+
     turnMotorPosition =
         Rotation2d.fromRadians(turnEncoder.getPosition() - offsetAngle.getRadians());
+    turnMotorVelocity = Units.RadiansPerSecond.of(turnEncoder.getVelocity());
+    turnMotorCurrent = Units.Amps.of(turnMotor.getOutputCurrent());
+    turnMotorVoltage = Units.Volts.of(turnMotor.getBusVoltage());
 
     goalState =
         new State(
@@ -185,6 +186,17 @@ public class SwerveModule extends SubsystemBase {
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         turnFeedforward.calculate(motorSetpoint.velocity));
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    driveMotorPosition =
+        Units.Meters.of(
+            (driveSetpointVelocity.baseUnitMagnitude()
+                    / RobotConstants.CLOCK_SPEED.baseUnitMagnitude())
+                + simDrivePosition.baseUnitMagnitude());
+    turnMotorPosition = new Rotation2d(turnSetpointAngle);
+    driveMotorVelocity = driveSetpointVelocity;
   }
 
   public SwerveModuleState getState() {
