@@ -48,10 +48,10 @@ public class Constants {
     public static final double TURN_CONVERSION_FACTOR = 2 * Math.PI;
 
     public static final Rotation2d[] OFFSETS = {
-      Rotation2d.fromRadians((2 * Math.PI) / 2.0),
+      Rotation2d.fromRadians((3 * Math.PI) / 2.0),
       Rotation2d.fromRadians(0),
-      Rotation2d.fromRadians(Math.PI / 2.0),
-      Rotation2d.fromRadians(Math.PI)
+      Rotation2d.fromRadians(Math.PI),
+      Rotation2d.fromRadians(Math.PI / 2.0)
     };
 
     public static final Current TURN_CURRENT_LIMIT = Amps.of(30);
@@ -84,7 +84,7 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final double SPEED = 0.4;
+    public static final double SPEED = 0.95;
     public static final Current CURRENT_LIMIT = Amps.of(60);
     public static final int MOTOR_ID = 10;
   }
