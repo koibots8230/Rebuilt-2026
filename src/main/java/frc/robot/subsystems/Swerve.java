@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import java.util.function.DoubleSupplier;
 
@@ -70,6 +71,8 @@ public class Swerve extends SubsystemBase {
     setpointStates = new SwerveModuleState[4];
     messuredModuleStates = new SwerveModuleState[4];
 
+    simHeading = new Rotation2d();
+
     odometry =
         new SwerveDrivePoseEstimator(
             SwerveConstants.KINEMATICS, gyroAngle, modulePosition(), odometryPose);
@@ -102,7 +105,7 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    simHeading = simHeading.plus(new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * 0.02));
+    simHeading = simHeading.plus(new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * RobotConstants.CLOCK_SPEED.baseUnitMagnitude()));
     gyroAngle = simHeading;
 
     modules.frontLeftModule.simulationPeriodic();
