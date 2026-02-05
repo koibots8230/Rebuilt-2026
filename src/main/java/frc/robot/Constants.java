@@ -58,8 +58,8 @@ public class Constants {
     public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
     public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
 
-    public static final int FLYWHEEL_MOTOR_ID = 11;
-    public static final int INTAKE_MOTOR_ID = 13;
+    public static final int FLYWHEEL_MOTOR_ID = 20;
+    public static final int INTAKE_MOTOR_ID = 21;
   }
 
   public static class ClimberConstants {

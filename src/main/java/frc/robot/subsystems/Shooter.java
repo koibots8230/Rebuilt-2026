@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase {
     intakeCurrent = Amps.of(intakeMotor.getOutputCurrent());
   }
 
-  private void shootCommand(AngularVelocity intakeVelocity, AngularVelocity flywheelVelocity) {
+  private void shoot(AngularVelocity intakeVelocity, AngularVelocity flywheelVelocity) {
     flywheelMotorController.setSetpoint(flywheelVelocity.in(RPM), ControlType.kVelocity);
     intakeMotorController.setSetpoint(intakeVelocity.in(RPM), ControlType.kVelocity);
     flywheelSetpoint = flywheelVelocity;
@@ -95,6 +95,6 @@ public class Shooter extends SubsystemBase {
 
   public Command setVelocityCommand(
       AngularVelocity intakeVelocity, AngularVelocity flywheelVelocity) {
-    return Commands.runOnce(() -> shootCommand(intakeVelocity, flywheelVelocity), this);
+    return Commands.runOnce(() -> shoot(intakeVelocity, flywheelVelocity), this);
   }
 }
