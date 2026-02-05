@@ -2,9 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -27,7 +29,7 @@ public class Constants {
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
 
-    public static final int MOTOR_ID = 10;
+    public static final int MOTOR_ID = 14;
   }
 
   public static class IntakeConstants {
@@ -46,7 +48,26 @@ public class Constants {
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
     public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
     public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 11;
+    public static final int MOTOR_ID = 12;
+  }
+
+  public static class ShooterConstants {
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
+    public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
+
+    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.0).build();
+
+    public static final PIDGains INTAKE_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains INTAKE_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.0).build();
+
+    public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
+    public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
+
+    public static final int FLYWHEEL_MOTOR_ID = 20;
+    public static final int INTAKE_MOTOR_ID = 21;
   }
 
   public static class SwerveConstants {

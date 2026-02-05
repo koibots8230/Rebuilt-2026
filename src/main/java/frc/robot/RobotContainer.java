@@ -52,10 +52,12 @@ public class RobotContainer {
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
         Commands.parallel(
-            shooter.setVelocityCommand(ShooterConstants.SHOOT_SPEED),
+            shooter.setVelocityCommand(
+                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
-        Commands.parallel(shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
+        Commands.parallel(
+            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
 
     swerve.setDefaultCommand(
         swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
