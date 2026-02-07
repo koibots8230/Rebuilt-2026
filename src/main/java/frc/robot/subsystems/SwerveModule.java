@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Milliseconds;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -30,12 +32,11 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 
 @Logged
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule {
 
   private final SparkFlex driveMotor;
   private final RelativeEncoder driveEncoder;
@@ -70,13 +71,13 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule(int driveMotorID, int TurnMotorID) {
 
     if (driveMotorID == SwerveConstants.FRONT_LEFT_DRIVE_MOTOR_ID) {
-      offsetAngle = new Rotation2d((Math.PI) / 2.0);
+      offsetAngle = SwerveConstants.OFFSET[0];
     } else if (driveMotorID == SwerveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID) {
-      offsetAngle = new Rotation2d(Math.PI);
+      offsetAngle = SwerveConstants.OFFSET[1];
     } else if (driveMotorID == SwerveConstants.BACK_LEFT_DRIVE_MOTOR_ID) {
-      offsetAngle = new Rotation2d();
+      offsetAngle = SwerveConstants.OFFSET[2];
     } else {
-      offsetAngle = new Rotation2d((3 * Math.PI) / 2.0);
+      offsetAngle = SwerveConstants.OFFSET[3];
     }
 
     driveMotor = new SparkFlex(driveMotorID, SparkLowLevel.MotorType.kBrushless);
@@ -87,8 +88,8 @@ public class SwerveModule extends SubsystemBase {
     driveConfig.idleMode(IdleMode.kBrake);
     driveConfig.inverted(false);
 
-    driveConfig.encoder.positionConversionFactor(2 * Math.PI * .38);
-    driveConfig.encoder.velocityConversionFactor(2 * Math.PI * .38 / 60);
+    driveConfig.encoder.positionConversionFactor(2 * Math.PI);
+    driveConfig.encoder.velocityConversionFactor(2 * Math.PI / 60);
 
     driveConfig.closedLoop.pid(
         SwerveConstants.DRIVE_PID.kp,
@@ -107,7 +108,7 @@ public class SwerveModule extends SubsystemBase {
     turnConfig.absoluteEncoder.inverted(true);
 
     turnConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
-    turnConfig.absoluteEncoder.velocityConversionFactor(2 * Math.PI);
+    turnConfig.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60);
 
     turnConfig.closedLoop.pid(
         SwerveConstants.TURN_PID.kp, SwerveConstants.TURN_PID.ki, SwerveConstants.TURN_PID.kd);
@@ -129,35 +130,32 @@ public class SwerveModule extends SubsystemBase {
 
     driveSetpointVelocity = Units.MetersPerSecond.of(0);
 
+    driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
     driveMotorCurrent = Units.Amps.of(driveMotor.getOutputCurrent());
     driveMotorVoltage = Units.Volts.of(driveMotor.getBusVoltage());
     driveMotorVelocity = Units.MetersPerSecond.of(driveEncoder.getVelocity());
-    driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
-
     simDrivePosition = Units.Meters.of(0);
 
     turnSetpointAngle = Units.Radians.of(0);
 
-    turnMotorCurrent = Current.ofBaseUnits(turnMotor.getOutputCurrent(), Units.Amps);
-    turnMotorVoltage = Voltage.ofBaseUnits(turnMotor.getBusVoltage(), Units.Volts);
-    turnMotorVelocity =
-        AngularVelocity.ofBaseUnits(turnEncoder.getVelocity(), Units.RadiansPerSecond);
-    turnMotorPosition =
-        Rotation2d.fromRadians(turnEncoder.getPosition() - offsetAngle.getRadians());
+    turnMotorPosition = Rotation2d.fromRadians(turnEncoder.getPosition());
+    turnMotorCurrent = Units.Amps.of(turnMotor.getOutputCurrent());
+    turnMotorVoltage = Units.Volts.of(turnMotor.getBusVoltage());
+    turnMotorVelocity = Units.RadiansPerSecond.of(turnEncoder.getVelocity());
   }
 
   public void setState(SwerveModuleState state) {
+
     state.optimize(turnMotorPosition);
     state.speedMetersPerSecond *=
         Math.cos(state.angle.getRadians() - turnMotorPosition.getRadians());
 
-    driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+    driveController.setSetpoint(state.speedMetersPerSecond, ControlType.kVelocity);
 
     driveSetpointVelocity = Units.MetersPerSecond.of(state.speedMetersPerSecond);
     turnSetpointAngle = Units.Radians.of(state.angle.getRadians());
   }
 
-  @Override
   public void periodic() {
 
     driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
@@ -177,21 +175,20 @@ public class SwerveModule extends SubsystemBase {
             0);
 
     motorSetpoint =
-        profile.calculate(
-            1 / RobotConstants.CLOCK_SPEED.baseUnitMagnitude(), motorSetpoint, goalState);
+        profile.calculate(RobotConstants.CLOCK_SPEED.in(Milliseconds), motorSetpoint, goalState);
 
-    driveController.setReference(
+    driveController.setSetpoint(
         driveSetpointVelocity.in(Units.MetersPerSecond), ControlType.kVelocity);
 
-    turnController.setReference(
+    turnController.setSetpoint(
         motorSetpoint.position,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         turnFeedforward.calculate(motorSetpoint.velocity));
   }
 
-  @Override
   public void simulationPeriodic() {
+
     driveMotorPosition =
         Units.Meters.of(
             (driveSetpointVelocity.baseUnitMagnitude()

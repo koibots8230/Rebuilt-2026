@@ -83,6 +83,13 @@ public class Constants {
     public static final AngularVelocity MAX_ANGULAR_VELOCITY =
         AngularVelocity.ofBaseUnits(Math.PI * 2, RadiansPerSecond);
 
+    public static final Rotation2d[] OFFSET = {
+      Rotation2d.fromRadians(Math.PI / 2.0),
+      Rotation2d.fromRadians(0),
+      Rotation2d.fromRadians(Math.PI),
+      Rotation2d.fromRadians((3 * Math.PI) / 2.0)
+    };
+
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(
             new Translation2d(

@@ -88,6 +88,8 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    gyroAngle = gyro.getRotation2d();
+
     modules.frontLeftModule.periodic();
     modules.frontRightModule.periodic();
     modules.backLeftModule.periodic();
@@ -101,23 +103,21 @@ public class Swerve extends SubsystemBase {
     odometryPose =
         odometry.update(
             isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
-
-    gyroAngle = gyro.getRotation2d();
   }
 
   @Override
   public void simulationPeriodic() {
+    modules.frontLeftModule.simulationPeriodic();
+    modules.frontRightModule.simulationPeriodic();
+    modules.backLeftModule.simulationPeriodic();
+    modules.backRightModule.simulationPeriodic();
+
     simHeading =
         simHeading.plus(
             new Rotation2d(
                 chassisSpeeds.omegaRadiansPerSecond
                     * RobotConstants.CLOCK_SPEED.baseUnitMagnitude()));
     gyroAngle = simHeading;
-
-    modules.frontLeftModule.simulationPeriodic();
-    modules.frontRightModule.simulationPeriodic();
-    modules.backLeftModule.simulationPeriodic();
-    modules.backRightModule.simulationPeriodic();
   }
 
   private void fieldRelitiveDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {
