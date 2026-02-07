@@ -27,8 +27,6 @@ public class RobotContainer {
   private final Intake intake;
   private final Pivot pivot;
   private final Swerve swerve;
-  private final AutoFactory autoFactory;
-  private final AutoChooser autoChooser;
 
   public RobotContainer() {
     climber = new Climber();
@@ -37,13 +35,6 @@ public class RobotContainer {
     intake = new Intake();
     pivot = new Pivot();
     swerve = new Swerve(true);
-
-    autoFactory = new AutoFactory(null, null, null, false, swerve);
-    autoChooser = new AutoChooser();
-
-    autoChooser.addRoutine("move", () -> move());
-    autoChooser.addRoutine("shoot", () -> shoot());
-    SmartDashboard.putData("auto choices",autoChooser);
 
     controller = new XboxController(0);
 
@@ -76,30 +67,6 @@ public class RobotContainer {
             indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
-  }
-
-  private AutoRoutine move() {
-    AutoRoutine routine = autoFactory.newRoutine("taxi");
-
-    AutoTrajectory move = routine.trajectory("move");
-
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
-
-    return routine;
-  }
-
-  private AutoRoutine shoot() {
-    AutoRoutine routine = autoFactory.newRoutine("taxi");
-
-    routine.active().onTrue(
-      Commands.sequence(
-        Commands.parallel(
-          shooter.setVelocityCommand(ShooterConstants.SHOOT_SPEED),
-          indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED)), Commands.waitSeconds(1),
-          shooter.setVelocityCommand(RPM.of(0)),
-          indexer.setSpeedCommand(0)));
-
-    return routine;
   }
 
   public Command getAutonomousCommand() {
