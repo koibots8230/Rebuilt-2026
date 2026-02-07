@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +23,7 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import java.util.function.DoubleSupplier;
 
+@Logged
 public class Swerve extends SubsystemBase {
 
   private boolean isBlue;
@@ -105,7 +107,11 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    simHeading = simHeading.plus(new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * RobotConstants.CLOCK_SPEED.baseUnitMagnitude()));
+    simHeading =
+        simHeading.plus(
+            new Rotation2d(
+                chassisSpeeds.omegaRadiansPerSecond
+                    * RobotConstants.CLOCK_SPEED.baseUnitMagnitude()));
     gyroAngle = simHeading;
 
     modules.frontLeftModule.simulationPeriodic();
