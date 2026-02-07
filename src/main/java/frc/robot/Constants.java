@@ -72,6 +72,10 @@ public class Constants {
 
     public static final double CONVERSION_FACTOR = 0;
     public static final Current CURRENT_LIMIT = Amps.of(60);
+
+    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(45);
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
+
     public static final int MOTOR_ID = 22;
   }
 

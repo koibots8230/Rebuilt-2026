@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.AbsoluteEncoder;
@@ -55,13 +56,14 @@ public class ShooterHood extends SubsystemBase {
         new TrapezoidProfile(
             new Constraints(
                 HoodConstants.MAX_VELOCITY.in(RadiansPerSecond),
-                HoodConstants.MAX_ACCELERATION.in(RadiansPerSecond)));
+                HoodConstants.MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
     feedforward =
         new ArmFeedforward(
             HoodConstants.FEEDFORWARD.ks,
             HoodConstants.FEEDFORWARD.kg,
             HoodConstants.FEEDFORWARD.kv);
+    pivotController = pivotMotor.getClosedLoopController();
   }
 
   @Override

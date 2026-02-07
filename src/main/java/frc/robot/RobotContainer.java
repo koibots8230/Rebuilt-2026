@@ -19,6 +19,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final ShooterHood shooterHood;
 
   public RobotContainer() {
     climber = new Climber();
@@ -26,6 +27,7 @@ public class RobotContainer {
     indexer = new Indexer();
     intake = new Intake();
     pivot = new Pivot();
+    shooterHood = new ShooterHood();
 
     controller = new XboxController(0);
 
@@ -58,6 +60,10 @@ public class RobotContainer {
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+
+    Trigger hoodTrigger = new Trigger(() -> controller.getRightBumper());
+    hoodTrigger.onTrue(shooterHood.setPositionCommand(HoodConstants.UP_POSITION.getRadians()));
+    hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
   }
 
   public Command getAutonomousCommand() {
