@@ -64,6 +64,7 @@ public class ShooterHood extends SubsystemBase {
             HoodConstants.FEEDFORWARD.kg,
             HoodConstants.FEEDFORWARD.kv);
     pivotController = pivotMotor.getClosedLoopController();
+    pivotSetpoint = new TrapezoidProfile.State(0, 0);
   }
 
   @Override
@@ -78,6 +79,11 @@ public class ShooterHood extends SubsystemBase {
     position = pivotEncoder.getPosition();
     current = pivotMotor.getOutputCurrent();
     voltage = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    position = pivotSetpoint.position;
   }
 
   private void setPosition(double target) {
