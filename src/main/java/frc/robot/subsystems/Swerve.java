@@ -143,8 +143,7 @@ public class Swerve extends SubsystemBase {
     simHeading =
         simHeading.plus(
             new Rotation2d(
-                getChassisSpeeds().omegaRadiansPerSecond
-                    * RobotConstants.CLOCK_SPEED.in(Seconds)));
+                getChassisSpeeds().omegaRadiansPerSecond * RobotConstants.CLOCK_SPEED.in(Seconds)));
     gyroAngle = simHeading;
 
     estimatedPosition =

@@ -2,13 +2,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RPM;
 
-import java.util.function.Supplier;
-
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
@@ -42,8 +35,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    swerve.setDefaultCommand(swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
-    
+    swerve.setDefaultCommand(
+        swerve.driveFieldRelativeCommand(
+            controller::getLeftY, controller::getLeftX, controller::getRightX));
+
     Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
@@ -62,11 +57,8 @@ public class RobotContainer {
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
-        Commands.parallel(
-            shooter.setVelocityCommand(ShooterConstants.SHOOT_SPEED),
-            indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED)));
-    shootTrigger.onFalse(
-        Commands.parallel(shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
+        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED));
+    shootTrigger.onFalse(shooter.setVelocityCommand(RPM.of(0), RPM.of(0)));
   }
 
   public Command getAutonomousCommand() {

@@ -26,7 +26,7 @@ public class Constants {
         RadiansPerSecondPerSecond.of(80 * Math.PI);
 
     public static final PIDGains TURN_PID = new PIDGains.Builder().kp(0.4).kd(0).build();
-    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build();//.225
+    public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build(); // .225
 
     public static final FeedforwardGains TURN_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.45).build();
@@ -80,7 +80,7 @@ public class Constants {
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
 
-    public static final int MOTOR_ID = 21;
+    public static final int MOTOR_ID = 40;
   }
 
   public static class IntakeConstants {
@@ -99,17 +99,27 @@ public class Constants {
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
     public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
     public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 11;
+    public static final int MOTOR_ID = 12;
   }
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity SHOOT_SPEED = RPM.of(3000);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.1).build();
-    public static final int MOTOR_PORT = 20;
-    public static final Current CURRENT_LIMIT = Amps.of(60);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
+    public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
+
+    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.5).build();
+
+    public static final PIDGains INTAKE_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains INTAKE_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.5).build();
+
+    public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
+    public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
+
+    public static final int FLYWHEEL_MOTOR_ID = 20;
+    public static final int INTAKE_MOTOR_ID = 21;
   }
 
   public static class ClimberConstants {
@@ -138,7 +148,7 @@ public class Constants {
     public static final Distance WHEEL_DIAMETER =
         Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
 
-    public static final int MOTOR_ID = 30;
+    public static final int MOTOR_ID = 12;
   }
 
   public static class RobotConstants {

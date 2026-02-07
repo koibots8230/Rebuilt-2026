@@ -206,8 +206,7 @@ public class SwerveModule {
   }
 
   public void simulationPeriodic() {
-    drivePosition =
-        drivePosition + driveSetpoint.times(RobotConstants.CLOCK_SPEED).in(Meters);
+    drivePosition = drivePosition + driveSetpoint.times(RobotConstants.CLOCK_SPEED).in(Meters);
     turnPosition = turnSetpoint.in(Radians);
     driveVelocity = driveSetpoint.in(MetersPerSecond);
   }
