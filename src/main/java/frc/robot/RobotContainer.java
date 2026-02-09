@@ -61,6 +61,14 @@ public class RobotContainer {
     shootTrigger.onFalse(shooter.setVelocityCommand(RPM.of(0), RPM.of(0)));
   }
 
+  public void setupLiveTuning() {
+
+  }
+
+  public void updateLiveTuning() {
+    
+  }
+
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
