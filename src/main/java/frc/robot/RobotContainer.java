@@ -6,6 +6,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -69,10 +70,14 @@ public class RobotContainer {
   }
 
   public void setupLiveTuning() {
+    SmartDashboard.putNumber("Shooter/shootSetPoint", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
+    SmartDashboard.putNumber("Shooter/intakeSetPoint", ShooterConstants.INTAKE_SPEED.in(RPM));
     shooter.setupLiveTuning();
   }
 
   public void updateLiveTuning() {
+    shooterShoot = RPM.of(SmartDashboard.getNumber("Shooter/shootSetPoint", ShooterConstants.FLYWHEEL_SPEED.in(RPM)));
+    shooterIntake = RPM.of(SmartDashboard.getNumber("Shooter/intakeSetPoint", ShooterConstants.INTAKE_SPEED.in(RPM)));
     shooter.updateLiveTuning();
   }
 
