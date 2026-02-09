@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +26,8 @@ public class RobotContainer {
 
   private AngularVelocity shooterShoot;
   private AngularVelocity shooterIntake;
+  private Rotation2d pivotUpPosition;
+  private Rotation2d pivotDownPosition;
 
   public RobotContainer(boolean isReal) {
     climber = new Climber();
@@ -38,6 +41,8 @@ public class RobotContainer {
 
     shooterShoot = ShooterConstants.FLYWHEEL_SPEED;
     shooterIntake = ShooterConstants.INTAKE_SPEED;
+    pivotUpPosition = PivotConstants.UP_POSITION;
+    pivotDownPosition = PivotConstants.DOWN_POSITION;
 
     configureBindings();
   }
@@ -52,10 +57,10 @@ public class RobotContainer {
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
     Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    pivotUp.onTrue(pivot.setPositionCommand(pivotUpPosition.getRadians()));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+    pivotDown.onTrue(pivot.setPositionCommand(pivotDownPosition.getRadians()));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
@@ -72,13 +77,19 @@ public class RobotContainer {
   public void setupLiveTuning() {
     SmartDashboard.putNumber("Shooter/shootSetPoint", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     SmartDashboard.putNumber("Shooter/intakeSetPoint", ShooterConstants.INTAKE_SPEED.in(RPM));
+    SmartDashboard.putNumber("Pivot/pivotUpPoint", PivotConstants.UP_POSITION.getDegrees());
+    SmartDashboard.putNumber("Pivot/pivotDownPoint", PivotConstants.DOWN_POSITION.getDegrees());
     shooter.setupLiveTuning();
+    pivot.setupLiveTuning();
   }
 
   public void updateLiveTuning() {
     shooterShoot = RPM.of(SmartDashboard.getNumber("Shooter/shootSetPoint", ShooterConstants.FLYWHEEL_SPEED.in(RPM)));
     shooterIntake = RPM.of(SmartDashboard.getNumber("Shooter/intakeSetPoint", ShooterConstants.INTAKE_SPEED.in(RPM)));
+    pivotUpPosition = Rotation2d.fromDegrees(SmartDashboard.getNumber("Pivot/pivotUpPoint", PivotConstants.UP_POSITION.getDegrees()));
+    pivotDownPosition = Rotation2d.fromDegrees(SmartDashboard.getNumber("Pivot/pivotDownPoint", PivotConstants.DOWN_POSITION.getDegrees()));
     shooter.updateLiveTuning();
+    pivot.setupLiveTuning();
   }
 
   public Command getAutonomousCommand() {
