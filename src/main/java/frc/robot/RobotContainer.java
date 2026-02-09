@@ -7,6 +7,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
@@ -43,8 +44,8 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
-    Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    // Trigger pivotUp = new Trigger(controller::getAButton);
+    // pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
@@ -55,10 +56,22 @@ public class RobotContainer {
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
 
-    Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
+    Trigger shootTrigger = new Trigger(controller::getAButton);
     shootTrigger.onTrue(
-        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED));
-    shootTrigger.onFalse(shooter.setVelocityCommand(RPM.of(0), RPM.of(0)));
+        Commands.parallel(
+          shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+          Commands.sequence(
+            pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+            Commands.waitUntil(pivot::atPosition),
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+            Commands.waitUntil(pivot::atPosition)
+          ).repeatedly()
+    ));
+    shootTrigger.onFalse(
+      Commands.parallel(
+        shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+        pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())
+    ));
   }
 
   public Command getAutonomousCommand() {
