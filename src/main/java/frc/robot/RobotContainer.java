@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,6 +22,9 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Swerve swerve;
 
+  private AngularVelocity shooterShoot;
+  private AngularVelocity shooterIntake;
+
   public RobotContainer(boolean isReal) {
     climber = new Climber();
     shooter = new Shooter();
@@ -30,6 +34,9 @@ public class RobotContainer {
     swerve = new Swerve(isReal);
 
     controller = new XboxController(0);
+
+    shooterShoot = ShooterConstants.FLYWHEEL_SPEED;
+    shooterIntake = ShooterConstants.INTAKE_SPEED;
 
     configureBindings();
   }
@@ -57,16 +64,16 @@ public class RobotContainer {
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
-        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED));
+        shooter.setVelocityCommand(shooterShoot, shooterIntake));
     shootTrigger.onFalse(shooter.setVelocityCommand(RPM.of(0), RPM.of(0)));
   }
 
   public void setupLiveTuning() {
-
+    shooter.setupLiveTuning();
   }
 
   public void updateLiveTuning() {
-    
+    shooter.updateLiveTuning();
   }
 
   public Command getAutonomousCommand() {

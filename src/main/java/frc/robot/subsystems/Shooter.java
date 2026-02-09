@@ -17,6 +17,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,10 +27,10 @@ public class Shooter extends SubsystemBase {
 
   @NotLogged private final SparkMax flywheelMotor;
   @NotLogged private final SparkMaxConfig flywheelMotorConfig;
-  @NotLogged private final SparkClosedLoopController flywheelMotorController;
+  @NotLogged private SparkClosedLoopController flywheelMotorController;
   @NotLogged private final SparkFlex intakeMotor;
   @NotLogged private final SparkFlexConfig intakeMotorConfig;
-  @NotLogged private final SparkClosedLoopController intakeMotorController;
+  @NotLogged private SparkClosedLoopController intakeMotorController;
 
   private Voltage flywheelVoltage;
   private AngularVelocity flywheelVelocity;
@@ -91,6 +92,23 @@ public class Shooter extends SubsystemBase {
     intakeMotorController.setSetpoint(intakeVelocity.in(RPM), ControlType.kVelocity);
     flywheelSetpoint = flywheelVelocity;
     intakeSetpoint = intakeVelocity;
+  }
+
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp);
+    SmartDashboard.putNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv);
+    SmartDashboard.putNumber("Shooter/intakekp", ShooterConstants.INTAKE_PID.kp);
+    SmartDashboard.putNumber("Shooter/intakeffkv", ShooterConstants.INTAKE_FEEDFORWARD.kv);
+  }
+
+  public void updateLiveTuning() {
+    flywheelMotorConfig.closedLoop.p(SmartDashboard.getNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp));
+    flywheelMotorConfig.closedLoop.feedForward.kV(SmartDashboard.getNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv));
+    intakeMotorConfig.closedLoop.p(SmartDashboard.getNumber("Shooter/intakekp", ShooterConstants.INTAKE_PID.kp));
+    intakeMotorConfig.closedLoop.feedForward.kV(SmartDashboard.getNumber("Shooter/intakeffkv", ShooterConstants.INTAKE_FEEDFORWARD.kv));
+
+    flywheelMotor.configure(flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command setVelocityCommand(

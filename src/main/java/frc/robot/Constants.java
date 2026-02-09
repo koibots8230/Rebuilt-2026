@@ -99,7 +99,7 @@ public class Constants {
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
     public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
     public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 12;
+    public static final int MOTOR_ID = 60;
   }
 
   public static class ShooterConstants {
