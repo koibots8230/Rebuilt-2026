@@ -14,19 +14,15 @@ import frc.robot.subsystems.*;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
-  private final Climber climber;
   private final Shooter shooter;
   private final Indexer indexer;
   private final Intake intake;
-  private final Pivot pivot;
   private final Swerve swerve;
 
   public RobotContainer(boolean isReal) {
-    climber = new Climber();
     shooter = new Shooter();
     indexer = new Indexer();
     intake = new Intake();
-    pivot = new Pivot();
     swerve = new Swerve(isReal);
 
     controller = new XboxController(0);
@@ -42,18 +38,6 @@ public class RobotContainer {
     Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
-
-    Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
-
-    Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
-
-    Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
-    raiseClimber.onTrue(climber.raiseClimbCommand());
-
-    Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
-    lowerClimber.onTrue(climber.lowerClimbCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(

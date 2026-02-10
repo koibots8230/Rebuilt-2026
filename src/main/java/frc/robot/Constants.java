@@ -148,7 +148,7 @@ public class Constants {
     public static final Distance WHEEL_DIAMETER =
         Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
 
-    public static final int MOTOR_ID = 12;
+    public static final int MOTOR_ID = 50;
   }
 
   public static class RobotConstants {
