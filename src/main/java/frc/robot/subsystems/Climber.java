@@ -9,7 +9,9 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -58,6 +60,7 @@ public class Climber extends SubsystemBase {
     config.inverted(false);
 
     encoder = motor.getEncoder();
+    encoder.setPosition(0);
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
@@ -79,11 +82,26 @@ public class Climber extends SubsystemBase {
     feedForward =
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
 
-    config.encoder.positionConversionFactor(
-        (Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
-    config.encoder.velocityConversionFactor(
-        (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches))
-            / (ClimberConstants.GEAR_RATIO * 60));
+        /*
+         * 42 counts per revolution
+         * 1 spool rotation = 3"
+         * 1 spool rotations = 36 neo rotations
+         * 1/36 spool rotations = 1 neo rotation
+         * 1 neo rotation = 3/36" = 1/12"
+         * 1 encoder count = 1/12" / 42
+         */
+    double realConversionFactor = ((1.0 / 12)) / 39.37;
+
+  config.encoder.positionConversionFactor(realConversionFactor);
+  config.encoder.velocityConversionFactor(realConversionFactor / 60);
+
+  motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // config.encoder.positionConversionFactor(
+    //     (Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
+    // config.encoder.velocityConversionFactor(
+    //     (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches))
+    //         / (ClimberConstants.GEAR_RATIO * 60));
   }
 
   @Override

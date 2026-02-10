@@ -132,18 +132,18 @@ public class Constants {
 
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
-    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(5, Meters); // placeholder
+    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.3, Meters); // placeholder
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity RAISED_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity VELOCITY_CONSTRAINT =
-        LinearVelocity.ofBaseUnits(5, MetersPerSecond); // placeholder
+        LinearVelocity.ofBaseUnits(0.1, MetersPerSecond); // placeholder
     public static final LinearAcceleration ACCELERATION_CONSTRAINT =
-        LinearAcceleration.ofBaseUnits(10, MetersPerSecondPerSecond); // placeholder
+        LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond); // placeholder
 
     public static final FeedforwardGains CLIMBER_FF =
-        new FeedforwardGains.Builder().kv(0.0).ks(0.0).build(); // placeholder
+        new FeedforwardGains.Builder().kv(10).ks(0.0).build(); // placeholder
     public static final PIDGains CLIMBER_PID =
         new PIDGains.Builder().kp(0.0).build(); // placeholder
 
@@ -152,9 +152,9 @@ public class Constants {
 
     public static final double GEAR_RATIO = 36.0; // placeholder
     public static final Distance SPOOL_DIAMETER =
-        Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
+        Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
     public static final Distance WHEEL_DIAMETER =
-        Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
+        Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
 
     public static final int MOTOR_ID = 40;
   }
