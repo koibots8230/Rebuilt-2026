@@ -1,10 +1,13 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,6 +23,7 @@ public class RobotContainer {
   private final Intake intake;
   private final Pivot pivot;
   private final ShooterHood shooterHood;
+  private double hoodAngle;
 
   public RobotContainer() {
     climber = new Climber();
@@ -30,6 +34,7 @@ public class RobotContainer {
     shooterHood = new ShooterHood();
 
     controller = new XboxController(0);
+    hoodAngle = HoodConstants.DOWN_POSITION.getDegrees();
 
     configureBindings();
   }
@@ -55,15 +60,23 @@ public class RobotContainer {
     shootTrigger.onTrue(
         Commands.parallel(
             shooter.setVelocityCommand(
-                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+                ShooterConstants.FLYWHEEL_SPEED),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+            shooter.setVelocityCommand(RPM.of(0)), indexer.setSpeedCommand(0)));
 
     Trigger hoodTrigger = new Trigger(() -> controller.getRightBumper());
-    hoodTrigger.onTrue(shooterHood.setPositionCommand(HoodConstants.UP_POSITION.getRadians()));
+    hoodTrigger.onTrue(shooterHood.setPositionCommand(hoodAngle));
     hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
+  }
+
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber("Shooter Hood Angle", HoodConstants.DOWN_POSITION.getDegrees());
+  }
+
+  public void applyLiveTuning() {
+    hoodAngle = (SmartDashboard.getNumber("Shooter Hood Angle", HoodConstants.DOWN_POSITION.getDegrees()));
   }
 
   public Command getAutonomousCommand() {
