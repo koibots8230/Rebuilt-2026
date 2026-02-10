@@ -40,6 +40,8 @@ public class ShooterHood extends SubsystemBase {
   private double position;
   private double setpoint;
 
+  private double calculatedHoodAngle;
+
   public ShooterHood() {
     pivotMotor = new SparkMax(HoodConstants.MOTOR_ID, SparkMax.MotorType.kBrushless);
     pivotMotorConfig = new SparkMaxConfig();
@@ -65,6 +67,8 @@ public class ShooterHood extends SubsystemBase {
             HoodConstants.FEEDFORWARD.kv);
     pivotController = pivotMotor.getClosedLoopController();
     pivotSetpoint = new TrapezoidProfile.State(0, 0);
+
+    calculatedHoodAngle = 0;
   }
 
   @Override
@@ -79,6 +83,7 @@ public class ShooterHood extends SubsystemBase {
     position = pivotEncoder.getPosition();
     current = pivotMotor.getOutputCurrent();
     voltage = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
+    
   }
 
   @Override
@@ -91,7 +96,18 @@ public class ShooterHood extends SubsystemBase {
     setpoint = target;
   }
 
+  private double calculateHoodAngle(double distance) {
+    return distance; // Placeholder for the actual equation 
+  }
+
   public Command setPositionCommand(double target) {
     return Commands.runOnce(() -> setPosition(target), this);
+  }
+
+  public Command autoSetPositionCommand(double distance) {
+    return Commands.runOnce(() -> {
+      calculatedHoodAngle = calculateHoodAngle(distance);
+      setPosition(calculatedHoodAngle);
+    }, this);
   }
 }
