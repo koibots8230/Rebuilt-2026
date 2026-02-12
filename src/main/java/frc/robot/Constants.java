@@ -132,20 +132,20 @@ public class Constants {
 
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
-    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters); // placeholder
+    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity RAISED_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity VELOCITY_CONSTRAINT =
-        LinearVelocity.ofBaseUnits(0.02, MetersPerSecond); // placeholder
+        LinearVelocity.ofBaseUnits(0.03, MetersPerSecond); // placeholder
     public static final LinearAcceleration ACCELERATION_CONSTRAINT =
         LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond); // placeholder
 
     public static final FeedforwardGains CLIMBER_FF =
         new FeedforwardGains.Builder().kv(60).ks(0.0).build(); // placeholder
     public static final PIDGains CLIMBER_PID =
-        new PIDGains.Builder().kp(0.0).build(); // placeholder
+        new PIDGains.Builder().kp(6.0).build(); // placeholder
 
     public static final Current CURRENT_LIMIT = Current.ofBaseUnits(60, Amps);
     public static final AngularVelocity ROTATIONS_PER_MINUTE = RPM.of(3000);

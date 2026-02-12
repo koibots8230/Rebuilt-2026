@@ -100,6 +100,8 @@ public class Climber extends SubsystemBase {
          * 1.4 cm/s up in advantage scope
          * real life: 4s so 1 cm/s
          * 
+         * kV of 60 = 1.2 V, 1.8 cm/s
+         * 
          */
     double realConversionFactor = ((1.0 / 12)) / 39.37;
 
