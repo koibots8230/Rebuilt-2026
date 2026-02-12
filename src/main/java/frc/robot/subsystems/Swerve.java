@@ -112,6 +112,11 @@ public class Swerve extends SubsystemBase {
     modules.backLeftModule.simulationPeriodic();
     modules.backRightModule.simulationPeriodic();
 
+    messuredModuleStates[0] = setpointStates[0];
+    messuredModuleStates[1] = setpointStates[1];
+    messuredModuleStates[2] = setpointStates[2];
+    messuredModuleStates[3] = setpointStates[3];
+
     simHeading =
         simHeading.plus(
             new Rotation2d(

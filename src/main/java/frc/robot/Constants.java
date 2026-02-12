@@ -79,7 +79,7 @@ public class Constants {
   public static class SwerveConstants {
 
     public static final LinearVelocity MAX_LINEAR_VELOCITY =
-        LinearVelocity.ofBaseUnits(.2, MetersPerSecond);
+        LinearVelocity.ofBaseUnits(4, MetersPerSecond);
     public static final AngularVelocity MAX_ANGULAR_VELOCITY =
         AngularVelocity.ofBaseUnits(Math.PI * 2, RadiansPerSecond);
 

@@ -177,9 +177,6 @@ public class SwerveModule {
     motorSetpoint =
         profile.calculate(RobotConstants.CLOCK_SPEED.in(Milliseconds), motorSetpoint, goalState);
 
-    driveController.setSetpoint(
-        driveSetpointVelocity.in(Units.MetersPerSecond), ControlType.kVelocity);
-
     turnController.setSetpoint(
         motorSetpoint.position,
         ControlType.kPosition,
