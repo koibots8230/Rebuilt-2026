@@ -57,7 +57,7 @@ public class Climber extends SubsystemBase {
 
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
-    config.inverted(false);
+    config.inverted(true);
 
     encoder = motor.getEncoder();
     encoder.setPosition(0);
@@ -89,6 +89,17 @@ public class Climber extends SubsystemBase {
          * 1/36 spool rotations = 1 neo rotation
          * 1 neo rotation = 3/36" = 1/12"
          * 1 encoder count = 1/12" / 42
+         * 
+         * real measurements:
+         * top: 21.5 cm
+         * bottom: 17.5 cm
+         * delta: 4cm
+         * advantage scope measurement: 4cm too
+         * 
+         * velocity:
+         * 1.4 cm/s up in advantage scope
+         * real life: 4s so 1 cm/s
+         * 
          */
     double realConversionFactor = ((1.0 / 12)) / 39.37;
 
