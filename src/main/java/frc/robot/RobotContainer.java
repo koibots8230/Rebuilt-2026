@@ -20,6 +20,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final Autos autos;
 
   public RobotContainer() {
     climber = new Climber();
@@ -30,6 +31,8 @@ public class RobotContainer {
     swerve = new Swerve();
 
     controller = new XboxController(0);
+
+    autos = new Autos(swerve);
 
     configureBindings();
   }

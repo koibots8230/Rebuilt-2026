@@ -130,6 +130,12 @@ public class Constants {
     public static final int GYRO_ID = 9;
   }
 
+  public static class AutoConstants {
+    public static final PIDGains X_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
+    public static final PIDGains Y_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
+    public static final PIDGains OMEGA_CONTROLLER = new PIDGains.Builder().kp(3.75).build();
+  }
+
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(5, Meters); // placeholder

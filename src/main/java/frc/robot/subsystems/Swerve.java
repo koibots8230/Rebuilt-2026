@@ -3,9 +3,11 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +21,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 import java.util.function.DoubleSupplier;
@@ -38,6 +41,10 @@ public class Swerve extends SubsystemBase {
   private final Modules modules;
 
   private Rotation2d simHeading;
+
+  private final PIDController xChoreoController;
+  private final PIDController yChoreoController;
+  private final PIDController omegaChoreoController;
 
   public class Modules {
     final SwerveModule frontLeftModule;
@@ -78,6 +85,22 @@ public class Swerve extends SubsystemBase {
     odometry =
         new SwerveDrivePoseEstimator(
             SwerveConstants.KINEMATICS, gyroAngle, modulePosition(), odometryPose);
+
+    xChoreoController =
+        new PIDController(
+            AutoConstants.X_CONTROLLER.kp,
+            AutoConstants.X_CONTROLLER.ki,
+            AutoConstants.X_CONTROLLER.kd);
+    yChoreoController =
+        new PIDController(
+            AutoConstants.Y_CONTROLLER.kp,
+            AutoConstants.Y_CONTROLLER.ki,
+            AutoConstants.Y_CONTROLLER.kd);
+    omegaChoreoController =
+        new PIDController(
+            AutoConstants.OMEGA_CONTROLLER.kp,
+            AutoConstants.OMEGA_CONTROLLER.ki,
+            AutoConstants.OMEGA_CONTROLLER.kd);
   }
 
   public void setIsBlue(Boolean allianceColor) {
@@ -152,6 +175,40 @@ public class Swerve extends SubsystemBase {
       modules.backLeftModule.getEstDrivePosition(),
       modules.backRightModule.getEstDrivePosition()
     };
+  }
+
+  public Pose2d getEstPos() {
+    return odometry.getEstimatedPosition();
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    simHeading = pose.getRotation();
+    odometry.resetPose(pose);
+  }
+
+  private void driveSpeeds(ChassisSpeeds speeds) {
+    setpointStates = SwerveConstants.KINEMATICS.toSwerveModuleStates(speeds);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        setpointStates, SwerveConstants.MAX_LINEAR_VELOCITY);
+
+    modules.frontLeftModule.setState(setpointStates[0]);
+    modules.frontRightModule.setState(setpointStates[1]);
+    modules.backLeftModule.setState(setpointStates[2]);
+    modules.backRightModule.setState(setpointStates[3]);
+  }
+
+  public void followTrajectory(SwerveSample sample) {
+    Pose2d pose = getEstPos();
+
+    ChassisSpeeds speeds =
+        new ChassisSpeeds(
+            sample.vx + xChoreoController.calculate(pose.getX(), sample.x),
+            sample.vy + yChoreoController.calculate(pose.getY(), sample.y),
+            sample.omega
+                + omegaChoreoController.calculate(pose.getRotation().getRadians(), sample.heading));
+
+    driveSpeeds(speeds);
   }
 
   public Command driveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega) {
