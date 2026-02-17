@@ -84,10 +84,10 @@ public class Constants {
         AngularVelocity.ofBaseUnits(Math.PI * 2, RadiansPerSecond);
 
     public static final Rotation2d[] OFFSET = {
-      Rotation2d.fromRadians(Math.PI / 2.0),
+      Rotation2d.fromRadians(Math.PI * 0.5),
       Rotation2d.fromRadians(0),
       Rotation2d.fromRadians(Math.PI),
-      Rotation2d.fromRadians((3 * Math.PI) / 2.0)
+      Rotation2d.fromRadians(Math.PI * 1.5)
     };
 
     public static final SwerveDriveKinematics KINEMATICS =
