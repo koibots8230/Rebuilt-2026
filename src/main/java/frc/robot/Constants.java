@@ -45,21 +45,21 @@ public class Constants {
   public static class ShooterConstants {
 
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
-    public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
+    public static final AngularVelocity FEEDER_SPEED = RPM.of(1650);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.0).build();
 
-    public static final PIDGains INTAKE_PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains INTAKE_FEEDFORWARD =
+    public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FEEDER_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.0).build();
 
     public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
-    public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
+    public static final Current FEEDER_CURRENT_LIMIT = Amps.of(80);
 
     public static final int FLYWHEEL_MOTOR_ID = 20;
-    public static final int INTAKE_MOTOR_ID = 21;
+    public static final int FEEDER_MOTOR_ID = 21;
   }
 
   public static class HoodConstants {
