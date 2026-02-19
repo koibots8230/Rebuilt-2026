@@ -17,6 +17,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -104,9 +105,9 @@ public class ShooterHood extends SubsystemBase {
     return Commands.runOnce(() -> setPosition(target), this);
   }
 
-  public Command autoSetPositionCommand(double distance) {
+  public Command autoSetPositionCommand(Distance distanceToHub) {
     return Commands.runOnce(() -> {
-      calculatedHoodAngle = calculateHoodAngle(distance);
+      calculatedHoodAngle = calculateHoodAngle(distanceToHub);
       setPosition(calculatedHoodAngle);
     }, this);
   }

@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -51,6 +52,7 @@ public class Shooter extends SubsystemBase {
     flywheelMotorConfig = new SparkFlexConfig();
     flywheelMotorConfig.closedLoop.p(ShooterConstants.FLYWHEEL_PID.kp);
     flywheelMotorConfig.closedLoop.feedForward.kV(ShooterConstants.FLYWHEEL_FEEDFORWARD.kv);
+    flywheelMotorConfig.idleMode(IdleMode.kCoast);
 
     flywheelMotorConfig.smartCurrentLimit((int) ShooterConstants.FLYWHEEL_CURRENT_LIMIT.in(Amps));
     flywheelMotorConfig.inverted(true);
@@ -70,8 +72,10 @@ public class Shooter extends SubsystemBase {
     feederMotorConfig.closedLoop.feedForward.kV(ShooterConstants.FEEDER_FEEDFORWARD.kv);
     feederMotorConfig.smartCurrentLimit((int) ShooterConstants.FEEDER_CURRENT_LIMIT.in(Amps));
     feederMotorConfig.inverted(true);
+    feederMotorConfig.idleMode(IdleMode.kBrake);
     feederMotor.configure(
         feederMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
     feederMotorController = feederMotor.getClosedLoopController();
 
     feederVoltage = Volts.of(0);
