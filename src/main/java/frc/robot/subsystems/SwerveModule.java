@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
@@ -130,10 +133,10 @@ public class SwerveModule {
 
     driveSetpointVelocity = Units.MetersPerSecond.of(0);
 
-    driveMotorPosition = Units.Meters.of(driveEncoder.getPosition());
+    driveMotorPosition = Units.Meters.of(0);
     driveMotorCurrent = Units.Amps.of(driveMotor.getOutputCurrent());
     driveMotorVoltage = Units.Volts.of(driveMotor.getBusVoltage());
-    driveMotorVelocity = Units.MetersPerSecond.of(driveEncoder.getVelocity());
+    driveMotorVelocity = Units.MetersPerSecond.of(0);
     simDrivePosition = Units.Meters.of(0);
 
     turnSetpointAngle = Units.Radians.of(0);
@@ -186,11 +189,9 @@ public class SwerveModule {
 
   public void simulationPeriodic() {
 
-    driveMotorPosition =
-        Units.Meters.of(
-            (driveSetpointVelocity.baseUnitMagnitude()
-                    / RobotConstants.CLOCK_SPEED.baseUnitMagnitude())
-                + simDrivePosition.baseUnitMagnitude());
+    simDrivePosition =
+        simDrivePosition.plus(driveSetpointVelocity.times(RobotConstants.CLOCK_SPEED));
+    driveMotorPosition = simDrivePosition;
     turnMotorPosition = new Rotation2d(turnSetpointAngle);
     driveMotorVelocity = driveSetpointVelocity;
   }
