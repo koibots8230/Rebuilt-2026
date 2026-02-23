@@ -23,13 +23,13 @@ public class Autos {
 
     chooser.addRoutine("simple sample auto", this::simpleAuto);
 
-    SmartDashboard.putData(chooser);
+    SmartDashboard.putData("hi", chooser);
     RobotModeTriggers.autonomous().whileTrue(chooser.selectedCommandScheduler());
   }
 
   private AutoRoutine simpleAuto() {
-    AutoRoutine routine = factory.newRoutine("simple auto");
-    AutoTrajectory move = routine.trajectory("simpleAuto.traj");
+    AutoRoutine routine = factory.newRoutine("taxi");
+    AutoTrajectory move = routine.trajectory("simpleAuto");
 
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
 
