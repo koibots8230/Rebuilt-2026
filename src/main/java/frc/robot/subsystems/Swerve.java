@@ -38,7 +38,6 @@ public class Swerve extends SubsystemBase {
 
   private final SwerveDrivePoseEstimator odometry;
   private final Pigeon2 gyro;
-  private final Modules modules;
 
   private Rotation2d simHeading;
 
@@ -46,6 +45,7 @@ public class Swerve extends SubsystemBase {
   private final PIDController yChoreoController;
   private final PIDController omegaChoreoController;
 
+  @Logged
   public class Modules {
     final SwerveModule frontLeftModule;
     final SwerveModule frontRightModule;
@@ -68,6 +68,8 @@ public class Swerve extends SubsystemBase {
               SwerveConstants.BACK_RIGHT_DRIVE_MOTOR_ID, SwerveConstants.BACK_RIGHT_TURN_MOTOR_ID);
     }
   }
+
+  private final Modules modules;
 
   public Swerve() {
     gyro = new Pigeon2(SwerveConstants.GYRO_ID);
@@ -111,8 +113,10 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    gyroAngle = gyro.getRotation2d();
-
+    odometryPose =
+        odometry.update(
+            isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
+            
     modules.frontLeftModule.periodic();
     modules.frontRightModule.periodic();
     modules.backLeftModule.periodic();
@@ -123,10 +127,7 @@ public class Swerve extends SubsystemBase {
     messuredModuleStates[2] = modules.backLeftModule.getState();
     messuredModuleStates[3] = modules.backRightModule.getState();
 
-    odometryPose =
-        odometry.update(
-            isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
-
+    gyroAngle = gyro.getRotation2d();
   }
 
   @Override
