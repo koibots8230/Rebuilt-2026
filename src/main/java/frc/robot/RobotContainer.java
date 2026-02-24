@@ -14,19 +14,15 @@ import frc.robot.subsystems.*;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
-  private final Climber climber;
   private final Shooter shooter;
   private final Indexer indexer;
   private final Intake intake;
-  private final Pivot pivot;
   private final Swerve swerve;
 
   public RobotContainer(boolean isReal) {
-    climber = new Climber();
     shooter = new Shooter();
     indexer = new Indexer();
     intake = new Intake();
-    pivot = new Pivot();
     swerve = new Swerve(isReal);
 
     controller = new XboxController(0);
@@ -54,8 +50,7 @@ public class RobotContainer {
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
-
-    Trigger shootTrigger = new Trigger(controller::getAButton);
+    Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
         Commands.parallel(
             shooter.setVelocityCommand(
