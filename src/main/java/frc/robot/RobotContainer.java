@@ -44,8 +44,8 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
-    // Trigger pivotUp = new Trigger(controller::getAButton);
-    // pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    Trigger pivotUp = new Trigger(controller::getAButton);
+    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
