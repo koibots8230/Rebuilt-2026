@@ -7,7 +7,6 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
@@ -59,19 +58,18 @@ public class RobotContainer {
     Trigger shootTrigger = new Trigger(controller::getAButton);
     shootTrigger.onTrue(
         Commands.parallel(
-          shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
-          Commands.sequence(
-            pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
-            Commands.waitUntil(pivot::atPosition),
-            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
-            Commands.waitUntil(pivot::atPosition)
-          ).repeatedly()
-    ));
+            shooter.setVelocityCommand(
+                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+            Commands.sequence(
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition))
+                .repeatedly()));
     shootTrigger.onFalse(
-      Commands.parallel(
-        shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
-        pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())
-    ));
+        Commands.parallel(
+            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
   }
 
   public Command getAutonomousCommand() {

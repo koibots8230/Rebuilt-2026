@@ -77,7 +77,8 @@ public class Pivot extends SubsystemBase {
   }
 
   public boolean atPosition() {
-    return (position >= (setpoint - PivotConstants.MARGIN.getRadians()) && position <= (setpoint + PivotConstants.MARGIN.getRadians()));
+    return (position >= (setpoint - PivotConstants.MARGIN.getRadians())
+        && position <= (setpoint + PivotConstants.MARGIN.getRadians()));
   }
 
   @Override
