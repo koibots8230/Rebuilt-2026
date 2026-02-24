@@ -91,7 +91,9 @@ public class Constants {
 
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(42);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
+    public static final Rotation2d MARGIN = Rotation2d.fromDegrees(5);
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
     public static final FeedforwardGains FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0).kg(0).build();

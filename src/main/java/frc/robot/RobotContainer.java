@@ -18,12 +18,16 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Swerve swerve;
+  private final Pivot pivot;
+  private final Climber climber;
 
   public RobotContainer(boolean isReal) {
     shooter = new Shooter();
     indexer = new Indexer();
     intake = new Intake();
     swerve = new Swerve(isReal);
+    pivot = new Pivot();
+    climber = new Climber();
 
     controller = new XboxController(0);
 
@@ -39,10 +43,32 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
+    Trigger pivotUp = new Trigger(controller::getAButton);
+    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+
+    Trigger pivotDown = new Trigger(controller::getBButton);
+    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+
+    Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
+    raiseClimber.onTrue(climber.raiseClimbCommand());
+
+    Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
+    lowerClimber.onTrue(climber.lowerClimbCommand());
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
-        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED));
-    shootTrigger.onFalse(shooter.setVelocityCommand(RPM.of(0), RPM.of(0)));
+        Commands.parallel(
+            shooter.setVelocityCommand(
+                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+            Commands.sequence(
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition))
+                .repeatedly()));
+    shootTrigger.onFalse(
+        Commands.parallel(
+            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
   }
 
   public Command getAutonomousCommand() {
