@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -83,38 +80,39 @@ public class Climber extends SubsystemBase {
     feedForward =
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
 
-        /*
-         * 42 counts per revolution
-         * 1 spool rotation = 3"
-         * 1 spool rotations = 36 neo rotations
-         * 1/36 spool rotations = 1 neo rotation
-         * 1 neo rotation = 3/36" = 1/12"
-         * 1 encoder count = 1/12" / 42
-         * 
-         * real measurements:
-         * top: 21.5 cm
-         * bottom: 17.5 cm
-         * delta: 4cm
-         * advantage scope measurement: 4cm too
-         * 
-         * velocity:
-         * 1.4 cm/s up in advantage scope
-         * real life: 4s so 1 cm/s
-         * 
-         * kV of 60 = 1.2 V, 1.8 cm/s
-         * 
-         */
+    /*
+     * 42 counts per revolution
+     * 1 spool rotation = 3"
+     * 1 spool rotations = 36 neo rotations
+     * 1/36 spool rotations = 1 neo rotation
+     * 1 neo rotation = 3/36" = 1/12"
+     * 1 encoder count = 1/12" / 42
+     *
+     * real measurements:
+     * top: 21.5 cm
+     * bottom: 17.5 cm
+     * delta: 4cm
+     * advantage scope measurement: 4cm too
+     *
+     * velocity:
+     * 1.4 cm/s up in advantage scope
+     * real life: 4s so 1 cm/s
+     *
+     * kV of 60 = 1.2 V, 1.8 cm/s
+     *
+     */
     double realConversionFactor = ((1.0 / 12)) / 39.37;
 
-  config.encoder.positionConversionFactor(realConversionFactor);
-  config.encoder.velocityConversionFactor(realConversionFactor / 60);
+    config.encoder.positionConversionFactor(realConversionFactor);
+    config.encoder.velocityConversionFactor(realConversionFactor / 60);
 
-  motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // config.encoder.positionConversionFactor(
     //     (Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
     // config.encoder.velocityConversionFactor(
-    //     (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches))
+    //     (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) *
+    // ClimberConstants.WHEEL_DIAMETER.in(Inches))
     //         / (ClimberConstants.GEAR_RATIO * 60));
   }
 
@@ -169,6 +167,7 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
-    return Commands.sequence(Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
+    return Commands.sequence(
+        Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
   }
 }
