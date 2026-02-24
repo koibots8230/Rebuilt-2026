@@ -209,6 +209,10 @@ public class Constants {
     public static final double[] CAM_STDEV_SCALARS = {1.0, 0.75, 1.0};
   }
 
+  public static class LEDConstants{
+    public static final int BAUD_RATE = 9600;
+  }
+
   public static class RobotConstants {
     public static final double TRACK_WIDTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
     public static final double TRACK_LENGTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
