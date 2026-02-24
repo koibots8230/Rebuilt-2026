@@ -51,6 +51,10 @@ public class RobotContainer {
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
 
+    Trigger zeroClimber = new Trigger(() -> controller.getYButton());
+    zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL));
+    zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
+
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
         Commands.parallel(

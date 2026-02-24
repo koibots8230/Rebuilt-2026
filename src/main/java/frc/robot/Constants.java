@@ -133,6 +133,7 @@ public class Constants {
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
+    public static final double MANUAL = 0.1;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity RAISED_VELOCITY =

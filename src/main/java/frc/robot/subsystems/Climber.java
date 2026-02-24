@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -144,6 +145,14 @@ public class Climber extends SubsystemBase {
     goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
   }
 
+  private void zeroEncoder() {
+    encoder.setPosition(0);
+  }
+
+  private void setSpeed(double speed) {
+    motor.set(speed);
+  }
+
   public Command raiseClimbCommand() {
     return Commands.runOnce(
         () ->
@@ -157,5 +166,9 @@ public class Climber extends SubsystemBase {
         () ->
             this.setGoal(ClimberConstants.DOWN_POSITION.in(Meters), ClimberConstants.DOWN_VELOCITY),
         this);
+  }
+
+  public Command lowerClimbManualCommand(double speed) {
+    return Commands.sequence(Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
   }
 }
