@@ -91,6 +91,10 @@ public class Constants {
     public static final int MOTOR_ID = 60;
   }
 
+  public static class LEDConstants{
+    public static final int BAUD_RATE = 9600;
+  }
+
   public static class RobotConstants {
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
   }
