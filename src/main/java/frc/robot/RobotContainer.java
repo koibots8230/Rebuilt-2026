@@ -18,12 +18,16 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Swerve swerve;
+  private final Pivot pivot;
+  private final Climber climber;
 
   public RobotContainer(boolean isReal) {
     shooter = new Shooter();
     indexer = new Indexer();
     intake = new Intake();
     swerve = new Swerve(isReal);
+    pivot = new Pivot();
+    climber = new Climber();
 
     controller = new XboxController(0);
 
