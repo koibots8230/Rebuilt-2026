@@ -139,12 +139,11 @@ public class Constants {
     public static final LinearVelocity VELOCITY_CONSTRAINT =
         LinearVelocity.ofBaseUnits(0.03, MetersPerSecond);
     public static final LinearAcceleration ACCELERATION_CONSTRAINT =
-        LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond); 
+        LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond);
 
     public static final FeedforwardGains CLIMBER_FF =
-        new FeedforwardGains.Builder().kv(60).ks(0.0).build(); 
-    public static final PIDGains CLIMBER_PID =
-        new PIDGains.Builder().kp(12.0).build(); 
+        new FeedforwardGains.Builder().kv(60).ks(0.0).build();
+    public static final PIDGains CLIMBER_PID = new PIDGains.Builder().kp(12.0).build();
 
     public static final Current CURRENT_LIMIT = Current.ofBaseUnits(60, Amps);
     public static final AngularVelocity ROTATIONS_PER_MINUTE = RPM.of(3000);
