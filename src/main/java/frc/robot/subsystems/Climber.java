@@ -27,6 +27,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.RobotConstants;
 
@@ -80,40 +81,10 @@ public class Climber extends SubsystemBase {
     feedForward =
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
 
-    /*
-     * 42 counts per revolution
-     * 1 spool rotation = 3"
-     * 1 spool rotations = 36 neo rotations
-     * 1/36 spool rotations = 1 neo rotation
-     * 1 neo rotation = 3/36" = 1/12"
-     * 1 encoder count = 1/12" / 42
-     *
-     * real measurements:
-     * top: 21.5 cm
-     * bottom: 17.5 cm
-     * delta: 4cm
-     * advantage scope measurement: 4cm too
-     *
-     * velocity:
-     * 1.4 cm/s up in advantage scope
-     * real life: 4s so 1 cm/s
-     *
-     * kV of 60 = 1.2 V, 1.8 cm/s
-     *
-     */
-    double realConversionFactor = ((1.0 / 12)) / 39.37;
-
-    config.encoder.positionConversionFactor(realConversionFactor);
-    config.encoder.velocityConversionFactor(realConversionFactor / 60);
+    config.encoder.positionConversionFactor(ClimberConstants.CLIMBER_CONVERSION_FACTOR);
+    config.encoder.velocityConversionFactor(ClimberConstants.CLIMBER_CONVERSION_FACTOR / 60);
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    // config.encoder.positionConversionFactor(
-    //     (Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
-    // config.encoder.velocityConversionFactor(
-    //     (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) *
-    // ClimberConstants.WHEEL_DIAMETER.in(Inches))
-    //         / (ClimberConstants.GEAR_RATIO * 60));
   }
 
   @Override
