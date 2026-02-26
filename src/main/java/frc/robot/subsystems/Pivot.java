@@ -102,12 +102,13 @@ public class Pivot extends SubsystemBase {
   public void updateLiveTuning() {
     config.closedLoop.p(SmartDashboard.getNumber("Intake/pidkp", PivotConstants.PID.kp));
 
-    feedforward.setKs(SmartDashboard.getNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks));
-    feedforward.setKg(SmartDashboard.getNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg));
-    feedforward.setKv(SmartDashboard.getNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv));
+    feedforward.setKs(
+        SmartDashboard.getNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks));
+    feedforward.setKg(
+        SmartDashboard.getNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg));
+    feedforward.setKv(
+        SmartDashboard.getNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv));
   }
-
-  
 
   public Command setPositionCommand(double angle) {
     return Commands.runOnce(() -> this.setPosition(angle), this);

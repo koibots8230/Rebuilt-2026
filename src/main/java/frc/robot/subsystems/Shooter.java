@@ -102,13 +102,19 @@ public class Shooter extends SubsystemBase {
   }
 
   public void updateLiveTuning() {
-    flywheelMotorConfig.closedLoop.p(SmartDashboard.getNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp));
-    flywheelMotorConfig.closedLoop.feedForward.kV(SmartDashboard.getNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv));
-    intakeMotorConfig.closedLoop.p(SmartDashboard.getNumber("Shooter/intakekp", ShooterConstants.INTAKE_PID.kp));
-    intakeMotorConfig.closedLoop.feedForward.kV(SmartDashboard.getNumber("Shooter/intakeffkv", ShooterConstants.INTAKE_FEEDFORWARD.kv));
+    flywheelMotorConfig.closedLoop.p(
+        SmartDashboard.getNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp));
+    flywheelMotorConfig.closedLoop.feedForward.kV(
+        SmartDashboard.getNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv));
+    intakeMotorConfig.closedLoop.p(
+        SmartDashboard.getNumber("Shooter/intakekp", ShooterConstants.INTAKE_PID.kp));
+    intakeMotorConfig.closedLoop.feedForward.kV(
+        SmartDashboard.getNumber("Shooter/intakeffkv", ShooterConstants.INTAKE_FEEDFORWARD.kv));
 
-    flywheelMotor.configure(flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    flywheelMotor.configure(
+        flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakeMotor.configure(
+        intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command setVelocityCommand(
