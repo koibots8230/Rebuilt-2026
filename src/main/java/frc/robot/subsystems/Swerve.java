@@ -91,8 +91,7 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     odometryPose =
-        odometry.update(
-            isBlue ? gyroAngle : gyroAngle.minus(new Rotation2d(Math.PI)), modulePosition());
+        odometry.update(isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), modulePosition());
 
     modules.frontLeftModule.periodic();
     modules.frontRightModule.periodic();
@@ -127,7 +126,7 @@ public class Swerve extends SubsystemBase {
     gyroAngle = simHeading;
   }
 
-  private void fieldRelitiveDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {
+  private void fieldRelativeDrive(LinearVelocity x, LinearVelocity y, AngularVelocity omega) {
     chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             x.in(Units.MetersPerSecond) * SwerveConstants.MAX_LINEAR_VELOCITY.baseUnitMagnitude(),
@@ -135,6 +134,9 @@ public class Swerve extends SubsystemBase {
             omega.in(Units.RotationsPerSecond)
                 * SwerveConstants.MAX_ANGULAR_VELOCITY.baseUnitMagnitude(),
             gyroAngle);
+
+    chassisSpeeds =
+        ChassisSpeeds.discretize(chassisSpeeds, RobotConstants.CLOCK_SPEED.in(Units.Seconds));
 
     setpointStates = SwerveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
@@ -159,10 +161,19 @@ public class Swerve extends SubsystemBase {
   public Command driveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega) {
     return Commands.run(
         () ->
-            fieldRelitiveDrive(
-                MetersPerSecond.of(MathUtil.applyDeadband(x.getAsDouble(), 0.07)),
-                MetersPerSecond.of(MathUtil.applyDeadband(y.getAsDouble(), 0.07)),
-                RotationsPerSecond.of(MathUtil.applyDeadband((omega.getAsDouble()), 0.07))),
+            fieldRelativeDrive(
+                MetersPerSecond.of(
+                    Math.pow(
+                        MathUtil.applyDeadband(x.getAsDouble(), SwerveConstants.DEADBAND),
+                        SwerveConstants.TRANSLATION_SCALING_EXPONENT)),
+                MetersPerSecond.of(
+                    Math.pow(
+                        MathUtil.applyDeadband(y.getAsDouble(), SwerveConstants.DEADBAND),
+                        SwerveConstants.TRANSLATION_SCALING_EXPONENT)),
+                RotationsPerSecond.of(
+                    Math.pow(
+                        MathUtil.applyDeadband((omega.getAsDouble()), SwerveConstants.DEADBAND),
+                        SwerveConstants.ROTATION_SCALING_EXPONENT))),
         this);
   }
 }

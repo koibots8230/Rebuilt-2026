@@ -84,7 +84,7 @@ public class SwerveModule {
     driveController = driveMotor.getClosedLoopController();
     driveEncoder = driveMotor.getEncoder();
     driveConfig = new SparkFlexConfig();
-    driveConfig.smartCurrentLimit(60);
+    driveConfig.smartCurrentLimit((int) SwerveConstants.DRIVE_CURRENT_LIMIT.in(Units.Amps));
     driveConfig.idleMode(IdleMode.kBrake);
     driveConfig.inverted(false);
 
@@ -101,7 +101,7 @@ public class SwerveModule {
     turnController = turnMotor.getClosedLoopController();
     turnEncoder = turnMotor.getAbsoluteEncoder();
     turnConfig = new SparkMaxConfig();
-    turnConfig.smartCurrentLimit(30);
+    turnConfig.smartCurrentLimit((int) SwerveConstants.TURN_CURRENT_LIMIT.in(Units.Amps));
     turnConfig.idleMode(IdleMode.kBrake);
     turnConfig.inverted(false);
 

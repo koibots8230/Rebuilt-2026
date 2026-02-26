@@ -22,7 +22,7 @@ public class Constants {
     public static final Distance ROBOT_WIDTH = Meters.of(Units.inchesToMeters(27.5));
     public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(27.5));
 
-    public static final Time CLOCK_SPEED = Milliseconds.of(20);
+    public static final Time CLOCK_SPEED = Seconds.of(0.02);
   }
 
   public static class IndexerConstants {
@@ -79,15 +79,17 @@ public class Constants {
   public static class SwerveConstants {
 
     public static final LinearVelocity MAX_LINEAR_VELOCITY =
-        LinearVelocity.ofBaseUnits(4, MetersPerSecond);
+        LinearVelocity.ofBaseUnits(4.25, MetersPerSecond);
     public static final AngularVelocity MAX_ANGULAR_VELOCITY =
         AngularVelocity.ofBaseUnits(Math.PI * 2, RadiansPerSecond);
 
+    public static final double TRANSLATION_SCALING_EXPONENT = 2;
+    public static final double ROTATION_SCALING_EXPONENT = 3;
+
+    public static final double DEADBAND = 0.07;
+
     public static final Rotation2d[] OFFSET = {
-      Rotation2d.fromRadians(Math.PI / 2.0),
-      Rotation2d.fromRadians(0),
-      Rotation2d.fromRadians(Math.PI),
-      Rotation2d.fromRadians((3 * Math.PI) / 2.0)
+      Rotation2d.kCCW_Pi_2, Rotation2d.kZero, Rotation2d.kPi, Rotation2d.kCW_Pi_2
     };
 
     public static final SwerveDriveKinematics KINEMATICS =
