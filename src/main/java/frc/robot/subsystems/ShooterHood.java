@@ -106,7 +106,7 @@ public class ShooterHood extends SubsystemBase {
     return Commands.runOnce(() -> setPosition(target), this);
   }
 
-  public Command autoSetPositionCommand(Double distanceToHub) {
+  public Command autoSetPositionCommand(Distance distanceToHub) {
     return Commands.runOnce(() -> {
       calculatedHoodAngle = calculateHoodAngle(distanceToHub);
       setPosition(calculatedHoodAngle);

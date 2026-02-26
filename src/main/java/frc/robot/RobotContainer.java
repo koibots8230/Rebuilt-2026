@@ -69,14 +69,14 @@ public class RobotContainer {
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, ShooterConstants.IDLE_SPEED)));
+            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0))));
     Trigger hoodTrigger = new Trigger(() -> controller.getLeftBumperButton());
     hoodTrigger.onTrue(shooterHood.setPositionCommand(hoodAngle));
     hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
 
-    //Trigger autoShootTrigger = new Trigger(() -> controller.getRightBumperButton());
-    //autoShootTrigger.onTrue(
-        //shooterHood.autoSetPositionCommand(distanceToHub));
+    Trigger autoShootTrigger = new Trigger(() -> controller.getRightBumperButton());
+    autoShootTrigger.onTrue(
+        shooterHood.autoSetPositionCommand(distanceToHub));
     
   }
 
