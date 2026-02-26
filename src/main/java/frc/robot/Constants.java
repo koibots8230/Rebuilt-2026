@@ -86,24 +86,29 @@ public class Constants {
   public static class IntakeConstants {
     public static final double SPEED = 0.95;
     public static final Current CURRENT_LIMIT = Amps.of(60);
+
     public static final int MOTOR_ID = 10;
   }
 
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(42);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
+    public static final Rotation2d MARGIN = Rotation2d.fromDegrees(5);
     public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
     public static final FeedforwardGains FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0).kg(0).build();
+
     public static final double CONVERSION_FACTOR = Math.PI * 2;
+
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
     public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
     public static final Current CURRENT_LIMIT = Amps.of(60);
-    public static final int MOTOR_ID = 60;
+
+    public static final int MOTOR_ID = 11;
   }
 
   public static class ShooterConstants {
-
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
     public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
 
@@ -124,31 +129,32 @@ public class Constants {
 
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
-    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(5, Meters); // placeholder
+    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
+    public static final double MANUAL_LOWER_SPEED = 0.1;
+    public static final double CLIMBER_CONVERSION_FACTOR = ((1.0 / 12)) / 39.37;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity RAISED_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity VELOCITY_CONSTRAINT =
-        LinearVelocity.ofBaseUnits(5, MetersPerSecond); // placeholder
+        LinearVelocity.ofBaseUnits(0.03, MetersPerSecond);
     public static final LinearAcceleration ACCELERATION_CONSTRAINT =
-        LinearAcceleration.ofBaseUnits(10, MetersPerSecondPerSecond); // placeholder
+        LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond);
 
     public static final FeedforwardGains CLIMBER_FF =
-        new FeedforwardGains.Builder().kv(0.0).ks(0.0).build(); // placeholder
-    public static final PIDGains CLIMBER_PID =
-        new PIDGains.Builder().kp(0.0).build(); // placeholder
+        new FeedforwardGains.Builder().kv(60).ks(0.0).build();
+    public static final PIDGains CLIMBER_PID = new PIDGains.Builder().kp(12.0).build();
 
     public static final Current CURRENT_LIMIT = Current.ofBaseUnits(60, Amps);
     public static final AngularVelocity ROTATIONS_PER_MINUTE = RPM.of(3000);
 
     public static final double GEAR_RATIO = 36.0; // placeholder
     public static final Distance SPOOL_DIAMETER =
-        Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
+        Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
     public static final Distance WHEEL_DIAMETER =
-        Distance.ofBaseUnits(3, Inches); // placeholder, potentially different units
+        Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
 
-    public static final int MOTOR_ID = 12;
+    public static final int MOTOR_ID = 50;
   }
 
   public static class RobotConstants {

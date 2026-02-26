@@ -78,6 +78,11 @@ public class Pivot extends SubsystemBase {
     voltage = motor.getAppliedOutput() * motor.getBusVoltage();
   }
 
+  public boolean atPosition() {
+    return (position >= (setpoint - PivotConstants.MARGIN.getRadians())
+        && position <= (setpoint + PivotConstants.MARGIN.getRadians()));
+  }
+
   @Override
   public void simulationPeriodic() {
     position = motorSetpoint.position;
