@@ -93,6 +93,7 @@ public class Shooter extends SubsystemBase {
     feederVoltage = Volts.of(feederMotor.getAppliedOutput() * feederMotor.getBusVoltage());
     feederVelocity = RPM.of(feederMotor.getEncoder().getVelocity());
     feederCurrent = Amps.of(feederMotor.getOutputCurrent());
+
   }
 
   @Override

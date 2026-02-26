@@ -44,16 +44,17 @@ public class Constants {
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4700);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(1650);
+    public static final AngularVelocity IDLE_SPEED = RPM.of(500);
 
-    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0).build();
+        new FeedforwardGains.Builder().kv(0.0019).build(); 
 
-    public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0001).build();
     public static final FeedforwardGains FEEDER_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0).build();
+        new FeedforwardGains.Builder().kv(0.00238).build();
 
     public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
     public static final Current FEEDER_CURRENT_LIMIT = Amps.of(80);

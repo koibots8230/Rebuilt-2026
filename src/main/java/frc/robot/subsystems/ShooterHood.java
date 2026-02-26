@@ -43,6 +43,7 @@ public class ShooterHood extends SubsystemBase {
 
   private double calculatedHoodAngle;
 
+  @SuppressWarnings("removal")
   public ShooterHood() {
     pivotMotor = new SparkMax(HoodConstants.MOTOR_ID, SparkMax.MotorType.kBrushless);
     pivotMotorConfig = new SparkMaxConfig();
@@ -105,7 +106,7 @@ public class ShooterHood extends SubsystemBase {
     return Commands.runOnce(() -> setPosition(target), this);
   }
 
-  public Command autoSetPositionCommand(Distance distanceToHub) {
+  public Command autoSetPositionCommand(Double distanceToHub) {
     return Commands.runOnce(() -> {
       calculatedHoodAngle = calculateHoodAngle(distanceToHub);
       setPosition(calculatedHoodAngle);

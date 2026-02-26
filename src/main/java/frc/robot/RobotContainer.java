@@ -38,7 +38,7 @@ public class RobotContainer {
 
     controller = new XboxController(0);
     hoodAngle = HoodConstants.DOWN_POSITION.getDegrees();
-    distanceToHub = Meters.of(0.0); // This will eventually be set by vision
+    //distanceToHub = Meters.of(0.0); // This will eventually be set by vision
     
 
     configureBindings();
@@ -69,15 +69,14 @@ public class RobotContainer {
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
-    
-    Trigger hoodTrigger = new Trigger(() -> controller.getLeftBumper());
+            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, ShooterConstants.IDLE_SPEED)));
+    Trigger hoodTrigger = new Trigger(() -> controller.getLeftBumperButton());
     hoodTrigger.onTrue(shooterHood.setPositionCommand(hoodAngle));
     hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
 
-    Trigger autoShootTrigger = new Trigger(() -> controller.getRightBumper());
-    autoShootTrigger.onTrue(
-        shooterHood.autoSetPositionCommand(distanceToHub));
+    //Trigger autoShootTrigger = new Trigger(() -> controller.getRightBumperButton());
+    //autoShootTrigger.onTrue(
+        //shooterHood.autoSetPositionCommand(distanceToHub));
     
   }
 
