@@ -115,6 +115,9 @@ public class Shooter extends SubsystemBase {
         flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeMotor.configure(
         intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    flywheelMotorController = flywheelMotor.getClosedLoopController();
+    intakeMotorController = intakeMotor.getClosedLoopController();
   }
 
   public Command setVelocityCommand(

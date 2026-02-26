@@ -31,7 +31,7 @@ public class Pivot extends SubsystemBase {
 
   private final SparkMax motor;
   private final SparkMaxConfig config;
-  private final SparkClosedLoopController pid;
+  private SparkClosedLoopController pid;
   private final TrapezoidProfile profile;
   private TrapezoidProfile.State goal;
   private TrapezoidProfile.State motorSetpoint;
@@ -101,6 +101,10 @@ public class Pivot extends SubsystemBase {
 
   public void updateLiveTuning() {
     config.closedLoop.p(SmartDashboard.getNumber("Intake/pidkp", PivotConstants.PID.kp));
+
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    pid = motor.getClosedLoopController();
 
     feedforward.setKs(
         SmartDashboard.getNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks));
