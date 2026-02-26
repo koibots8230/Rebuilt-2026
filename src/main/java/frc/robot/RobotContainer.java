@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
+import frc.robot.commands.*;
 
 @Logged
 public class RobotContainer {
@@ -32,7 +33,7 @@ public class RobotContainer {
 
     controller = new XboxController(0);
 
-    autos = new Autos(swerve);
+    autos = new Autos(swerve, shooter, indexer);
 
     configureBindings();
   }
@@ -55,14 +56,8 @@ public class RobotContainer {
     lowerClimber.onTrue(climber.lowerClimbCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
-    shootTrigger.onTrue(
-        Commands.parallel(
-            shooter.setVelocityCommand(
-                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
-            indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
-    shootTrigger.onFalse(
-        Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+    shootTrigger.onTrue(ShootCommands.shoot(shooter, indexer));
+    shootTrigger.onFalse(ShootCommands.stop(shooter, indexer));
 
     swerve.setDefaultCommand(
         swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
