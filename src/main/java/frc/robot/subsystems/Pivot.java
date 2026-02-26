@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +31,7 @@ public class Pivot extends SubsystemBase {
 
   private final SparkMax motor;
   private final SparkMaxConfig config;
-  private final SparkClosedLoopController pid;
+  private SparkClosedLoopController pid;
   private final TrapezoidProfile profile;
   private TrapezoidProfile.State goal;
   private TrapezoidProfile.State motorSetpoint;
@@ -89,6 +90,28 @@ public class Pivot extends SubsystemBase {
   private void setPosition(double angle) {
     goal = new State(angle, 0);
     setpoint = angle;
+  }
+
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber("Intake/pidkp", PivotConstants.PID.kp);
+    SmartDashboard.putNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks);
+    SmartDashboard.putNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg);
+    SmartDashboard.putNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv);
+  }
+
+  public void updateLiveTuning() {
+    config.closedLoop.p(SmartDashboard.getNumber("Intake/pidkp", PivotConstants.PID.kp));
+
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    pid = motor.getClosedLoopController();
+
+    feedforward.setKs(
+        SmartDashboard.getNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks));
+    feedforward.setKg(
+        SmartDashboard.getNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg));
+    feedforward.setKv(
+        SmartDashboard.getNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv));
   }
 
   public Command setPositionCommand(double angle) {

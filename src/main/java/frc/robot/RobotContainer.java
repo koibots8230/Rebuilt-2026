@@ -64,6 +64,7 @@ public class RobotContainer {
         Commands.parallel(
             shooter.setVelocityCommand(
                 ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+            indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
                     pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
                     Commands.waitUntil(pivot::atPosition),
@@ -73,7 +74,18 @@ public class RobotContainer {
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            indexer.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
+  }
+
+  public void setupLiveTuning() {
+    shooter.setupLiveTuning();
+    pivot.setupLiveTuning();
+  }
+
+  public void updateLiveTuning() {
+    shooter.updateLiveTuning();
+    pivot.setupLiveTuning();
   }
 
   public Command getAutonomousCommand() {
