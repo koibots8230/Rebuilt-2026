@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer(Robot.isReal());
 
     DataLogManager.start();
     Epilogue.bind(this);
@@ -69,10 +69,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.setupLiveTuning();
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_robotContainer.updateLiveTuning();
+  }
 
   @Override
   public void testExit() {}
