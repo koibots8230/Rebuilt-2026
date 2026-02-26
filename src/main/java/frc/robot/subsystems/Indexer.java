@@ -32,7 +32,7 @@ public class Indexer extends SubsystemBase {
   public Indexer() {
     var motorConfig =
         new SparkMaxConfig()
-            .inverted(true)
+            .inverted(false)
             .smartCurrentLimit(IndexerConstants.MAX_MOTOR_CURRENT_AMPS)
             .idleMode(IdleMode.kBrake);
 

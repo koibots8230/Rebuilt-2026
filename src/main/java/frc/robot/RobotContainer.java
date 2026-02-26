@@ -21,13 +21,13 @@ public class RobotContainer {
   private final Intake intake;
   private final Pivot pivot;
 
-  public RobotContainer() {
+  public RobotContainer(boolean isReal) {
     climber = new Climber();
     intake = new Intake();
     shooter = new Shooter();
     indexer = new Indexer();
     pivot = new Pivot();
-    swerve = new Swerve();
+    swerve = new Swerve(isReal);
 
     controller = new XboxController(0);
 
@@ -35,6 +35,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    swerve.setDefaultCommand(
+        swerve.driveFieldRelativeCommand(
+            controller::getLeftY, controller::getLeftX, controller::getRightX));
+
     Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
@@ -51,18 +55,37 @@ public class RobotContainer {
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
 
+    Trigger zeroClimber = new Trigger(() -> controller.getYButton());
+    zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+    zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
+
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
         Commands.parallel(
             shooter.setVelocityCommand(
                 ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
-            indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED)));
+            indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
+            Commands.sequence(
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+                    Commands.waitUntil(pivot::atPosition))
+                .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            indexer.setSpeedCommand(0),
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
+  }
 
-    swerve.setDefaultCommand(
-        swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
+  public void setupLiveTuning() {
+    shooter.setupLiveTuning();
+    pivot.setupLiveTuning();
+  }
+
+  public void updateLiveTuning() {
+    shooter.updateLiveTuning();
+    pivot.setupLiveTuning();
   }
 
   public Command getAutonomousCommand() {
