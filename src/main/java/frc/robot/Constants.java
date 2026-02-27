@@ -157,8 +157,8 @@ public class Constants {
   }
 
   public static class RobotConstants {
-    public static final Distance ROBOT_WIDTH = Meters.of(Units.inchesToMeters(23.5));
-    public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(23.5));
+    public static final Distance ROBOT_WIDTH = Meters.of(Units.inchesToMeters(27.5));
+    public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(27.5));
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
   }
 }
