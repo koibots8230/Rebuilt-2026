@@ -13,9 +13,10 @@ public class IntakeCommands {
   public static Command autoIntake(Intake intake, Pivot pivot, Time time) {
     return Commands.sequence(
         pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
-        Commands.waitTime(AutoConstants.INTAKE_DELAY),
+        Commands.waitTime(AutoConstants.PIVOT_TO_INTAKE_DELAY),
         intake.setSpeedCommand(IntakeConstants.SPEED),
         Commands.waitTime(time),
-        intake.setSpeedCommand(0));
+        intake.setSpeedCommand(0),
+        pivot.setPositionCommand(PivotConstants.UP_POSITION));
   }
 }
