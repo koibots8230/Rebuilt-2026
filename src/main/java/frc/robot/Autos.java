@@ -16,7 +16,13 @@ public class Autos {
   private AutoFactory factory;
   private AutoChooser chooser;
 
-  Autos(Swerve swerve, Shooter shooter, Indexer indexer, Intake intake, Pivot pivot, Climber climber) {
+  Autos(
+      Swerve swerve,
+      Shooter shooter,
+      Indexer indexer,
+      Intake intake,
+      Pivot pivot,
+      Climber climber) {
     factory =
         new AutoFactory(
             swerve::getEstPos, swerve::resetOdometry, swerve::followTrajectory, true, swerve);
@@ -25,7 +31,8 @@ public class Autos {
     chooser.addRoutine("sample auto", () -> sampleAuto(shooter, indexer));
 
     chooser.addRoutine("P3 Depot", () -> P3_Depot(shooter, indexer, intake, pivot));
-    chooser.addRoutine("P3 Depot & Climb", () -> P3_Depot_Climb(shooter, indexer, intake, pivot, climber));
+    chooser.addRoutine(
+        "P3 Depot & Climb", () -> P3_Depot_Climb(shooter, indexer, intake, pivot, climber));
     chooser.addRoutine("P4 Shoot", () -> P4_Shoot(shooter, indexer));
     chooser.addRoutine("P4 Shoot & Climb", () -> P4_Shoot_Climb(shooter, indexer, climber));
     chooser.addRoutine("P5 Shoot", () -> P5_Shoot(shooter, indexer));
@@ -39,10 +46,7 @@ public class Autos {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory move = routine.trajectory("simpleAuto");
 
-    routine.active().onTrue(Commands.sequence(
-      move.resetOdometry(), 
-      move.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
 
     return routine;
   }
@@ -51,10 +55,7 @@ public class Autos {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory drive = routine.trajectory("P4_Shoot");
 
-    routine.active().onTrue(Commands.sequence(
-      drive.resetOdometry(), 
-      drive.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive.resetOdometry(), drive.cmd()));
 
     drive.done().onTrue(ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG));
 
@@ -66,18 +67,16 @@ public class Autos {
     AutoTrajectory drive1 = routine.trajectory("P4_Shoot");
     AutoTrajectory drive2 = routine.trajectory("P4_Shoot_Climb");
 
-    routine.active().onTrue(Commands.sequence(
-      drive1.resetOdometry(), 
-      drive1.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive1.resetOdometry(), drive1.cmd()));
 
-    drive1.done().onTrue(Commands.sequence(
-      Commands.parallel(
-        ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
-        climber.raiseClimbCommand()
-      ),
-      drive2.cmd()
-    ));
+    drive1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                Commands.parallel(
+                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
+                    climber.raiseClimbCommand()),
+                drive2.cmd()));
 
     drive2.done().onTrue(climber.lowerClimbCommand());
 
@@ -88,10 +87,7 @@ public class Autos {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory drive = routine.trajectory("P5_Shoot");
 
-    routine.active().onTrue(Commands.sequence(
-      drive.resetOdometry(), 
-      drive.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive.resetOdometry(), drive.cmd()));
 
     drive.done().onTrue(ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG));
 
@@ -103,18 +99,16 @@ public class Autos {
     AutoTrajectory drive1 = routine.trajectory("P5_Shoot");
     AutoTrajectory drive2 = routine.trajectory("P5_Shoot_Climb");
 
-    routine.active().onTrue(Commands.sequence(
-      drive1.resetOdometry(), 
-      drive1.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive1.resetOdometry(), drive1.cmd()));
 
-    drive1.done().onTrue(Commands.sequence(
-      Commands.parallel(
-        ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
-        climber.raiseClimbCommand()
-      ),
-      drive2.cmd()
-    ));
+    drive1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                Commands.parallel(
+                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
+                    climber.raiseClimbCommand()),
+                drive2.cmd()));
 
     drive2.done().onTrue(climber.lowerClimbCommand());
 
@@ -127,60 +121,62 @@ public class Autos {
     AutoTrajectory drive2 = routine.trajectory("P3_Depot2");
     AutoTrajectory drive3 = routine.trajectory("P3_Depot3");
 
-    routine.active().onTrue(Commands.sequence(
-      drive1.resetOdometry(), 
-      drive1.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive1.resetOdometry(), drive1.cmd()));
 
-    drive1.done().onTrue(Commands.sequence(
-      ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_SHORT),
-      drive2.cmd()
-    ));
+    drive1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_SHORT),
+                drive2.cmd()));
 
-    drive2.done().onTrue(Commands.sequence(
-      IntakeCommands.autoIntake(intake, pivot, AutoConstants.Depot_Intake_Time),
-      drive3.cmd()
-    ));
+    drive2
+        .done()
+        .onTrue(
+            Commands.sequence(
+                IntakeCommands.autoIntake(intake, pivot, AutoConstants.DEPOT_INTAKE_TIME),
+                drive3.cmd()));
 
     drive3.done().onTrue(ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG));
 
     return routine;
   }
 
-  public AutoRoutine P3_Depot_Climb(Shooter shooter, Indexer indexer, Intake intake, Pivot pivot, Climber climber) {
+  public AutoRoutine P3_Depot_Climb(
+      Shooter shooter, Indexer indexer, Intake intake, Pivot pivot, Climber climber) {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory drive1 = routine.trajectory("P3_Depot1");
     AutoTrajectory drive2 = routine.trajectory("P3_Depot2");
     AutoTrajectory drive3 = routine.trajectory("P3_Depot3");
     AutoTrajectory drive4 = routine.trajectory("P3_Depot_Climb");
 
-    routine.active().onTrue(Commands.sequence(
-      drive1.resetOdometry(), 
-      drive1.cmd()
-    ));
+    routine.active().onTrue(Commands.sequence(drive1.resetOdometry(), drive1.cmd()));
 
-    drive1.done().onTrue(Commands.sequence(
-      ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_SHORT),
-      drive2.cmd()
-    ));
+    drive1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_SHORT),
+                drive2.cmd()));
 
-    drive2.done().onTrue(Commands.sequence(
-      IntakeCommands.autoIntake(intake, pivot, AutoConstants.DEPOT_INTAKE_TIME),
-      drive3.cmd()
-    ));
+    drive2
+        .done()
+        .onTrue(
+            Commands.sequence(
+                IntakeCommands.autoIntake(intake, pivot, AutoConstants.DEPOT_INTAKE_TIME),
+                drive3.cmd()));
 
-    drive3.done().onTrue(Commands.sequence(
-      Commands.parallel(
-        ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
-        climber.raiseClimbCommand()
-      ),
-      drive4.cmd()
-    ));
+    drive3
+        .done()
+        .onTrue(
+            Commands.sequence(
+                Commands.parallel(
+                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
+                    climber.raiseClimbCommand()),
+                drive4.cmd()));
 
     drive4.done().onTrue(climber.lowerClimbCommand());
 
     return routine;
   }
-
-
 }

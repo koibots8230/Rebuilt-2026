@@ -22,9 +22,6 @@ public class ShootCommands {
 
   public static Command autoShoot(Shooter shooter, Indexer indexer, Time time) {
     return Commands.sequence(
-      shoot(shooter, indexer),
-      Commands.waitTime(time),
-      stop(shooter, indexer)
-    );
+        shoot(shooter, indexer), Commands.waitTime(time), stop(shooter, indexer));
   }
 }

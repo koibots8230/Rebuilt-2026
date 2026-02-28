@@ -9,15 +9,13 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 
-
 public class IntakeCommands {
-    public static Command autoIntake(Intake intake, Pivot pivot, Time time) {
-        return Commands.sequence(
-            pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
-            Commands.waitTime(AutoConstants.INTAKE_DELAY),
-            intake.setSpeedCommand(IntakeConstants.SPEED),
-            Commands.waitTime(time),
-            intake.setSpeedCommand(0)
-        );
-    }
+  public static Command autoIntake(Intake intake, Pivot pivot, Time time) {
+    return Commands.sequence(
+        pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
+        Commands.waitTime(AutoConstants.INTAKE_DELAY),
+        intake.setSpeedCommand(IntakeConstants.SPEED),
+        Commands.waitTime(time),
+        intake.setSpeedCommand(0));
+  }
 }
