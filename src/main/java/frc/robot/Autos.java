@@ -21,7 +21,7 @@ public class Autos {
             swerve::getEstPos, swerve::resetOdometry, swerve::followTrajectory, true, swerve);
     chooser = new AutoChooser();
 
-    chooser.addRoutine("sample auto (sim only)", () -> sampleAuto(shooter, indexer));
+    chooser.addRoutine("sample auto", () -> sampleAuto(shooter, indexer));
 
     SmartDashboard.putData("hi", chooser);
     RobotModeTriggers.autonomous().whileTrue(chooser.selectedCommandScheduler());
@@ -35,7 +35,7 @@ public class Autos {
       move.resetOdometry(), 
       move.cmd()
     ));
-    
+
     return routine;
   }
 
