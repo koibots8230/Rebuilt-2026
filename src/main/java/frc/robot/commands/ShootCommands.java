@@ -1,9 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.*;
@@ -20,10 +20,10 @@ public class ShootCommands {
         shooter.setVelocityCommand(Units.RPM.of(0), Units.RPM.of(0)), indexer.setSpeedCommand(0));
   }
 
-  public static Command autoShoot(Shooter shooter, Indexer indexer) {
+  public static Command autoShoot(Shooter shooter, Indexer indexer, Time time) {
     return Commands.sequence(
       shoot(shooter, indexer),
-      Commands.waitTime(AutoConstants.SHOOT_TIME),
+      Commands.waitTime(time),
       stop(shooter, indexer)
     );
   }

@@ -31,7 +31,7 @@ public class RobotContainer {
 
     controller = new XboxController(0);
 
-    autos = new Autos(swerve, shooter, indexer);
+    autos = new Autos(swerve, shooter, indexer, intake, climber);
 
     configureBindings();
   }
