@@ -31,9 +31,86 @@ public class Autos {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory move = routine.trajectory("simpleAuto");
 
-    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
-    ShootCommands.shoot(shooter, indexer);
+    routine.active().onTrue(Commands.sequence(
+      move.resetOdometry(), 
+      move.cmd()
+    ));
+    
+    return routine;
+  }
+
+  private AutoRoutine P4_Shoot(Shooter shooter, Indexer indexer) {
+    AutoRoutine routine = factory.newRoutine("taxi");
+    AutoTrajectory drive = routine.trajectory("P4_Shoot");
+
+    routine.active().onTrue(Commands.sequence(
+      drive.resetOdometry(), 
+      drive.cmd()
+    ));
+
+    drive.done().onTrue(ShootCommands.autoShoot(shooter, indexer));
 
     return routine;
   }
+
+  private AutoRoutine P4_Shoot_Climb(Shooter shooter, Indexer indexer, Climber climber) {
+    AutoRoutine routine = factory.newRoutine("taxi");
+    AutoTrajectory drive1 = routine.trajectory("P4_Shoot");
+    AutoTrajectory drive2 = routine.trajectory("P4_Shoot_Climb");
+
+    routine.active().onTrue(Commands.sequence(
+      drive1.resetOdometry(), 
+      drive1.cmd()
+    ));
+
+    drive1.done().onTrue(Commands.sequence(
+      Commands.parallel(
+        ShootCommands.autoShoot(shooter, indexer),
+        climber.raiseClimbCommand()
+      ),
+      drive2.cmd()
+    ));
+
+    drive2.done().onTrue(climber.lowerClimbCommand());
+
+    return routine;
+  }
+
+  private AutoRoutine P5_Shoot(Shooter shooter, Indexer indexer) {
+    AutoRoutine routine = factory.newRoutine("taxi");
+    AutoTrajectory drive = routine.trajectory("P5_Shoot");
+
+    routine.active().onTrue(Commands.sequence(
+      drive.resetOdometry(), 
+      drive.cmd()
+    ));
+
+    drive.done().onTrue(ShootCommands.autoShoot(shooter, indexer));
+
+    return routine;
+  }
+
+  private AutoRoutine P5_Shoot_Climb(Shooter shooter, Indexer indexer, Climber climber) {
+    AutoRoutine routine = factory.newRoutine("taxi");
+    AutoTrajectory drive1 = routine.trajectory("P5_Shoot");
+    AutoTrajectory drive2 = routine.trajectory("P5_Shoot_Climb");
+
+    routine.active().onTrue(Commands.sequence(
+      drive1.resetOdometry(), 
+      drive1.cmd()
+    ));
+
+    drive1.done().onTrue(Commands.sequence(
+      Commands.parallel(
+        ShootCommands.autoShoot(shooter, indexer),
+        climber.raiseClimbCommand()
+      ),
+      drive2.cmd()
+    ));
+
+    drive2.done().onTrue(climber.lowerClimbCommand());
+
+    return routine;
+  }
+
 }
