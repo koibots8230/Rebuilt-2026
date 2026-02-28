@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -81,12 +82,12 @@ public class Pivot extends SubsystemBase {
     position = motorSetpoint.position;
   }
 
-  private void setPosition(double angle) {
-    goal = new State(angle, 0);
-    setpoint = angle;
+  private void setPosition(Rotation2d angle) {
+    goal = new State(angle.getRadians(), 0);
+    setpoint = angle.getRadians();
   }
 
-  public Command setPositionCommand(double angle) {
+  public Command setPositionCommand(Rotation2d angle) {
     return Commands.runOnce(() -> this.setPosition(angle), this);
   }
 }

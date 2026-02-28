@@ -31,7 +31,7 @@ public class RobotContainer {
 
     controller = new XboxController(0);
 
-    autos = new Autos(swerve, shooter, indexer, intake, climber);
+    autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
 
     configureBindings();
   }
@@ -42,10 +42,10 @@ public class RobotContainer {
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
     Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());

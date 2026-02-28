@@ -16,7 +16,7 @@ public class Autos {
   private AutoFactory factory;
   private AutoChooser chooser;
 
-  Autos(Swerve swerve, Shooter shooter, Indexer indexer, Intake intake, Climber climber) {
+  Autos(Swerve swerve, Shooter shooter, Indexer indexer, Intake intake, Pivot pivot, Climber climber) {
     factory =
         new AutoFactory(
             swerve::getEstPos, swerve::resetOdometry, swerve::followTrajectory, true, swerve);
@@ -24,8 +24,8 @@ public class Autos {
 
     chooser.addRoutine("sample auto", () -> sampleAuto(shooter, indexer));
 
-    chooser.addRoutine("P3 Depot", () -> P3_Depot(shooter, indexer, intake));
-    chooser.addRoutine("P3 Depot & Climb", () -> P3_Depot_Climb(shooter, indexer, intake, climber));
+    chooser.addRoutine("P3 Depot", () -> P3_Depot(shooter, indexer, intake, pivot));
+    chooser.addRoutine("P3 Depot & Climb", () -> P3_Depot_Climb(shooter, indexer, intake, pivot, climber));
     chooser.addRoutine("P4 Shoot", () -> P4_Shoot(shooter, indexer));
     chooser.addRoutine("P4 Shoot & Climb", () -> P4_Shoot_Climb(shooter, indexer, climber));
     chooser.addRoutine("P5 Shoot", () -> P5_Shoot(shooter, indexer));
@@ -121,7 +121,7 @@ public class Autos {
     return routine;
   }
 
-  private AutoRoutine P3_Depot(Shooter shooter, Indexer indexer, Intake intake) {
+  private AutoRoutine P3_Depot(Shooter shooter, Indexer indexer, Intake intake, Pivot pivot) {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory drive1 = routine.trajectory("P3_Depot1");
     AutoTrajectory drive2 = routine.trajectory("P3_Depot2");
@@ -138,7 +138,7 @@ public class Autos {
     ));
 
     drive2.done().onTrue(Commands.sequence(
-      IntakeCommands.autoIntake(intake, AutoConstants.Depot_Intake_Time),
+      IntakeCommands.autoIntake(intake, pivot, AutoConstants.Depot_Intake_Time),
       drive3.cmd()
     ));
 
@@ -147,7 +147,7 @@ public class Autos {
     return routine;
   }
 
-  public AutoRoutine P3_Depot_Climb(Shooter shooter, Indexer indexer, Intake intake, Climber climber) {
+  public AutoRoutine P3_Depot_Climb(Shooter shooter, Indexer indexer, Intake intake, Pivot pivot, Climber climber) {
     AutoRoutine routine = factory.newRoutine("taxi");
     AutoTrajectory drive1 = routine.trajectory("P3_Depot1");
     AutoTrajectory drive2 = routine.trajectory("P3_Depot2");
@@ -165,7 +165,7 @@ public class Autos {
     ));
 
     drive2.done().onTrue(Commands.sequence(
-      IntakeCommands.autoIntake(intake, AutoConstants.Depot_Intake_Time),
+      IntakeCommands.autoIntake(intake, pivot, AutoConstants.Depot_Intake_Time),
       drive3.cmd()
     ));
 
@@ -181,4 +181,6 @@ public class Autos {
 
     return routine;
   }
+
+
 }
