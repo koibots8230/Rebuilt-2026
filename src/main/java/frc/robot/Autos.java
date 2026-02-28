@@ -165,7 +165,7 @@ public class Autos {
     ));
 
     drive2.done().onTrue(Commands.sequence(
-      IntakeCommands.autoIntake(intake, pivot, AutoConstants.Depot_Intake_Time),
+      IntakeCommands.autoIntake(intake, pivot, AutoConstants.DEPOT_INTAKE_TIME),
       drive3.cmd()
     ));
 
