@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
@@ -175,7 +175,7 @@ public class SwerveModule {
             0);
 
     motorSetpoint =
-        profile.calculate(RobotConstants.CLOCK_SPEED.in(Milliseconds), motorSetpoint, goalState);
+        profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goalState);
 
     turnController.setSetpoint(
         motorSetpoint.position,

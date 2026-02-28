@@ -89,17 +89,17 @@ public class Constants {
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(
             new Translation2d(
-                RobotConstants.ROBOT_LENGTH.baseUnitMagnitude() / 2,
-                RobotConstants.ROBOT_WIDTH.baseUnitMagnitude() / 2),
+                RobotConstants.TRACK_LENGTH.baseUnitMagnitude() / 2,
+                RobotConstants.TRACK_WIDTH.baseUnitMagnitude() / 2),
             new Translation2d(
-                RobotConstants.ROBOT_LENGTH.baseUnitMagnitude() / 2,
-                -RobotConstants.ROBOT_WIDTH.baseUnitMagnitude() / 2),
+                RobotConstants.TRACK_LENGTH.baseUnitMagnitude() / 2,
+                -RobotConstants.TRACK_WIDTH.baseUnitMagnitude() / 2),
             new Translation2d(
-                -RobotConstants.ROBOT_LENGTH.baseUnitMagnitude() / 2,
-                RobotConstants.ROBOT_WIDTH.baseUnitMagnitude() / 2),
+                -RobotConstants.TRACK_LENGTH.baseUnitMagnitude() / 2,
+                RobotConstants.TRACK_WIDTH.baseUnitMagnitude() / 2),
             new Translation2d(
-                -RobotConstants.ROBOT_WIDTH.baseUnitMagnitude() / 2,
-                -RobotConstants.ROBOT_LENGTH.baseUnitMagnitude() / 2));
+                -RobotConstants.TRACK_LENGTH.baseUnitMagnitude() / 2,
+                -RobotConstants.TRACK_WIDTH.baseUnitMagnitude() / 2));
 
     // PID values copped from temp drivetrain; tuneing required
     public static final PIDGains DRIVE_PID = new PIDGains.Builder().kp(0.225).build();
@@ -157,8 +157,8 @@ public class Constants {
   }
 
   public static class RobotConstants {
-    public static final Distance ROBOT_WIDTH = Meters.of(Units.inchesToMeters(27.5));
-    public static final Distance ROBOT_LENGTH = Meters.of(Units.inchesToMeters(27.5));
-    public static final Time CLOCK_SPEED = Milliseconds.of(20);
+    public static final Distance TRACK_WIDTH = Meters.of(Units.inchesToMeters(24.0));
+    public static final Distance TRACK_LENGTH = Meters.of(Units.inchesToMeters(24.0));
+    public static final Time CLOCK_SPEED = Seconds.of(0.02);
   }
 }

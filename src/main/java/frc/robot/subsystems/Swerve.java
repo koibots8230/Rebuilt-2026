@@ -162,18 +162,9 @@ public class Swerve extends SubsystemBase {
     return Commands.run(
         () ->
             fieldRelativeDrive(
-                MetersPerSecond.of(
-                    Math.pow(
-                        MathUtil.applyDeadband(x.getAsDouble(), SwerveConstants.DEADBAND),
-                        SwerveConstants.TRANSLATION_SCALING_EXPONENT)),
-                MetersPerSecond.of(
-                    Math.pow(
-                        MathUtil.applyDeadband(y.getAsDouble(), SwerveConstants.DEADBAND),
-                        SwerveConstants.TRANSLATION_SCALING_EXPONENT)),
-                RotationsPerSecond.of(
-                    Math.pow(
-                        MathUtil.applyDeadband((omega.getAsDouble()), SwerveConstants.DEADBAND),
-                        SwerveConstants.ROTATION_SCALING_EXPONENT))),
+                MetersPerSecond.of(MathUtil.applyDeadband(x.getAsDouble(), SwerveConstants.DEADBAND)),
+                MetersPerSecond.of(MathUtil.applyDeadband(y.getAsDouble(), SwerveConstants.DEADBAND)),
+                RotationsPerSecond.of(MathUtil.applyDeadband((omega.getAsDouble()), SwerveConstants.DEADBAND))),
         this);
   }
 }
