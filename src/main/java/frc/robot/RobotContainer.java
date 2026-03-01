@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
@@ -33,9 +32,8 @@ public class RobotContainer {
     controller = new XboxController(0);
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
-    
+
     configureBindings();
-    
   }
 
   private void configureBindings() {
@@ -90,9 +88,5 @@ public class RobotContainer {
   public void updateLiveTuning() {
     shooter.updateLiveTuning();
     pivot.setupLiveTuning();
-  }
-
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
   }
 }

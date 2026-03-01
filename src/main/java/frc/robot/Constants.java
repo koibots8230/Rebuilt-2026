@@ -76,9 +76,9 @@ public class Constants {
   }
 
   public static class AutoConstants {
-    public static final PIDGains X_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
-    public static final PIDGains Y_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
-    public static final PIDGains OMEGA_CONTROLLER = new PIDGains.Builder().kp(3.75).build();
+    public static final PIDGains X_CONTROLLER = new PIDGains.Builder().kp(5.0).build();
+    public static final PIDGains Y_CONTROLLER = new PIDGains.Builder().kp(5.0).build();
+    public static final PIDGains OMEGA_CONTROLLER = new PIDGains.Builder().kp(3.9).build();
 
     public static final Time SHOOT_TIME_LONG = edu.wpi.first.units.Units.Seconds.of(10);
     public static final Time SHOOT_TIME_SHORT = edu.wpi.first.units.Units.Seconds.of(5);
