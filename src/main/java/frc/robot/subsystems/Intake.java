@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     motor = new SparkMax(IntakeConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
-    config.inverted(true);
+    config.inverted(false);
     config.smartCurrentLimit((int) IntakeConstants.CURRENT_LIMIT.in(Amps));
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

@@ -47,6 +47,16 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
+    Trigger intakeReverse = new Trigger(controller::getLeftBumperButton);
+    intakeReverse.onTrue(Commands.parallel(
+      indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED),
+      intake.setSpeedCommand(-IntakeConstants.SPEED)
+    ));
+    intakeReverse.onFalse(Commands.parallel(
+      indexer.setSpeedCommand(0),
+      intake.setSpeedCommand(0)
+    ));
+
     Trigger pivotUp = new Trigger(controller::getAButton);
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
@@ -65,9 +75,10 @@ public class RobotContainer {
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.onTrue(
-        Commands.parallel(
+        Commands.sequence(
             shooter.setVelocityCommand(
                 ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+            Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
                     pivot.setPositionCommand(PivotConstants.MID_POSITION),

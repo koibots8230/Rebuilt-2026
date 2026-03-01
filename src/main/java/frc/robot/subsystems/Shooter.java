@@ -17,6 +17,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,11 +26,11 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  @NotLogged private final SparkMax flywheelMotor;
-  @NotLogged private final SparkMaxConfig flywheelMotorConfig;
+  @NotLogged private final SparkFlex flywheelMotor;
+  @NotLogged private final SparkFlexConfig flywheelMotorConfig;
   @NotLogged private SparkClosedLoopController flywheelMotorController;
-  @NotLogged private final SparkFlex intakeMotor;
-  @NotLogged private final SparkFlexConfig intakeMotorConfig;
+  @NotLogged private final SparkMax intakeMotor;
+  @NotLogged private final SparkMaxConfig intakeMotorConfig;
   @NotLogged private SparkClosedLoopController intakeMotorController;
 
   private Voltage flywheelVoltage;
@@ -43,8 +44,8 @@ public class Shooter extends SubsystemBase {
   private AngularVelocity intakeSetpoint;
 
   public Shooter() {
-    flywheelMotor = new SparkMax(ShooterConstants.FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
-    flywheelMotorConfig = new SparkMaxConfig();
+    flywheelMotor = new SparkFlex(ShooterConstants.FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+    flywheelMotorConfig = new SparkFlexConfig();
     flywheelMotorConfig.closedLoop.p(ShooterConstants.FLYWHEEL_PID.kp);
     flywheelMotorConfig.closedLoop.feedForward.kV(ShooterConstants.FLYWHEEL_FEEDFORWARD.kv);
 
@@ -59,8 +60,8 @@ public class Shooter extends SubsystemBase {
     flywheelCurrent = Amps.of(0);
     flywheelSetpoint = RPM.of(0);
 
-    intakeMotor = new SparkFlex(ShooterConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
-    intakeMotorConfig = new SparkFlexConfig();
+    intakeMotor = new SparkMax(ShooterConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    intakeMotorConfig = new SparkMaxConfig();
     intakeMotorConfig.closedLoop.p(ShooterConstants.INTAKE_PID.kp);
     intakeMotorConfig.closedLoop.feedForward.kV(ShooterConstants.INTAKE_FEEDFORWARD.kv);
 
@@ -92,6 +93,10 @@ public class Shooter extends SubsystemBase {
     intakeMotorController.setSetpoint(intakeVelocity.in(RPM), ControlType.kVelocity);
     flywheelSetpoint = flywheelVelocity;
     intakeSetpoint = intakeVelocity;
+  }
+
+  public boolean atSpeed() {
+    return flywheelVelocity.in(RPM) > flywheelSetpoint.in(RPM) - 20.0;
   }
 
   public void setupLiveTuning() {
