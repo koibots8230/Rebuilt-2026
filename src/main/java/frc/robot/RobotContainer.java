@@ -20,6 +20,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final Autos autos;
 
   public RobotContainer(boolean isReal) {
     climber = new Climber();
@@ -31,7 +32,10 @@ public class RobotContainer {
 
     controller = new XboxController(0);
 
+    autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
+    
     configureBindings();
+    
   }
 
   private void configureBindings() {
@@ -44,10 +48,10 @@ public class RobotContainer {
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
     Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
@@ -66,16 +70,16 @@ public class RobotContainer {
                 ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
-                    pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION),
                     Commands.waitUntil(pivot::atPosition),
-                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
                     Commands.waitUntil(pivot::atPosition))
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
             indexer.setSpeedCommand(0),
-            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
   }
 
   public void setupLiveTuning() {

@@ -190,6 +190,7 @@ public class SwerveModule {
   }
 
   public void periodic() {
+    this.updateLogs();
     turnGoalState =
         new TrapezoidProfile.State(
             MathUtil.angleModulus(turnSetpoint.in(Radians)) + offset.getRadians(), 0);
