@@ -1,9 +1,13 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -65,7 +69,7 @@ public class RobotContainer {
     shootTrigger.onTrue(
         Commands.parallel(
             shooter.setVelocityCommand(
-                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+                ShooterConstants.FEEDER_SPEED, ShooterConstants.FLYWHEEL_SPEED),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
                     pivot.setPositionCommand(PivotConstants.MID_POSITION),
