@@ -137,8 +137,9 @@ public class Constants {
 
     public static final Time SHOOT_TIME_LONG = edu.wpi.first.units.Units.Seconds.of(10);
     public static final Time SHOOT_TIME_SHORT = edu.wpi.first.units.Units.Seconds.of(5);
+    public static final Time PIVOT_TO_INTAKE_DELAY = edu.wpi.first.units.Units.Seconds.of(.5);
+
     public static final Time DEPOT_INTAKE_TIME = edu.wpi.first.units.Units.Seconds.of(3);
-    public static final Time INTAKE_DELAY = edu.wpi.first.units.Units.Seconds.of(.5);
   }
 
   public static class ClimberConstants {
