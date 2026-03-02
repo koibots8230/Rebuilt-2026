@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,10 +24,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.VisionMeasurement;
 import frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
@@ -105,7 +106,8 @@ public class Swerve extends SubsystemBase {
     //             estimatedPosition =
     //                 odometry.updateWithTime(
     //                     Timer.getFPGATimestamp(),
-    //                     isBlue ? gyro.getRotation2d() : gyro.getRotation2d().minus(Rotation2d.kPi),
+    //                     isBlue ? gyro.getRotation2d() :
+    // gyro.getRotation2d().minus(Rotation2d.kPi),
     //                     getModulePostitions());
     //           });
     //   odometryUpdater.startPeriodic(0.005);
@@ -137,7 +139,7 @@ public class Swerve extends SubsystemBase {
 
     gyroAngle = gyro.getRotation2d();
 
-    estimatedPosition = odometry.update(gyroAngle, getModulePostitions());
+    estimatedPosition = odometry.update(isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), getModulePostitions());
 
     measuredStates[0] = modules.frontLeft.getModuleState();
     measuredStates[1] = modules.frontRight.getModuleState();
@@ -169,7 +171,12 @@ public class Swerve extends SubsystemBase {
   }
 
   public Pose2d getEstimatedPosition() {
+    estimatedPosition = odometry.getEstimatedPosition();
     return estimatedPosition;
+  }
+
+  public void addVisionMeasurement(VisionMeasurement measurement) {
+    odometry.addVisionMeasurement(measurement.pose, measurement.timestamp, VecBuilder.fill(measurement.translationStdev, measurement.translationStdev, measurement.rotationStdev));
   }
 
   // ===================== Gyro ===================== \\
@@ -179,7 +186,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getGyroAngle() {
-    return gyro.getRotation2d();
+    return gyro.getRotation2d().plus(Rotation2d.k180deg);
   }
 
   public void setOdometry(Pose2d pose) {
@@ -253,8 +260,7 @@ public class Swerve extends SubsystemBase {
   // ===================== Auto Driving ===================== \\
 
   public void followTrajectory(SwerveSample sample) {
-    trajectoryToFollow = sample.getPose();
-    Pose2d pose = odometry.getEstimatedPosition();
+    Pose2d pose = getEstimatedPosition();
 
     ChassisSpeeds speeds =
         new ChassisSpeeds(

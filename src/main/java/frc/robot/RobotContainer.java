@@ -1,11 +1,15 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
@@ -21,6 +25,7 @@ public class RobotContainer {
   private final Intake intake;
   private final Pivot pivot;
   private final Autos autos;
+  private final Vision vision;
 
   public RobotContainer(boolean isReal) {
     climber = new Climber();
@@ -29,13 +34,14 @@ public class RobotContainer {
     indexer = new Indexer();
     pivot = new Pivot();
     swerve = new Swerve(isReal);
+    swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+    vision = new Vision(swerve::getEstimatedPosition, swerve::getGyroAngle, swerve::addVisionMeasurement, swerve::getIsBlue);
 
     controller = new XboxController(0);
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
-    
+
     configureBindings();
-    
   }
 
   private void configureBindings() {
@@ -77,7 +83,7 @@ public class RobotContainer {
     shootTrigger.onTrue(
         Commands.sequence(
             shooter.setVelocityCommand(
-                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+                ShooterConstants.FEEDER_SPEED, ShooterConstants.FLYWHEEL_SPEED),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
@@ -91,19 +97,16 @@ public class RobotContainer {
             shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
             indexer.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
+
+    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
+    zeroGyro.onTrue(swerve.zeroGyroCommand());
   }
 
   public void setupLiveTuning() {
-    shooter.setupLiveTuning();
     pivot.setupLiveTuning();
   }
 
   public void updateLiveTuning() {
-    shooter.updateLiveTuning();
     pivot.setupLiveTuning();
-  }
-
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
   }
 }

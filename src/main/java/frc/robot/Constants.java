@@ -2,8 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -76,9 +79,9 @@ public class Constants {
   }
 
   public static class AutoConstants {
-    public static final PIDGains X_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
-    public static final PIDGains Y_CONTROLLER = new PIDGains.Builder().kp(7.0).build();
-    public static final PIDGains OMEGA_CONTROLLER = new PIDGains.Builder().kp(3.75).build();
+    public static final PIDGains X_CONTROLLER = new PIDGains.Builder().kp(5.0).build();
+    public static final PIDGains Y_CONTROLLER = new PIDGains.Builder().kp(5.0).build();
+    public static final PIDGains OMEGA_CONTROLLER = new PIDGains.Builder().kp(3.9).build();
 
     public static final Time SHOOT_TIME_LONG = edu.wpi.first.units.Units.Seconds.of(10);
     public static final Time SHOOT_TIME_SHORT = edu.wpi.first.units.Units.Seconds.of(5);
@@ -121,22 +124,41 @@ public class Constants {
   }
 
   public static class ShooterConstants {
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5040);
-    public static final AngularVelocity INTAKE_SPEED = RPM.of(1650);
 
-    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.0).build();
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4700);
+    public static final AngularVelocity FEEDER_SPEED = RPM.of(1650);
+    public static final AngularVelocity IDLE_SPEED = RPM.of(500);
+
+    public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.5).build();
+        new FeedforwardGains.Builder().kv(0.0019).build(); 
 
-    public static final PIDGains INTAKE_PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains INTAKE_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.5).build();
+    public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0001).build();
+    public static final FeedforwardGains FEEDER_FEEDFORWARD =
+        new FeedforwardGains.Builder().kv(0.00234).build();
 
     public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
-    public static final Current INTAKE_CURRENT_LIMIT = Amps.of(80);
+    public static final Current FEEDER_CURRENT_LIMIT = Amps.of(80);
 
     public static final int FLYWHEEL_MOTOR_ID = 20;
-    public static final int INTAKE_MOTOR_ID = 21;
+    public static final int FEEDER_MOTOR_ID = 21;
+  }
+
+  public static class HoodConstants {
+    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
+
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
+    public static final FeedforwardGains FEEDFORWARD =
+        new FeedforwardGains.Builder().ks(0.0).kv(0.0).kg(0.0).build();
+
+    public static final double CONVERSION_FACTOR = 0;
+    public static final Current CURRENT_LIMIT = Amps.of(60);
+
+    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(45);
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
+
+    public static final int MOTOR_ID = 22;
   }
 
   public static class ClimberConstants {
@@ -169,9 +191,44 @@ public class Constants {
     public static final int MOTOR_ID = 50;
   }
 
+  public static class VisionConstants {
+    public static final int ACTIVE_CAMERAS = 2;
+
+    public static final Pose3d[] CAMERA_POSITIONS = {
+      new Pose3d(
+          new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
+    //   new Pose3d(
+    //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
+      new Pose3d(
+          new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
+    }; // x is forward, y is left, counterclockwise on rotation
+
+    public static final String[][] TOPIC_NAMES = {
+      {"Cam1Tvec", "Cam1Rmat", "Cam1Ids"},
+      {"Cam2Tvec", "Cam2Rmat", "Cam2Ids"},
+      // {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
+      // {"Cam4Tvec", "Cam4Rvec", "Cam4Ids"}
+    };
+
+    public static final double[] VECTOR_DEFAULT_VALUE = {0};
+    public static final int ID_DEFAULT_VALUE = 0;
+
+    public static final Distance MAX_MEASUREMENT_DIFFERENCE = Meters.of(4);
+    public static final Rotation2d MAX_ANGLE_DIFFERENCE = Rotation2d.fromDegrees(30);
+
+    public static final Distance MAX_TAG_DISTANCE = Meters.of(4);
+    public static final Distance MAX_HEIGHT_ERROR = Meters.of(0.2);
+
+    public static final double ROTATION_STDEV = 50 * Math.PI;
+    public static final double TRANSLATION_STDEV_ORDER = 1;
+    public static final double TRANSLATION_STDEV_SCALAR = 0.5;
+
+    public static final double[] CAM_STDEV_SCALARS = {1.0, 1.0};
+  }
+
   public static class RobotConstants {
-    public static final double TRACK_WIDTH = edu.wpi.first.math.util.Units.inchesToMeters(23.5);
-    public static final double TRACK_LENGTH = edu.wpi.first.math.util.Units.inchesToMeters(23.5);
+    public static final double TRACK_WIDTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
+    public static final double TRACK_LENGTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
   }
 }
