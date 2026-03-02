@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -15,17 +18,16 @@ import frc.robot.Constants.LEDConstants;
 
 public class LED extends SubsystemBase {
     private LEDMode defaultMode;
-    private LEDMode autonMode;
-    private LEDMode shift1Mode;
-    private LEDMode shift2Mode;
+    private LEDMode shiftActiveMode;
+    private LEDMode shiftInactiveMode;
     private LEDMode endGameMode;
     private boolean isBlue;
-    private boolean isBlueActiveFirst;
-    private boolean Active;
-    private int shift;
-    private int[] activeShifts;
+    private String shift;
     private String firstInactiveHub;
     private Double matchTime;
+    private record shiftData(int Shift1, int Shift2){};
+    private shiftData activeShifts;
+    
 
     public class LEDMode {
         private int modeString;
@@ -42,20 +44,17 @@ public class LED extends SubsystemBase {
             uart.writeString(Integer.toString(modeString));
         }
     }
+
     public LED() {
         defaultMode = new LEDMode(0, "Default");
-        autonMode = new LEDMode(1, "Auton");
-        shift1Mode = new LEDMode(0, "Shift1");
-        shift2Mode = new LEDMode(0, "Shift2");
+        shiftActiveMode = new LEDMode(0, "ShiftActive");
+        shiftInactiveMode = new LEDMode(0, "ShiftInactive");
         endGameMode = new LEDMode(0, "endGame");
         Optional<Alliance> ally = DriverStation.getAlliance();
 
         isBlue = ((ally.get() == Alliance.Blue) ? true : false);
         firstInactiveHub = "";
-    }
-
-    public Command setModeCommand(LEDMode mode){
-        return Commands.runOnce(() -> mode.writeModeString());
+        shift = "";
     }
 
     public void initializeLogic(){
@@ -64,10 +63,18 @@ public class LED extends SubsystemBase {
         if (firstInactiveHub.length() > 0){
             switch (firstInactiveHub.charAt(0)) {
                 case 'R':
-                    isBlueActiveFirst = true;
+                    if (isBlue){
+                        activeShifts = new shiftData(1, 3);
+                    } else {
+                        activeShifts = new shiftData(2, 4);
+                    }
                     break;
                 case 'B':
-                    isBlueActiveFirst = false;
+                    if (isBlue){
+                        activeShifts = new shiftData(2, 4);
+                    } else {
+                        activeShifts = new shiftData(1, 3);
+                    }
                     break;
                 default:
                     System.out.println("Game data does not fit specified parameters");
@@ -76,29 +83,65 @@ public class LED extends SubsystemBase {
         } else {
             System.out.println("There is no game data yet");
         }
-
-        if (isBlueActiveFirst && isBlue) {
-            activeShifts = new int[]{1, 3};
-        } else if (isBlueActiveFirst && !isBlue){
-            activeShifts = new int[]{2,4};
-        } else if (!isBlueActiveFirst && isBlue){
-            activeShifts = new int[]{2,4};
-        } else {
-            activeShifts = new int[]{1,3};
-        }
-
     }
 
     @Override
     public void periodic(){
         matchTime = DriverStation.getMatchTime();
-        
-        initializeLogic();
 
-        if (DriverStation.isAutonomous()){
-            setModeCommand(autonMode);
-        } else {
-            setModeCommand(defaultMode);
+        if(DriverStation.isTeleop()){
+            if (matchTime >= 130){
+                shift = "Transition";
+            } else if (matchTime >= 105 && matchTime < 130){
+                shift = "Shift 1";
+            } else if (matchTime >= 80 && matchTime < 105){
+                shift = "Shift 2";
+            } else if (matchTime >= 55 && matchTime < 80){
+                shift = "Shift 3";
+            } else if (matchTime >= 30 && matchTime < 55){
+                shift = "Shift 4";
+            } else if (matchTime < 30){
+                shift = "End Game";
+            }
+
+            switch (shift){
+                case "Transition":
+                    defaultMode.writeModeString();
+                    break;
+                case "Shift 1":
+                    if (activeShifts.Shift1() == 1){
+                        shiftActiveMode.writeModeString();
+                    } else {
+                        shiftInactiveMode.writeModeString();
+                    } break;
+                case "Shift 2":
+                    if (activeShifts.Shift1() == 2){
+                        shiftActiveMode.writeModeString();
+                    } else {
+                        shiftInactiveMode.writeModeString();
+                    } break;
+                case "Shift 3":
+                    if (activeShifts.Shift2() == 3){
+                        shiftActiveMode.writeModeString();
+                    } else {
+                        shiftInactiveMode.writeModeString();
+                    } break;
+                case "Shift 4":
+                    if (activeShifts.Shift2() == 4){
+                        shiftActiveMode.writeModeString();
+                    } else {
+                        shiftInactiveMode.writeModeString();
+                    } break;
+                case "End Game":
+                    endGameMode.writeModeString();
+                    break;
+                default:
+                    System.out.println("Shift data does not fit specified parameters or does not exist");
+                    break;
+            }
         }
+    }
+    public Command setModeCommand(LEDMode mode){
+        return runOnce(() -> mode.writeModeString());
     }
 }
