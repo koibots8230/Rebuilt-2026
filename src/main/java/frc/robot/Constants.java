@@ -2,8 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -188,9 +191,44 @@ public class Constants {
     public static final int MOTOR_ID = 50;
   }
 
+  public static class VisionConstants {
+    public static final int ACTIVE_CAMERAS = 2;
+
+    public static final Pose3d[] CAMERA_POSITIONS = {
+      new Pose3d(
+          new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
+    //   new Pose3d(
+    //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
+      new Pose3d(
+          new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
+    }; // x is forward, y is left, counterclockwise on rotation
+
+    public static final String[][] TOPIC_NAMES = {
+      {"Cam1Tvec", "Cam1Rmat", "Cam1Ids"},
+      {"Cam2Tvec", "Cam2Rmat", "Cam2Ids"},
+      // {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
+      // {"Cam4Tvec", "Cam4Rvec", "Cam4Ids"}
+    };
+
+    public static final double[] VECTOR_DEFAULT_VALUE = {0};
+    public static final int ID_DEFAULT_VALUE = 0;
+
+    public static final Distance MAX_MEASUREMENT_DIFFERENCE = Meters.of(4);
+    public static final Rotation2d MAX_ANGLE_DIFFERENCE = Rotation2d.fromDegrees(30);
+
+    public static final Distance MAX_TAG_DISTANCE = Meters.of(4);
+    public static final Distance MAX_HEIGHT_ERROR = Meters.of(0.2);
+
+    public static final double ROTATION_STDEV = 50 * Math.PI;
+    public static final double TRANSLATION_STDEV_ORDER = 1;
+    public static final double TRANSLATION_STDEV_SCALAR = 0.5;
+
+    public static final double[] CAM_STDEV_SCALARS = {1.0, 1.0};
+  }
+
   public static class RobotConstants {
-    public static final double TRACK_WIDTH = edu.wpi.first.math.util.Units.inchesToMeters(23.5);
-    public static final double TRACK_LENGTH = edu.wpi.first.math.util.Units.inchesToMeters(23.5);
+    public static final double TRACK_WIDTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
+    public static final double TRACK_LENGTH = edu.wpi.first.math.util.Units.inchesToMeters(24);
     public static final Time CLOCK_SPEED = Milliseconds.of(20);
   }
 }

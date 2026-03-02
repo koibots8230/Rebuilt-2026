@@ -11,7 +11,7 @@ import frc.robot.subsystems.*;
 public class ShootCommands {
   public static Command shoot(Shooter shooter, Indexer indexer) {
     return Commands.parallel(
-        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+        shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, ShooterConstants.FLYWHEEL_SPEED),
         indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED));
   }
 
