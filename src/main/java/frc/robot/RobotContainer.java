@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
@@ -27,6 +28,8 @@ public class RobotContainer {
   private final Autos autos;
   private final Vision vision;
 
+  private double shooterVelocity;
+
   public RobotContainer(boolean isReal) {
     climber = new Climber();
     intake = new Intake();
@@ -38,6 +41,8 @@ public class RobotContainer {
     vision = new Vision(swerve::getEstimatedPosition, swerve::getGyroAngle, swerve::addVisionMeasurement, swerve::getIsBlue);
 
     controller = new XboxController(0);
+
+    shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
 
@@ -80,10 +85,10 @@ public class RobotContainer {
     zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
-    shootTrigger.onTrue(
+    shootTrigger.whileTrue(
         Commands.sequence(
             shooter.setVelocityCommand(
-                ShooterConstants.FEEDER_SPEED, ShooterConstants.FLYWHEEL_SPEED),
+                ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
             Commands.sequence(
@@ -103,10 +108,15 @@ public class RobotContainer {
   }
 
   public void setupLiveTuning() {
+    shooter.setupLiveTuning();
     pivot.setupLiveTuning();
+
+    SmartDashboard.putNumber("flywheelVelocity", shooterVelocity);
   }
 
   public void updateLiveTuning() {
-    pivot.setupLiveTuning();
+    shooterVelocity = SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
+    shooter.updateLiveTuning();
+    pivot.updateLiveTuning();
   }
 }
