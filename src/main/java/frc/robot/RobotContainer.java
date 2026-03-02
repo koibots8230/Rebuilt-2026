@@ -71,11 +71,11 @@ public class RobotContainer {
     zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
-    shootTrigger.onTrue(ShootCommands.shoot(shooter, indexer));
-    shootTrigger.onFalse(ShootCommands.stop(shooter, indexer));
+    shootTrigger.onTrue(ShootCommands.shoot(shooter, indexer, pivot));
+    shootTrigger.onFalse(ShootCommands.stop(shooter, indexer, pivot));
 
     swerve.setDefaultCommand(
-        swerve.driveCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
+        swerve.driveFieldRelativeCommand(controller::getLeftY, controller::getLeftX, controller::getRightX));
   }
 
   public void setupLiveTuning() {
