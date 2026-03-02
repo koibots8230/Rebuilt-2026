@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED.LEDMode;
 
 @Logged
 public class RobotContainer {
@@ -21,6 +22,10 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final LED led;
+
+  private final LEDMode autonomousLEDMode;
+  private final LEDMode climbLEDAnimation;
   private final Autos autos;
   private final Vision vision;
 
@@ -39,15 +44,18 @@ public class RobotContainer {
             swerve::getGyroAngle,
             swerve::addVisionMeasurement,
             swerve::getIsBlue);
+    led = new LED();
 
     controller = new XboxController(0);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
+    autonomousLEDMode = led.new LEDMode(1, "Autonomous");
+    climbLEDAnimation = led.new LEDMode(2, "ClimbAnimation");
 
     configureBindings();
-  }
+  }  
 
   public void setIsBlue() {
     swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
@@ -76,7 +84,10 @@ public class RobotContainer {
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
-    raiseClimber.onTrue(climber.raiseClimbCommand());
+    raiseClimber.onTrue(
+      Commands.parallel(
+        climber.raiseClimbCommand(), 
+        led.setModeCommand(climbLEDAnimation)));
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
