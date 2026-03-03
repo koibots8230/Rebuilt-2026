@@ -52,7 +52,7 @@ public class RobotContainer {
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
     autonomousLEDMode = led.new LEDMode(1, "Autonomous");
-    climbLEDAnimation = led.new LEDMode(2, "ClimbAnimation");
+    climbLEDAnimation = led.new LEDMode(5, "ClimbAnimation");
 
     configureBindings();
   }  
@@ -118,6 +118,9 @@ public class RobotContainer {
 
     Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
     zeroGyro.onTrue(swerve.zeroGyroCommand());
+
+    Trigger configureLEDTrigger = new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    configureLEDTrigger.onTrue(led.configureLogicCommand());
   }
 
   public void setupLiveTuning() {
@@ -132,5 +135,13 @@ public class RobotContainer {
         SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
+            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+
+    
+  }
+
+  public Command getAutonomousCommand() {
+    return Commands.parallel(
+      led.setModeCommand(autonomousLEDMode));
   }
 }

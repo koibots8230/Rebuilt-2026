@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
@@ -47,9 +43,9 @@ public class LED extends SubsystemBase {
 
     public LED() {
         defaultMode = new LEDMode(0, "Default");
-        shiftActiveMode = new LEDMode(0, "ShiftActive");
-        shiftInactiveMode = new LEDMode(0, "ShiftInactive");
-        endGameMode = new LEDMode(0, "endGame");
+        shiftActiveMode = new LEDMode(2, "ShiftActive");
+        shiftInactiveMode = new LEDMode(3, "ShiftInactive");
+        endGameMode = new LEDMode(4, "EndGame");
         Optional<Alliance> ally = DriverStation.getAlliance();
 
         isBlue = ((ally.get() == Alliance.Blue) ? true : false);
@@ -57,7 +53,7 @@ public class LED extends SubsystemBase {
         shift = "";
     }
 
-    public void initializeLogic(){
+    public void configureLogic(){
         firstInactiveHub = DriverStation.getGameSpecificMessage();
 
         if (firstInactiveHub.length() > 0){
@@ -137,11 +133,16 @@ public class LED extends SubsystemBase {
                     break;
                 default:
                     System.out.println("Shift data does not fit specified parameters or does not exist");
+                    defaultMode.writeModeString();
                     break;
             }
         }
     }
     public Command setModeCommand(LEDMode mode){
-        return runOnce(() -> mode.writeModeString());
+        return Commands.runOnce(() -> mode.writeModeString());
+    }
+
+    public Command configureLogicCommand(){
+        return Commands.runOnce(() -> configureLogic());
     }
 }
