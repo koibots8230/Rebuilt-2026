@@ -91,6 +91,7 @@ public class RobotContainer {
                 ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
+            intake.setSpeedCommand(IntakeConstants.SPEED),
             Commands.sequence(
                     pivot.setPositionCommand(PivotConstants.MID_POSITION),
                     Commands.waitUntil(pivot::atPosition),
@@ -99,8 +100,9 @@ public class RobotContainer {
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            shooter.setVelocityCommand(RPM.of(0), ShooterConstants.IDLE_SPEED),
             indexer.setSpeedCommand(0),
+            intake.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
 
     Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());

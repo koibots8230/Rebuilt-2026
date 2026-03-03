@@ -14,6 +14,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,10 +47,13 @@ public class Pivot extends SubsystemBase {
   public Pivot() {
     motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
+    config.inverted(false);
     config.smartCurrentLimit((int) PivotConstants.CURRENT_LIMIT.in(Amps));
     config.closedLoop.p(PivotConstants.PID.kp);
     config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     config.absoluteEncoder.positionConversionFactor(PivotConstants.CONVERSION_FACTOR);
+    config.absoluteEncoder.inverted(true);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     pid = motor.getClosedLoopController();
     profile =
@@ -68,12 +73,12 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
-    pid.setSetpoint(
-        motorSetpoint.position,
-        ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
-    position = motor.getEncoder().getPosition();
+    // pid.setSetpoint(
+    //     motorSetpoint.position,
+    //     ControlType.kPosition,
+    //     ClosedLoopSlot.kSlot0,
+    //     feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
+    position = motor.getAbsoluteEncoder().getPosition();
     current = motor.getOutputCurrent();
     voltage = motor.getAppliedOutput() * motor.getBusVoltage();
   }
