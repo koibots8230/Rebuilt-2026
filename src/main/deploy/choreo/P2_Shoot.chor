@@ -1,5 +1,5 @@
 {
- "name":"P5_Shoot",
+ "name":"P2_Shoot",
  "version":2,
  "type":"Swerve",
  "variables":{
@@ -40,8 +40,8 @@
    "val":6.5
   },
   "radius":{
-   "exp":"2 in",
-   "val":0.0508
+   "exp":"1.5 in",
+   "val":0.038099999999999995
   },
   "vmax":{
    "exp":"6000 RPM",
@@ -57,16 +57,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17.75 in",
+    "val":0.45085
    },
    "side":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17.75 in",
+    "val":0.45085
    },
    "back":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17.75 in",
+    "val":0.45085
    }
   },
   "differentialTrackWidth":{

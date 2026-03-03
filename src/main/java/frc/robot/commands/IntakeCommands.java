@@ -10,13 +10,10 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 
 public class IntakeCommands {
-  public static Command autoIntake(Intake intake, Pivot pivot, Time time) {
+  public static Command intakeStart(Intake intake, Pivot pivot) {
     return Commands.sequence(
         pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
         Commands.waitTime(AutoConstants.PIVOT_TO_INTAKE_DELAY),
-        intake.setSpeedCommand(IntakeConstants.SPEED),
-        Commands.waitTime(time),
-        intake.setSpeedCommand(0),
-        pivot.setPositionCommand(PivotConstants.UP_POSITION));
+        intake.setSpeedCommand(IntakeConstants.SPEED));
   }
 }
