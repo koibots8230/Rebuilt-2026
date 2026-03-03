@@ -33,7 +33,6 @@ public class RobotContainer {
     indexer = new Indexer();
     pivot = new Pivot();
     swerve = new Swerve(isReal);
-    swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
     vision =
         new Vision(
             swerve::getEstimatedPosition,
@@ -48,6 +47,10 @@ public class RobotContainer {
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
 
     configureBindings();
+  }
+
+  public void setIsBlue() {
+    swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
   }
 
   private void configureBindings() {
