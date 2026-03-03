@@ -4,8 +4,9 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
@@ -20,6 +21,10 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final Autos autos;
+  private final Vision vision;
+
+  private double shooterVelocity;
 
   public RobotContainer(boolean isReal) {
     climber = new Climber();
@@ -28,8 +33,19 @@ public class RobotContainer {
     indexer = new Indexer();
     pivot = new Pivot();
     swerve = new Swerve(isReal);
+    swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+    vision =
+        new Vision(
+            swerve::getEstimatedPosition,
+            swerve::getGyroAngle,
+            swerve::addVisionMeasurement,
+            swerve::getIsBlue);
 
     controller = new XboxController(0);
+
+    shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
+
+    autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
 
     configureBindings();
   }
@@ -43,11 +59,18 @@ public class RobotContainer {
     intakeButton.onTrue(intake.setSpeedCommand(IntakeConstants.SPEED));
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
+    Trigger intakeReverse = new Trigger(controller::getLeftBumperButton);
+    intakeReverse.onTrue(
+        Commands.parallel(
+            indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED),
+            intake.setSpeedCommand(-IntakeConstants.SPEED)));
+    intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
+
     Trigger pivotUp = new Trigger(controller::getAButton);
-    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION.getRadians()));
+    pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
     Trigger pivotDown = new Trigger(controller::getBButton);
-    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()));
+    pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
@@ -60,35 +83,40 @@ public class RobotContainer {
     zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
-    shootTrigger.onTrue(
-        Commands.parallel(
-            shooter.setVelocityCommand(
-                ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.INTAKE_SPEED),
+    shootTrigger.whileTrue(
+        Commands.sequence(
+            shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
+            Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
+            intake.setSpeedCommand(IntakeConstants.SPEED),
             Commands.sequence(
-                    pivot.setPositionCommand(PivotConstants.MID_POSITION.getRadians()),
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION),
                     Commands.waitUntil(pivot::atPosition),
-                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians()),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
                     Commands.waitUntil(pivot::atPosition))
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            shooter.setVelocityCommand(RPM.of(0), ShooterConstants.IDLE_SPEED),
             indexer.setSpeedCommand(0),
-            pivot.setPositionCommand(PivotConstants.DOWN_POSITION.getRadians())));
+            intake.setSpeedCommand(0),
+            pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
+
+    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
+    zeroGyro.onTrue(swerve.zeroGyroCommand());
   }
 
   public void setupLiveTuning() {
     shooter.setupLiveTuning();
     pivot.setupLiveTuning();
+
+    SmartDashboard.putNumber("flywheelVelocity", shooterVelocity);
   }
 
   public void updateLiveTuning() {
+    shooterVelocity =
+        SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
-    pivot.setupLiveTuning();
-  }
-
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    pivot.updateLiveTuning();
   }
 }
