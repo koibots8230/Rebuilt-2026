@@ -23,17 +23,15 @@ public class LED extends SubsystemBase {
     private Double matchTime;
     private record shiftData(int Shift1, int Shift2){};
     private shiftData activeShifts;
-    
+    private static SerialPort uart = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kOnboard);
 
     public class LEDMode {
         private int modeString;
         private String modeName;
-        private SerialPort uart;
 
         public LEDMode(int modeString, String modeName){
             this.modeString = modeString;
             this.modeName = modeName;
-            this.uart = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kMXP);
         }
 
         public void writeModeString(){
@@ -48,7 +46,7 @@ public class LED extends SubsystemBase {
         endGameMode = new LEDMode(4, "EndGame");
         Optional<Alliance> ally = DriverStation.getAlliance();
 
-        isBlue = ((ally.get() == Alliance.Blue) ? true : false);
+        isBlue = true;
         firstInactiveHub = "";
         shift = "";
     }
