@@ -139,7 +139,9 @@ public class Swerve extends SubsystemBase {
 
     gyroAngle = gyro.getRotation2d();
 
-    estimatedPosition = odometry.update(isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), getModulePostitions());
+    estimatedPosition =
+        odometry.update(
+            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), getModulePostitions());
 
     measuredStates[0] = modules.frontLeft.getModuleState();
     measuredStates[1] = modules.frontRight.getModuleState();
@@ -176,7 +178,11 @@ public class Swerve extends SubsystemBase {
   }
 
   public void addVisionMeasurement(VisionMeasurement measurement) {
-    odometry.addVisionMeasurement(measurement.pose, measurement.timestamp, VecBuilder.fill(measurement.translationStdev, measurement.translationStdev, measurement.rotationStdev));
+    odometry.addVisionMeasurement(
+        measurement.pose,
+        measurement.timestamp,
+        VecBuilder.fill(
+            measurement.translationStdev, measurement.translationStdev, measurement.rotationStdev));
   }
 
   // ===================== Gyro ===================== \\

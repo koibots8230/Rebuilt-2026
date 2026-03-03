@@ -214,7 +214,11 @@ public class Vision extends SubsystemBase {
                     RobotState.isDisabled() ? 0 : VisionConstants.ROTATION_STDEV));
           }
         } else {
-            System.out.println("Within distance: " + withinDistance(tvec[b].value) + "Within Height: " + withinHeight(tvec[b].value, (int) ids[b].value, a));
+          System.out.println(
+              "Within distance: "
+                  + withinDistance(tvec[b].value)
+                  + "Within Height: "
+                  + withinHeight(tvec[b].value, (int) ids[b].value, a));
         }
       }
     }
