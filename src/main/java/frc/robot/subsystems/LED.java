@@ -19,6 +19,7 @@ public class LED extends SubsystemBase {
     private LEDMode endGameMode;
     private boolean isBlue;
     private String shift;
+    private Optional<Alliance> ally;
     private String firstInactiveHub;
     private Double matchTime;
     private record shiftData(int Shift1, int Shift2){};
@@ -44,15 +45,23 @@ public class LED extends SubsystemBase {
         shiftActiveMode = new LEDMode(2, "ShiftActive");
         shiftInactiveMode = new LEDMode(3, "ShiftInactive");
         endGameMode = new LEDMode(4, "EndGame");
-        Optional<Alliance> ally = DriverStation.getAlliance();
 
-        isBlue = true;
         firstInactiveHub = "";
         shift = "";
     }
 
     public void configureLogic(){
         firstInactiveHub = DriverStation.getGameSpecificMessage();
+        if(ally.isPresent()){
+            switch (ally.get()){
+                case Red:
+                    isBlue = false;
+                case Blue:
+                    isBlue = true;
+                default:
+                    System.out.println("Alliance is not yet defined.");
+            }
+        }
 
         if (firstInactiveHub.length() > 0){
             switch (firstInactiveHub.charAt(0)) {
