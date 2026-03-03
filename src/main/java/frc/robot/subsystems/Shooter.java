@@ -9,18 +9,16 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -37,7 +35,6 @@ public class Shooter extends SubsystemBase {
   @NotLogged private final SparkMax feederMotor;
   @NotLogged private final SparkMaxConfig feederMotorConfig;
   @NotLogged private SparkClosedLoopController feederMotorController;
-  
 
   private Voltage flywheelVoltage;
   private AngularVelocity flywheelVelocity;
@@ -77,7 +74,7 @@ public class Shooter extends SubsystemBase {
     feederMotorConfig.idleMode(IdleMode.kBrake);
     feederMotor.configure(
         feederMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
+
     feederMotorController = feederMotor.getClosedLoopController();
 
     feederVoltage = Volts.of(0);
@@ -95,7 +92,6 @@ public class Shooter extends SubsystemBase {
     feederVoltage = Volts.of(feederMotor.getAppliedOutput() * feederMotor.getBusVoltage());
     feederVelocity = RPM.of(feederMotor.getEncoder().getVelocity());
     feederCurrent = Amps.of(feederMotor.getOutputCurrent());
-
   }
 
   @Override
@@ -140,7 +136,8 @@ public class Shooter extends SubsystemBase {
     feederMotorController = feederMotor.getClosedLoopController();
   }
 
-  public Command setVelocityCommand(AngularVelocity flywheelVelocity, AngularVelocity feederVelocity) {
+  public Command setVelocityCommand(
+      AngularVelocity flywheelVelocity, AngularVelocity feederVelocity) {
     return Commands.runOnce(() -> shoot(flywheelVelocity, feederVelocity), this);
   }
 }

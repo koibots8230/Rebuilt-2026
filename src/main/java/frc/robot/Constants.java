@@ -106,18 +106,18 @@ public class Constants {
   }
 
   public static class PivotConstants {
-    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(90);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(42);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
-    public static final Rotation2d MARGIN = Rotation2d.fromDegrees(5);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0).build();
+    public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(1.6);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(50);
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
+    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.2).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0).kg(0).build();
+        new FeedforwardGains.Builder().kv(0.65).kg(0.6).build();
 
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
+    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(360);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(360);
     public static final Current CURRENT_LIMIT = Amps.of(60);
 
     public static final int MOTOR_ID = 11;
@@ -126,12 +126,12 @@ public class Constants {
   public static class ShooterConstants {
 
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4700);
-    public static final AngularVelocity FEEDER_SPEED = RPM.of(1650);
+    public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
     public static final AngularVelocity IDLE_SPEED = RPM.of(500);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.0019).build(); 
+        new FeedforwardGains.Builder().kv(0.0019).build();
 
     public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0001).build();
     public static final FeedforwardGains FEEDER_FEEDFORWARD =
@@ -142,23 +142,6 @@ public class Constants {
 
     public static final int FLYWHEEL_MOTOR_ID = 20;
     public static final int FEEDER_MOTOR_ID = 21;
-  }
-
-  public static class HoodConstants {
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
-
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().ks(0.0).kv(0.0).kg(0.0).build();
-
-    public static final double CONVERSION_FACTOR = 0;
-    public static final Current CURRENT_LIMIT = Amps.of(60);
-
-    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(45);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
-
-    public static final int MOTOR_ID = 22;
   }
 
   public static class ClimberConstants {
@@ -197,8 +180,9 @@ public class Constants {
     public static final Pose3d[] CAMERA_POSITIONS = {
       new Pose3d(
           new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
-    //   new Pose3d(
-    //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
+      //   new Pose3d(
+      //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new
+      // Rotation3d(Rotation2d.kZero)),
       new Pose3d(
           new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
     }; // x is forward, y is left, counterclockwise on rotation

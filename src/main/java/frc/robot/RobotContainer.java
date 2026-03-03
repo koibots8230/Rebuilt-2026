@@ -1,13 +1,9 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,7 +34,12 @@ public class RobotContainer {
     pivot = new Pivot();
     swerve = new Swerve(isReal);
     swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
-    vision = new Vision(swerve::getEstimatedPosition, swerve::getGyroAngle, swerve::addVisionMeasurement, swerve::getIsBlue);
+    vision =
+        new Vision(
+            swerve::getEstimatedPosition,
+            swerve::getGyroAngle,
+            swerve::addVisionMeasurement,
+            swerve::getIsBlue);
 
     controller = new XboxController(0);
 
@@ -59,14 +60,11 @@ public class RobotContainer {
     intakeButton.onFalse(intake.setSpeedCommand(0));
 
     Trigger intakeReverse = new Trigger(controller::getLeftBumperButton);
-    intakeReverse.onTrue(Commands.parallel(
-      indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED),
-      intake.setSpeedCommand(-IntakeConstants.SPEED)
-    ));
-    intakeReverse.onFalse(Commands.parallel(
-      indexer.setSpeedCommand(0),
-      intake.setSpeedCommand(0)
-    ));
+    intakeReverse.onTrue(
+        Commands.parallel(
+            indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED),
+            intake.setSpeedCommand(-IntakeConstants.SPEED)));
+    intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
     Trigger pivotUp = new Trigger(controller::getAButton);
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
@@ -87,10 +85,10 @@ public class RobotContainer {
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(
         Commands.sequence(
-            shooter.setVelocityCommand(
-                ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
+            shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
+            intake.setSpeedCommand(IntakeConstants.SPEED),
             Commands.sequence(
                     pivot.setPositionCommand(PivotConstants.MID_POSITION),
                     Commands.waitUntil(pivot::atPosition),
@@ -99,8 +97,9 @@ public class RobotContainer {
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)),
+            shooter.setVelocityCommand(RPM.of(0), ShooterConstants.IDLE_SPEED),
             indexer.setSpeedCommand(0),
+            intake.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
 
     Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
@@ -115,7 +114,8 @@ public class RobotContainer {
   }
 
   public void updateLiveTuning() {
-    shooterVelocity = SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
+    shooterVelocity =
+        SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
   }
