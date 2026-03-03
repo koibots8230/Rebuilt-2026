@@ -144,23 +144,6 @@ public class Constants {
     public static final int FEEDER_MOTOR_ID = 21;
   }
 
-  public static class HoodConstants {
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(90);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(90);
-
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.0).build();
-    public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().ks(0.0).kv(0.0).kg(0.0).build();
-
-    public static final double CONVERSION_FACTOR = 0;
-    public static final Current CURRENT_LIMIT = Amps.of(60);
-
-    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(45);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromDegrees(0);
-
-    public static final int MOTOR_ID = 22;
-  }
-
   public static class ClimberConstants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
