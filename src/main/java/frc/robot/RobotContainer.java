@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,10 +36,10 @@ public class RobotContainer {
 
     controller = new XboxController(0);
     autonomousLEDMode = led.new LEDMode(1, "Autonomous");
-    climbLEDAnimation = led.new LEDMode(2, "ClimbAnimation");
+    climbLEDAnimation = led.new LEDMode(5, "ClimbAnimation");
 
     configureBindings();
-  }  
+  }
 
   private void configureBindings() {
     Trigger intakeButton = new Trigger(() -> controller.getLeftTriggerAxis() > 0.15);
@@ -69,6 +70,9 @@ public class RobotContainer {
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+
+    Trigger configureLEDTrigger = new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    configureLEDTrigger.onTrue(led.configureLogicCommand());
   }
 
   public Command getAutonomousCommand() {
