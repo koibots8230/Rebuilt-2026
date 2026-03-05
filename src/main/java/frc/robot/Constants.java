@@ -91,7 +91,7 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final double SHOOTING_SPEED = 0.3;
+    public static final double SHOOTING_SPEED = 0.4;
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
 
@@ -107,17 +107,17 @@ public class Constants {
 
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(1.6);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(50);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(75);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
     public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.2).build();
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.6).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.65).kg(0.6).build();
+        new FeedforwardGains.Builder().kv(2.5).kg(0.7).build();
 
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(360);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(360);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(180);
     public static final Current CURRENT_LIMIT = Amps.of(60);
 
     public static final int MOTOR_ID = 11;
