@@ -7,18 +7,19 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +31,7 @@ public class Pivot extends SubsystemBase {
 
   private final SparkMax motor;
   private final SparkMaxConfig config;
-  private final SparkClosedLoopController pid;
+  private SparkClosedLoopController pid;
   private final TrapezoidProfile profile;
   private TrapezoidProfile.State goal;
   private TrapezoidProfile.State motorSetpoint;
@@ -43,10 +44,13 @@ public class Pivot extends SubsystemBase {
   public Pivot() {
     motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
+    config.inverted(false);
     config.smartCurrentLimit((int) PivotConstants.CURRENT_LIMIT.in(Amps));
     config.closedLoop.p(PivotConstants.PID.kp);
     config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     config.absoluteEncoder.positionConversionFactor(PivotConstants.CONVERSION_FACTOR);
+    config.absoluteEncoder.inverted(true);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     pid = motor.getClosedLoopController();
     profile =
@@ -66,14 +70,19 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
-    pid.setSetpoint(
-        motorSetpoint.position,
-        ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
-    position = motor.getEncoder().getPosition();
+    // pid.setSetpoint(
+    //     motorSetpoint.position,
+    //     ControlType.kPosition,
+    //     ClosedLoopSlot.kSlot0,
+    //     feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
+    position = motor.getAbsoluteEncoder().getPosition();
     current = motor.getOutputCurrent();
     voltage = motor.getAppliedOutput() * motor.getBusVoltage();
+  }
+
+  public boolean atPosition() {
+    return (position >= (setpoint - PivotConstants.MARGIN.getRadians())
+        && position <= (setpoint + PivotConstants.MARGIN.getRadians()));
   }
 
   @Override
@@ -81,12 +90,34 @@ public class Pivot extends SubsystemBase {
     position = motorSetpoint.position;
   }
 
-  private void setPosition(double angle) {
-    goal = new State(angle, 0);
-    setpoint = angle;
+  private void setPosition(Rotation2d angle) {
+    goal = new State(angle.getRadians(), 0);
+    setpoint = angle.getRadians();
   }
 
-  public Command setPositionCommand(double angle) {
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber("Intake/pidkp", PivotConstants.PID.kp);
+    SmartDashboard.putNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks);
+    SmartDashboard.putNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg);
+    SmartDashboard.putNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv);
+  }
+
+  public void updateLiveTuning() {
+    config.closedLoop.p(SmartDashboard.getNumber("Intake/pidkp", PivotConstants.PID.kp));
+
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    pid = motor.getClosedLoopController();
+
+    feedforward.setKs(
+        SmartDashboard.getNumber("Intake/feedforwardks", PivotConstants.FEEDFORWARD.ks));
+    feedforward.setKg(
+        SmartDashboard.getNumber("Intake/feedforwardkg", PivotConstants.FEEDFORWARD.kg));
+    feedforward.setKv(
+        SmartDashboard.getNumber("Intake/feedforwardkv", PivotConstants.FEEDFORWARD.kv));
+  }
+
+  public Command setPositionCommand(Rotation2d angle) {
     return Commands.runOnce(() -> this.setPosition(angle), this);
   }
 }
