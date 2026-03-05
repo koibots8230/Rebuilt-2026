@@ -19,21 +19,20 @@ public class LED extends SubsystemBase {
     private LEDMode endGameMode;
     private boolean isBlue;
     private String shift;
+    private Optional<Alliance> ally;
     private String firstInactiveHub;
     private Double matchTime;
     private record shiftData(int Shift1, int Shift2){};
     private shiftData activeShifts;
-    
+    private static SerialPort uart = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kOnboard);
 
     public class LEDMode {
         private int modeString;
         private String modeName;
-        private SerialPort uart;
 
         public LEDMode(int modeString, String modeName){
             this.modeString = modeString;
             this.modeName = modeName;
-            this.uart = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kMXP);
         }
 
         public void writeModeString(){
@@ -46,15 +45,23 @@ public class LED extends SubsystemBase {
         shiftActiveMode = new LEDMode(2, "ShiftActive");
         shiftInactiveMode = new LEDMode(3, "ShiftInactive");
         endGameMode = new LEDMode(4, "EndGame");
-        Optional<Alliance> ally = DriverStation.getAlliance();
 
-        isBlue = ((ally.get() == Alliance.Blue) ? true : false);
         firstInactiveHub = "";
         shift = "";
     }
 
     public void configureLogic(){
         firstInactiveHub = DriverStation.getGameSpecificMessage();
+        if(ally.isPresent()){
+            switch (ally.get()){
+                case Red:
+                    isBlue = false;
+                case Blue:
+                    isBlue = true;
+                default:
+                    System.out.println("Alliance is not yet defined.");
+            }
+        }
 
         if (firstInactiveHub.length() > 0){
             switch (firstInactiveHub.charAt(0)) {
