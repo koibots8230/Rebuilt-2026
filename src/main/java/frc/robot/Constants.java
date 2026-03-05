@@ -125,7 +125,7 @@ public class Constants {
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4700);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
     public static final AngularVelocity IDLE_SPEED = RPM.of(500);
 
@@ -137,8 +137,8 @@ public class Constants {
     public static final FeedforwardGains FEEDER_FEEDFORWARD =
         new FeedforwardGains.Builder().kv(0.00234).build();
 
-    public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(60);
-    public static final Current FEEDER_CURRENT_LIMIT = Amps.of(80);
+    public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(80);
+    public static final Current FEEDER_CURRENT_LIMIT = Amps.of(60);
 
     public static final int FLYWHEEL_MOTOR_ID = 20;
     public static final int FEEDER_MOTOR_ID = 21;

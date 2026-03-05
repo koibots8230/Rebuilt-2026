@@ -100,7 +100,7 @@ public class RobotContainer {
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(RPM.of(0), ShooterConstants.IDLE_SPEED),
+            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),
             indexer.setSpeedCommand(0),
             intake.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
