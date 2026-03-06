@@ -180,9 +180,8 @@ public class Constants {
     public static final Pose3d[] CAMERA_POSITIONS = {
       new Pose3d(
           new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
-        new Pose3d(
-            new Translation3d(10.2, -11.65, 15.1).times(0.0254), new
-      Rotation3d(Rotation2d.kZero)),
+      new Pose3d(
+          new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
       new Pose3d(
           new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
     }; // x is forward, y is left, counterclockwise on rotation
