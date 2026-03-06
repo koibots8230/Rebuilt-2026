@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,8 +12,10 @@ import frc.robot.subsystems.*;
 
 public class ShootCommands {
   public static Command shoot(Shooter shooter, Indexer indexer) {
-    return Commands.parallel(
-        shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, ShooterConstants.FLYWHEEL_SPEED),
+    return Commands.sequence(
+        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, RPM.of(0)),
+        Commands.waitUntil(shooter::atSpeed),
+        shooter.setVelocityCommand(ShooterConstants.FLYWHEEL_SPEED, ShooterConstants.FEEDER_SPEED),
         indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED));
   }
 

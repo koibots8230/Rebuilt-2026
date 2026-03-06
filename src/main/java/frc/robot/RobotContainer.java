@@ -97,7 +97,8 @@ public class RobotContainer {
                     Commands.waitUntil(pivot::atPosition),
                     pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
                     Commands.waitUntil(pivot::atPosition))
-                .repeatedly()));
+                .repeatedly()
+              ));
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),
