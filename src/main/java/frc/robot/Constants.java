@@ -127,7 +127,7 @@ public class Constants {
 
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
-    public static final AngularVelocity IDLE_SPEED = RPM.of(500);
+    public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
@@ -180,9 +180,9 @@ public class Constants {
     public static final Pose3d[] CAMERA_POSITIONS = {
       new Pose3d(
           new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
-      //   new Pose3d(
-      //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new
-      // Rotation3d(Rotation2d.kZero)),
+        new Pose3d(
+            new Translation3d(10.2, -11.65, 15.1).times(0.0254), new
+      Rotation3d(Rotation2d.kZero)),
       new Pose3d(
           new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
     }; // x is forward, y is left, counterclockwise on rotation
@@ -190,7 +190,7 @@ public class Constants {
     public static final String[][] TOPIC_NAMES = {
       {"Cam1Tvec", "Cam1Rmat", "Cam1Ids"},
       {"Cam2Tvec", "Cam2Rmat", "Cam2Ids"},
-      // {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
+      {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
       // {"Cam4Tvec", "Cam4Rvec", "Cam4Ids"}
     };
 
@@ -207,7 +207,7 @@ public class Constants {
     public static final double TRANSLATION_STDEV_ORDER = 1;
     public static final double TRANSLATION_STDEV_SCALAR = 0.5;
 
-    public static final double[] CAM_STDEV_SCALARS = {1.0, 1.0};
+    public static final double[] CAM_STDEV_SCALARS = {1.0, 0.75, 1.0};
   }
 
   public static class RobotConstants {
