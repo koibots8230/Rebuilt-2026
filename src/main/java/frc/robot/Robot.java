@@ -40,11 +40,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-    }
+    m_robotContainer.setIsBlue();
   }
 
   @Override
@@ -69,10 +65,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.setupLiveTuning();
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_robotContainer.updateLiveTuning();
+  }
 
   @Override
   public void testExit() {}

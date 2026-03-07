@@ -7,11 +7,13 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
+@Logged
 public class Intake extends SubsystemBase {
 
   private final SparkMax motor;
@@ -24,7 +26,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     motor = new SparkMax(IntakeConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
-    config.inverted(true);
+    config.inverted(false);
     config.smartCurrentLimit((int) IntakeConstants.CURRENT_LIMIT.in(Amps));
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

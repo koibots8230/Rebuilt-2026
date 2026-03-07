@@ -1,15 +1,15 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -55,9 +55,10 @@ public class Climber extends SubsystemBase {
 
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
-    config.inverted(false);
+    config.inverted(true);
 
     encoder = motor.getEncoder();
+    encoder.setPosition(0);
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
@@ -79,11 +80,10 @@ public class Climber extends SubsystemBase {
     feedForward =
         new SimpleMotorFeedforward(ClimberConstants.CLIMBER_FF.ks, ClimberConstants.CLIMBER_FF.kv);
 
-    config.encoder.positionConversionFactor(
-        (Math.PI * ClimberConstants.SPOOL_DIAMETER.in(Inches)) / ClimberConstants.GEAR_RATIO);
-    config.encoder.velocityConversionFactor(
-        (ClimberConstants.ROTATIONS_PER_MINUTE.in(RPM) * ClimberConstants.WHEEL_DIAMETER.in(Inches))
-            / (ClimberConstants.GEAR_RATIO * 60));
+    config.encoder.positionConversionFactor(ClimberConstants.CLIMBER_CONVERSION_FACTOR);
+    config.encoder.velocityConversionFactor(ClimberConstants.CLIMBER_CONVERSION_FACTOR / 60);
+
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -113,6 +113,14 @@ public class Climber extends SubsystemBase {
     goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
   }
 
+  private void zeroEncoder() {
+    encoder.setPosition(0);
+  }
+
+  private void setSpeed(double speed) {
+    motor.set(speed);
+  }
+
   public Command raiseClimbCommand() {
     return Commands.runOnce(
         () ->
@@ -126,5 +134,10 @@ public class Climber extends SubsystemBase {
         () ->
             this.setGoal(ClimberConstants.DOWN_POSITION.in(Meters), ClimberConstants.DOWN_VELOCITY),
         this);
+  }
+
+  public Command lowerClimbManualCommand(double speed) {
+    return Commands.sequence(
+        Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
   }
 }
