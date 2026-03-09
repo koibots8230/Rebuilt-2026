@@ -15,6 +15,7 @@ import frc.robot.subsystems.*;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
+  @NotLogged private final XboxController operator;
   private final Climber climber;
   private final Swerve swerve;
   private final Shooter shooter;
@@ -41,6 +42,7 @@ public class RobotContainer {
             swerve::getIsBlue);
 
     controller = new XboxController(0);
+    operator = new XboxController(1);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
@@ -69,21 +71,25 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(controller::getAButton);
+    Trigger pivotUp = new Trigger(operator::getYButton);
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(controller::getBButton);
+    Trigger pivotDown = new Trigger(operator::getAButton);
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
-    Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
+    Trigger raiseClimber = new Trigger(() -> operator.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
 
-    Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
+    Trigger lowerClimber = new Trigger(() -> operator.getPOV() == 180);
     lowerClimber.onTrue(climber.lowerClimbCommand());
 
-    Trigger zeroClimber = new Trigger(() -> controller.getYButton());
+    Trigger climb = new Trigger(() -> operator.getPOV() == 90);
+    climb.onTrue(climber.climbCommand());
+
+    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 270);
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
-    zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
+    zeroClimber.onFalse(
+        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.constantClimbCommand()));
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(
@@ -91,13 +97,14 @@ public class RobotContainer {
             shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
-            intake.setSpeedCommand(IntakeConstants.SPEED),
-            Commands.sequence(
-                    pivot.setPositionCommand(PivotConstants.MID_POSITION),
-                    Commands.waitUntil(pivot::atPosition),
-                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
-                    Commands.waitUntil(pivot::atPosition))
-                .repeatedly()));
+            intake.setSpeedCommand(IntakeConstants.SPEED)
+            // Commands.sequence(
+            //         pivot.setPositionCommand(PivotConstants.MID_POSITION),
+            //         Commands.waitUntil(pivot::atPosition),
+            //         pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
+            //         Commands.waitUntil(pivot::atPosition))
+            //     .repeatedly()
+            ));
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),

@@ -30,7 +30,7 @@ public class Autos {
             swerve::getEstimatedPosition,
             swerve::setOdometry,
             swerve::followTrajectory,
-            true,
+            false,
             swerve);
     chooser = new AutoChooser();
 
@@ -44,7 +44,8 @@ public class Autos {
     chooser.addRoutine("P3 Shoot & Climb", () -> P3_Shoot_Climb(shooter, indexer, climber));
     chooser.addRoutine("P4 Shoot", () -> P4_Shoot(shooter, indexer));
     chooser.addRoutine("P4 Shoot & Climb", () -> P4_Shoot_Climb(shooter, indexer, climber));
-    chooser.addRoutine("P5 Shoot", () -> P5_Shoot(shooter, indexer));
+    chooser.addRoutine("P5 Shoot (Blue)", () -> P5_Shoot(shooter, indexer));
+    chooser.addRoutine("P5 Shoot (Red)", () -> P5_Shoot_Red(shooter, indexer));
 
     SmartDashboard.putData("autos", chooser);
     RobotModeTriggers.autonomous().whileTrue(chooser.selectedCommandScheduler());
@@ -107,10 +108,21 @@ public class Autos {
     return routine;
   }
 
+  private AutoRoutine P5_Shoot_Red(Shooter shooter, Indexer indexer) {
+    AutoRoutine routine = autoFactory.newRoutine("taxi");
+    AutoTrajectory drive = routine.trajectory("P5_Shoot_Red");
+
+    routine.active().onTrue(Commands.sequence(drive.resetOdometry(), drive.cmd()));
+
+    drive.done().onTrue(ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG));
+
+    return routine;
+  }
+
   private AutoRoutine P3_Shoot_Climb(Shooter shooter, Indexer indexer, Climber climber) {
     AutoRoutine routine = autoFactory.newRoutine("taxi");
-    AutoTrajectory drive1 = routine.trajectory("P3_Shoot");
-    AutoTrajectory drive2 = routine.trajectory("P3_Shoot_Climb");
+    AutoTrajectory drive1 = routine.trajectory("P3_Shoot_climb1");
+    AutoTrajectory drive2 = routine.trajectory("P3_Shoot_Climb2");
 
     routine.active().onTrue(Commands.sequence(drive1.resetOdometry(), drive1.cmd()));
 
@@ -119,11 +131,11 @@ public class Autos {
         .onTrue(
             Commands.sequence(
                 Commands.parallel(
-                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
-                    climber.raiseClimbCommand()),
+                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG)),
+                // climber.raiseClimbCommand()),
                 drive2.cmd()));
 
-    drive2.done().onTrue(climber.lowerClimbCommand());
+    // drive2.done().onTrue(climber.lowerClimbCommand());
 
     return routine;
   }
@@ -140,11 +152,11 @@ public class Autos {
         .onTrue(
             Commands.sequence(
                 Commands.parallel(
-                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG),
-                    climber.raiseClimbCommand()),
+                    ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG)),
+                // climber.raiseClimbCommand()),
                 drive2.cmd()));
 
-    drive2.done().onTrue(climber.lowerClimbCommand());
+    // drive2.done().onTrue(climber.lowerClimbCommand());
 
     return routine;
   }

@@ -65,7 +65,7 @@ public class Pivot extends SubsystemBase {
             PivotConstants.FEEDFORWARD.ks,
             PivotConstants.FEEDFORWARD.kg,
             PivotConstants.FEEDFORWARD.kv);
-    goal = new State(motor.getAbsoluteEncoder().getPosition(), 0);
+    goal = new State(PivotConstants.UP_POSITION.getRadians(), 0);
     motorSetpoint = new State(motor.getAbsoluteEncoder().getPosition(), 0);
   }
 

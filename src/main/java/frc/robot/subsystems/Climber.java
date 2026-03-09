@@ -48,6 +48,7 @@ public class Climber extends SubsystemBase {
 
   private TrapezoidProfile.State goal;
   private TrapezoidProfile.State motorSetpoint;
+  private Boolean isManual = false;
 
   public Climber() {
     motor = new SparkMax(ClimberConstants.MOTOR_ID, MotorType.kBrushless);
@@ -55,7 +56,9 @@ public class Climber extends SubsystemBase {
 
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit((int) ClimberConstants.CURRENT_LIMIT.in(Amps));
-    config.inverted(true);
+    config.inverted(!true); // !s are to keep tally of how many backspools
+
+    config.closedLoop.p(ClimberConstants.CLIMBER_PID.kp);
 
     encoder = motor.getEncoder();
     encoder.setPosition(0);
@@ -89,12 +92,13 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
-
+    // if (isManual){
     controller.setSetpoint(
         motorSetpoint.position,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         feedForward.calculate((motorSetpoint.velocity)));
+    // }
 
     position = encoder.getPosition();
     velocity = encoder.getVelocity();
@@ -110,6 +114,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void setGoal(double position, LinearVelocity velocity) {
+    isManual = false;
     goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
   }
 
@@ -118,6 +123,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void setSpeed(double speed) {
+    isManual = true;
     motor.set(speed);
   }
 
@@ -136,8 +142,20 @@ public class Climber extends SubsystemBase {
         this);
   }
 
+  public Command climbCommand() {
+    return Commands.runOnce(
+        () ->
+            this.setGoal(
+                ClimberConstants.CLIMB_POSITION.in(Meters), ClimberConstants.DOWN_VELOCITY),
+        this);
+  }
+
   public Command lowerClimbManualCommand(double speed) {
     return Commands.sequence(
         Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
+  }
+
+  public Command constantClimbCommand() {
+    return Commands.runOnce(() -> this.setGoal(0, MetersPerSecond.of(0)), this);
   }
 }
