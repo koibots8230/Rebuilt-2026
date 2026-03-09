@@ -43,6 +43,7 @@ public class ShooterHood extends SubsystemBase {
 
   private double calculatedHoodAngle;
 
+  @SuppressWarnings("removal")
   public ShooterHood() {
     pivotMotor = new SparkMax(HoodConstants.MOTOR_ID, SparkMax.MotorType.kBrushless);
     pivotMotorConfig = new SparkMaxConfig();

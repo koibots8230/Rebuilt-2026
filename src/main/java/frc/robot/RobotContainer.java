@@ -54,7 +54,7 @@ public class RobotContainer {
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
     hoodAngle = HoodConstants.DOWN_POSITION.getDegrees();
-    distanceToHub = Meters.of(0.0); // This will eventually be set by vision
+    //distanceToHub = Meters.of(0.0); // This will eventually be set by vision
     
 
     configureBindings();
@@ -111,12 +111,16 @@ public class RobotContainer {
                 .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
+            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0))));
+    Trigger hoodTrigger = new Trigger(() -> controller.getLeftBumperButton());
+    hoodTrigger.onTrue(shooterHood.setPositionCommand(hoodAngle));
+    hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
             shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),
             indexer.setSpeedCommand(0),
             intake.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
 
-    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
+    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButtonButton());
     zeroGyro.onTrue(swerve.zeroGyroCommand());
   }
 
