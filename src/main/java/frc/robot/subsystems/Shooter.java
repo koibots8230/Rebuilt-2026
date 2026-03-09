@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,6 +21,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,12 +32,11 @@ public class Shooter extends SubsystemBase {
 
   @NotLogged private final SparkFlex flywheelMotor;
   @NotLogged private final SparkFlexConfig flywheelMotorConfig;
-  @NotLogged private final SparkClosedLoopController flywheelMotorController;
+  @NotLogged private SparkClosedLoopController flywheelMotorController;
 
   @NotLogged private final SparkMax feederMotor;
   @NotLogged private final SparkMaxConfig feederMotorConfig;
-  @NotLogged private final SparkClosedLoopController feederMotorController;
-  
+  @NotLogged private SparkClosedLoopController feederMotorController;
 
   private Voltage flywheelVoltage;
   private AngularVelocity flywheelVelocity;
@@ -46,8 +47,14 @@ public class Shooter extends SubsystemBase {
   private AngularVelocity feederVelocity;
   private Current feederCurrent;
   private AngularVelocity feederSetpoint;
+  private Voltage feederVoltage;
+  private AngularVelocity feederVelocity;
+  private Current feederCurrent;
+  private AngularVelocity feederSetpoint;
 
   public Shooter() {
+    flywheelMotor = new SparkFlex(ShooterConstants.FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+    flywheelMotorConfig = new SparkFlexConfig();
     flywheelMotor = new SparkFlex(ShooterConstants.FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
     flywheelMotorConfig = new SparkFlexConfig();
     flywheelMotorConfig.closedLoop.p(ShooterConstants.FLYWHEEL_PID.kp);
@@ -107,7 +114,38 @@ public class Shooter extends SubsystemBase {
     feederSetpoint = feederVelocity;
   }
 
-  public Command setVelocityCommand(AngularVelocity flywheelVelocity, AngularVelocity feederVelocity) {
+  public boolean atSpeed() {
+    return flywheelVelocity.in(RPM) > flywheelSetpoint.in(RPM) - 20.0;
+  }
+
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp);
+    SmartDashboard.putNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv);
+    SmartDashboard.putNumber("Shooter/intakekp", ShooterConstants.FEEDER_PID.kp);
+    SmartDashboard.putNumber("Shooter/intakeffkv", ShooterConstants.FEEDER_FEEDFORWARD.kv);
+  }
+
+  public void updateLiveTuning() {
+    flywheelMotorConfig.closedLoop.p(
+        SmartDashboard.getNumber("Shooter/flywheelkp", ShooterConstants.FLYWHEEL_PID.kp));
+    flywheelMotorConfig.closedLoop.feedForward.kV(
+        SmartDashboard.getNumber("Shooter/flywheelffkv", ShooterConstants.FLYWHEEL_FEEDFORWARD.kv));
+    feederMotorConfig.closedLoop.p(
+        SmartDashboard.getNumber("Shooter/intakekp", ShooterConstants.FEEDER_PID.kp));
+    feederMotorConfig.closedLoop.feedForward.kV(
+        SmartDashboard.getNumber("Shooter/intakeffkv", ShooterConstants.FEEDER_FEEDFORWARD.kv));
+
+    flywheelMotor.configure(
+        flywheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    feederMotor.configure(
+        feederMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    flywheelMotorController = flywheelMotor.getClosedLoopController();
+    feederMotorController = feederMotor.getClosedLoopController();
+  }
+
+  public Command setVelocityCommand(
+      AngularVelocity flywheelVelocity, AngularVelocity feederVelocity) {
     return Commands.runOnce(() -> shoot(flywheelVelocity, feederVelocity), this);
   }
 }
