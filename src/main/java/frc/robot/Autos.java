@@ -132,10 +132,10 @@ public class Autos {
             Commands.sequence(
                 Commands.parallel(
                     ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_LONG)),
-                // climber.raiseClimbCommand()),
+                // climber.raiseClimberCommand()),
                 drive2.cmd()));
 
-    // drive2.done().onTrue(climber.lowerClimbCommand());
+    // drive2.done().onTrue(climber.lowerClimberCommand());
 
     return routine;
   }
@@ -208,11 +208,11 @@ public class Autos {
                 Commands.parallel(
                     intake.setSpeedCommand(0),
                     ShootCommands.autoShoot(shooter, indexer, AutoConstants.SHOOT_TIME_SHORT),
-                    climber.raiseClimbCommand()),
+                    climber.raiseClimberCommand()),
                 Commands.parallel(
                     pivot.setPositionCommand(PivotConstants.UP_POSITION), drive3.cmd())));
 
-    drive3.done().onTrue(climber.lowerClimbCommand());
+    drive3.done().onTrue(climber.lowerClimberCommand());
 
     return routine;
   }

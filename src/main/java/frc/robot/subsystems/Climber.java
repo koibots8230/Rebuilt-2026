@@ -39,6 +39,8 @@ public class Climber extends SubsystemBase {
   @NotLogged private final TrapezoidProfile profile;
   @NotLogged private final SimpleMotorFeedforward feedForward;
 
+  // private final DigitalInput distanceSensor;
+
   private Current current;
   private Voltage voltage;
 
@@ -87,6 +89,8 @@ public class Climber extends SubsystemBase {
     config.encoder.velocityConversionFactor(ClimberConstants.CLIMBER_CONVERSION_FACTOR / 60);
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // distanceSensor = new DigitalInput(ClimberConstants.DISTANCE_SWITCH_PORT);
   }
 
   @Override
@@ -127,7 +131,16 @@ public class Climber extends SubsystemBase {
     motor.set(speed);
   }
 
-  public Command raiseClimbCommand() {
+  private boolean isBottomed() {
+    // TODO use a constant for current limit, probably lower than the hard current limit for the neo
+    return ((motor.getOutputCurrent() > 30) && (Math.abs(velocity) < .01));
+  }
+
+  // private boolean isBottomedVision(){
+  //   return !distanceSensor.get();
+  // }
+
+  public Command raiseClimberCommand() {
     return Commands.runOnce(
         () ->
             this.setGoal(
@@ -135,7 +148,7 @@ public class Climber extends SubsystemBase {
         this);
   }
 
-  public Command lowerClimbCommand() {
+  public Command lowerClimberCommand() {
     return Commands.runOnce(
         () ->
             this.setGoal(ClimberConstants.DOWN_POSITION.in(Meters), ClimberConstants.DOWN_VELOCITY),
@@ -151,11 +164,25 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
-    return Commands.sequence(
-        Commands.run(() -> setSpeed(speed), this), Commands.run(() -> zeroEncoder(), this));
+    return Commands.run(() -> setSpeed(speed), this);
   }
 
-  public Command constantClimbCommand() {
-    return Commands.runOnce(() -> this.setGoal(0, MetersPerSecond.of(0)), this);
+  public Command zeroEncoderCommand() {
+    return Commands.runOnce(() -> zeroEncoder(), this);
   }
+
+  public Command zeroWhenBottomedCommand() {
+    return Commands.sequence(
+        lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED).until(() -> isBottomed()),
+        zeroEncoderCommand(),
+        lowerClimbManualCommand(0));
+  }
+
+  //   public Command zeroWithVisionCommand () {
+  //   return Commands.sequence(
+  //       lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED)
+  //         .until(() -> isBottomedVision()),
+  //         zeroEncoderCommand(), lowerClimbManualCommand(0)
+  //   );
+  // }
 }

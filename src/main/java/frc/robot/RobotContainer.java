@@ -78,10 +78,10 @@ public class RobotContainer {
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> operator.getPOV() == 0);
-    raiseClimber.onTrue(climber.raiseClimbCommand());
+    raiseClimber.onTrue(climber.raiseClimberCommand());
 
     Trigger lowerClimber = new Trigger(() -> operator.getPOV() == 180);
-    lowerClimber.onTrue(climber.lowerClimbCommand());
+    lowerClimber.onTrue(climber.lowerClimberCommand());
 
     Trigger climb = new Trigger(() -> operator.getPOV() == 90);
     climb.onTrue(climber.climbCommand());
@@ -89,7 +89,10 @@ public class RobotContainer {
     Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 270);
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
     zeroClimber.onFalse(
-        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.constantClimbCommand()));
+        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
+
+    Trigger currentSpike = new Trigger(() -> controller.getXButton()); // placeholder button binding
+    currentSpike.onTrue(climber.zeroWhenBottomedCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(
