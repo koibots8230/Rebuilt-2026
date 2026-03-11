@@ -20,10 +20,12 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,8 +42,10 @@ public class Climber extends SubsystemBase {
   @NotLogged private final SimpleMotorFeedforward feedForward;
 
   // private final DigitalInput distanceSensor;
+  @NotLogged private final LinearFilter currentFilter;
 
   private Current current;
+  private double filteredCurrent;
   private Voltage voltage;
 
   private double velocity;
@@ -66,6 +70,11 @@ public class Climber extends SubsystemBase {
     encoder.setPosition(0);
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
+    currentFilter =
+      LinearFilter.singlePoleIIR(
+        ClimberConstants.TIME_CONSTANT.in(Seconds),
+        RobotConstants.CLOCK_SPEED.in(Seconds));
+    
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
     setpoint = ClimberConstants.DOWN_POSITION.in(Meters);
 
@@ -108,6 +117,8 @@ public class Climber extends SubsystemBase {
     velocity = encoder.getVelocity();
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
+    filteredCurrent = currentFilter.calculate(current.in(Amps));
+
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
     setpoint = goal.position;
   }
@@ -132,8 +143,10 @@ public class Climber extends SubsystemBase {
   }
 
   private boolean isBottomed() {
-    // TODO use a constant for current limit, probably lower than the hard current limit for the neo
-    return ((motor.getOutputCurrent() > 30) && (Math.abs(velocity) < .01));
+    return (
+      (filteredCurrent > ClimberConstants.BOTTOM_CURRENT_THRESHOLD) 
+      && (Math.abs(velocity) < .01)
+      );
   }
 
   // private boolean isBottomedVision(){

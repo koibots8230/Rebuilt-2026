@@ -148,7 +148,7 @@ public class Constants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance CLIMB_POSITION = Distance.ofBaseUnits(0.02, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
-    public static final double MANUAL_LOWER_SPEED = -.1;
+    public static final double MANUAL_LOWER_SPEED = -.1; //needa test
     public static final double CLIMBER_CONVERSION_FACTOR = ((1.0 / 12)) / 39.37;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
@@ -164,6 +164,7 @@ public class Constants {
     public static final PIDGains CLIMBER_PID = new PIDGains.Builder().kp(12).build(); // 12.0
 
     public static final Current CURRENT_LIMIT = Current.ofBaseUnits(60, Amps);
+    public static final double BOTTOM_CURRENT_THRESHOLD = 30; // needa test
     public static final AngularVelocity ROTATIONS_PER_MINUTE = RPM.of(3000);
 
     public static final double GEAR_RATIO = 36.0;
@@ -171,6 +172,7 @@ public class Constants {
     public static final Distance WHEEL_DIAMETER =
         Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
 
+    public static final Time TIME_CONSTANT = Seconds.of(1);
     public static final int MOTOR_ID = 50;
     // public static final int DISTANCE_SWITCH_PORT = 1;
   }
