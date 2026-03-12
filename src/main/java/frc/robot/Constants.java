@@ -134,9 +134,7 @@ public class Constants {
         new FeedforwardGains.Builder().kv(0.0019).build();
 
     public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0001).build();
-    public static final PIDGains FEEDER_PID = new PIDGains.Builder().kp(0.0001).build();
     public static final FeedforwardGains FEEDER_FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.00234).build();
         new FeedforwardGains.Builder().kv(0.00234).build();
 
     public static final Current FLYWHEEL_CURRENT_LIMIT = Amps.of(80);

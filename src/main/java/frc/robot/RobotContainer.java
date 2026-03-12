@@ -32,6 +32,7 @@ public class RobotContainer {
   private final Vision vision;
 
   private double shooterVelocity;
+  private double hoodPosition;
 
   public RobotContainer(boolean isReal) {
     climber = new Climber();
@@ -51,7 +52,7 @@ public class RobotContainer {
     controller = new XboxController(0);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
-
+    hoodPosition = HoodConstants.DOWN_POSITION.getDegrees();
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
     hoodAngle = HoodConstants.DOWN_POSITION.getDegrees();
     //distanceToHub = Meters.of(0.0); // This will eventually be set by vision
@@ -62,6 +63,7 @@ public class RobotContainer {
 
   public void setIsBlue() {
     swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+    shooterHood.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
   }
 
   private void configureBindings() {
@@ -115,25 +117,25 @@ public class RobotContainer {
     Trigger hoodTrigger = new Trigger(() -> controller.getLeftBumperButton());
     hoodTrigger.onTrue(shooterHood.setPositionCommand(hoodAngle));
     hoodTrigger.onFalse(shooterHood.setPositionCommand(HoodConstants.DOWN_POSITION.getRadians()));
-            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),
-            indexer.setSpeedCommand(0),
-            intake.setSpeedCommand(0),
-            pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));
 
-    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButtonButton());
+    Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
     zeroGyro.onTrue(swerve.zeroGyroCommand());
   }
 
   public void setupLiveTuning() {
     shooter.setupLiveTuning();
+    shooterHood.setupLiveTuning();
     pivot.setupLiveTuning();
 
     SmartDashboard.putNumber("flywheelVelocity", shooterVelocity);
+    SmartDashboard.putNumber("hoodPosition", hoodPosition);
   }
 
   public void updateLiveTuning() {
     shooterVelocity =
         SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
+    hoodPosition = SmartDashboard.getNumber("hoodPosition", HoodConstants.DOWN_POSITION.getDegrees());
+    shooterHood.setPositionCommand(hoodPosition);
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
   }

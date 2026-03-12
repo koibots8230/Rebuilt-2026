@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -15,9 +18,10 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,6 +46,8 @@ public class ShooterHood extends SubsystemBase {
   private double setpoint;
 
   private double calculatedHoodAngle;
+  private boolean isBlue;
+  private boolean withinHubBounds;
 
   @SuppressWarnings("removal")
   public ShooterHood() {
@@ -98,18 +104,37 @@ public class ShooterHood extends SubsystemBase {
     setpoint = target;
   }
 
-  private double calculateHoodAngle(double distance) {
-    return distance; // Placeholder for the actual equation 
+  public void setIsBlue(boolean color){
+    isBlue = color;
+  }
+
+  private double calculateHoodAngle(Pose2d estimatedPose) {
+    Double FieldXPosition = (estimatedPose.getMeasureX().times((isBlue ? -1 : 1))).in(Inches);
+    if (FieldXPosition <= (158.6 - 13.75)){
+      withinHubBounds = true;
+    } else {
+      withinHubBounds = false;
+    }
+    
+    if (withinHubBounds){
+      //Run calculations for hood angle and return the result
+    } else {
+      return 0;
+    }
   }
 
   public Command setPositionCommand(double target) {
     return Commands.runOnce(() -> setPosition(target), this);
   }
 
-  public Command autoSetPositionCommand(Distance distanceToHub) {
+  public Command autoSetPositionCommand(Pose2d estimatedPose) {
     return Commands.runOnce(() -> {
-      calculatedHoodAngle = calculateHoodAngle(distanceToHub);
-      setPosition(calculatedHoodAngle);
+      estimatedAngle = calculateHoodAngle(estimatedPose);
+      setPosition(estimatedAngle);
     }, this);
+  }
+
+  public void setupLiveTuning() {
+    SmartDashboard.putNumber()
   }
 }
