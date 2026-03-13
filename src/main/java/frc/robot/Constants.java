@@ -172,7 +172,7 @@ public class Constants {
     public static final Distance WHEEL_DIAMETER =
         Distance.ofBaseUnits(1, Inches); // placeholder, potentially different units
 
-    public static final Time TIME_CONSTANT = Seconds.of(1);
+    public static final Time TIME_CONSTANT = Seconds.of(0.1); // might edit this to be lower
     public static final int MOTOR_ID = 50;
     // public static final int DISTANCE_SWITCH_PORT = 1;
   }
