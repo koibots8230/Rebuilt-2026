@@ -125,7 +125,7 @@ public class Constants {
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(6000);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
     public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
