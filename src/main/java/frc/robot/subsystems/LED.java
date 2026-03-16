@@ -24,19 +24,21 @@ public class LED extends SubsystemBase {
     private Double matchTime;
     private record shiftData(int Shift1, int Shift2){};
     private shiftData activeShifts;
-    private static SerialPort uart = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kOnboard);
+    private static SerialPort serialPort = new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kOnboard);
 
     public class LEDMode {
         private int modeString;
         private String modeName;
+        private byte[] modeByte;
 
         public LEDMode(int modeString, String modeName){
             this.modeString = modeString;
             this.modeName = modeName;
+            this.modeByte = new byte[]{(byte) modeString};
         }
 
         public void writeModeString(){
-            uart.writeString(Integer.toString(modeString));
+            serialPort.write(modeByte, modeByte.length);
         }
     }
 
