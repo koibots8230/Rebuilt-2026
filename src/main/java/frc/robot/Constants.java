@@ -91,7 +91,7 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final double SHOOTING_SPEED = 0.3;
+    public static final double SHOOTING_SPEED = 0.4;
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 60;
 
@@ -107,17 +107,17 @@ public class Constants {
 
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(1.6);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(50);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(75);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
     public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.2).build();
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.6).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0.65).kg(0.6).build();
+        new FeedforwardGains.Builder().kv(2.5).kg(0.7).build();
 
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(360);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(360);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(180);
     public static final Current CURRENT_LIMIT = Amps.of(60);
 
     public static final int MOTOR_ID = 11;
@@ -127,7 +127,7 @@ public class Constants {
 
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
-    public static final AngularVelocity IDLE_SPEED = RPM.of(500);
+    public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
@@ -212,6 +212,41 @@ public class Constants {
 
   public static class LEDConstants{
     public static final int BAUD_RATE = 9600;
+  }
+
+  public static class VisionConstants {
+    public static final int ACTIVE_CAMERAS = 2;
+
+    public static final Pose3d[] CAMERA_POSITIONS = {
+      new Pose3d(
+          new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
+      new Pose3d(
+          new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
+      new Pose3d(
+          new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
+    }; // x is forward, y is left, counterclockwise on rotation
+
+    public static final String[][] TOPIC_NAMES = {
+      {"Cam1Tvec", "Cam1Rmat", "Cam1Ids"},
+      {"Cam2Tvec", "Cam2Rmat", "Cam2Ids"},
+      {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
+      // {"Cam4Tvec", "Cam4Rvec", "Cam4Ids"}
+    };
+
+    public static final double[] VECTOR_DEFAULT_VALUE = {0};
+    public static final int ID_DEFAULT_VALUE = 0;
+
+    public static final Distance MAX_MEASUREMENT_DIFFERENCE = Meters.of(4);
+    public static final Rotation2d MAX_ANGLE_DIFFERENCE = Rotation2d.fromDegrees(30);
+
+    public static final Distance MAX_TAG_DISTANCE = Meters.of(4);
+    public static final Distance MAX_HEIGHT_ERROR = Meters.of(0.2);
+
+    public static final double ROTATION_STDEV = 50 * Math.PI;
+    public static final double TRANSLATION_STDEV_ORDER = 1;
+    public static final double TRANSLATION_STDEV_SCALAR = 0.5;
+
+    public static final double[] CAM_STDEV_SCALARS = {1.0, 0.75, 1.0};
   }
 
   public static class RobotConstants {

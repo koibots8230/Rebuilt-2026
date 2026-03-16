@@ -132,7 +132,6 @@ public class RobotContainer {
         SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
 
     Trigger configureLEDTrigger = new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
     configureLEDTrigger.onTrue(led.configureLogicCommand());
