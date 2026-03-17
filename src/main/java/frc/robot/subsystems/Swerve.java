@@ -190,11 +190,6 @@ public class Swerve extends SubsystemBase {
     return gyro.getRotation2d().plus(Rotation2d.k180deg);
   }
 
-  public void setOdometry(Pose2d pose) {
-    simHeading = pose.getRotation();
-    odometry.resetPose(pose);
-  }
-
   // ===================== Module Positions ===================== \\
 
   public SwerveModulePosition[] getModulePostitions() {
