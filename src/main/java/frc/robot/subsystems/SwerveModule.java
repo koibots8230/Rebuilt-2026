@@ -66,6 +66,7 @@ public class SwerveModule {
   private Angle turnSetpoint;
   private LinearVelocity driveSetpoint;
 
+  double simDrivePosition;
   double drivePosition;
   double turnPosition;
   double driveVelocity;
@@ -161,6 +162,8 @@ public class SwerveModule {
         Voltage.ofBaseUnits(turnMotor.getBusVoltage() * turnMotor.getAppliedOutput(), Volts);
     driveCurrent = Current.ofBaseUnits(driveMotor.getOutputCurrent(), Amps);
     turnCurrent = turnMotor.getOutputCurrent();
+
+    simDrivePosition = 0;
   }
 
   public void setState(SwerveModuleState swerveModuleState) {
@@ -207,7 +210,8 @@ public class SwerveModule {
   }
 
   public void simulationPeriodic() {
-    drivePosition = drivePosition + driveSetpoint.times(RobotConstants.CLOCK_SPEED).in(Meters);
+    simDrivePosition = simDrivePosition + driveSetpoint.times(RobotConstants.CLOCK_SPEED).in(Meters);
+    drivePosition = simDrivePosition;
     turnPosition = turnSetpoint.in(Radians);
     driveVelocity = driveSetpoint.in(MetersPerSecond);
   }
