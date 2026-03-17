@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -15,7 +16,7 @@ import frc.robot.subsystems.*;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
-  @NotLogged private final XboxController operator;
+  @NotLogged private final GenericHID operator;
   private final Climber climber;
   private final Swerve swerve;
   private final Shooter shooter;
@@ -71,27 +72,35 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(operator::getYButton);
+    Trigger pivotUp = new Trigger(() -> operator.getRawButton(6));
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(operator::getAButton);
+    Trigger pivotDown = new Trigger(() -> operator.getRawButton(9));
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
-    Trigger raiseClimber = new Trigger(() -> operator.getPOV() == 0);
-    raiseClimber.onTrue(climber.raiseClimberCommand());
+    Trigger raiseClimber = new Trigger(() -> operator.getRawButton(5));
+    raiseClimber.onTrue(climber.raiseClimbManualCommand(ClimberConstants.MANUAL_RAISE_SPEED));
+    raiseClimber.onFalse(climber.raiseClimbManualCommand(0));
 
-    Trigger lowerClimber = new Trigger(() -> operator.getPOV() == 180);
-    lowerClimber.onTrue(climber.lowerClimberCommand());
+    Trigger lowerClimber = new Trigger(() -> operator.getRawButton(8));
+    lowerClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+    lowerClimber.onFalse(climber.lowerClimbManualCommand(0));
 
-    Trigger climb = new Trigger(() -> operator.getPOV() == 90);
-    climb.onTrue(climber.climbCommand());
+    Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(7));
+    raiseClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_RAISE_SPEED));
 
-    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 270);
+    Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(10));
+    lowerClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+
+    // Trigger climb = new Trigger(() -> operator.getPOV() == 90);
+    // climb.onTrue(climber.climbCommand());
+
+    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 0);
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
     zeroClimber.onFalse(
         Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
 
-    Trigger currentSpike = new Trigger(() -> controller.getXButton()); // placeholder button binding
+    Trigger currentSpike = new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
     currentSpike.onTrue(climber.zeroWhenBottomedCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);

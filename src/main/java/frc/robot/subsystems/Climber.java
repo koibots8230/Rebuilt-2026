@@ -71,10 +71,9 @@ public class Climber extends SubsystemBase {
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
     currentFilter =
-      LinearFilter.singlePoleIIR(
-        ClimberConstants.TIME_CONSTANT.in(Seconds),
-        RobotConstants.CLOCK_SPEED.in(Seconds));
-    
+        LinearFilter.singlePoleIIR(
+            ClimberConstants.TIME_CONSTANT.in(Seconds), RobotConstants.CLOCK_SPEED.in(Seconds));
+
     voltage = Voltage.ofBaseUnits(motor.getBusVoltage() * motor.getAppliedOutput(), Volts);
     setpoint = ClimberConstants.DOWN_POSITION.in(Meters);
 
@@ -138,15 +137,21 @@ public class Climber extends SubsystemBase {
   }
 
   private void setSpeed(double speed) {
-    isManual = true;
+    // isManual = true;
     motor.set(speed);
   }
 
   private boolean isBottomed() {
-    return (
-      (filteredCurrent > ClimberConstants.BOTTOM_CURRENT_THRESHOLD) 
-      && (Math.abs(velocity) < .01)
-      );
+    return ((filteredCurrent > ClimberConstants.BOTTOM_CURRENT_THRESHOLD)
+        && (Math.abs(velocity) < .01));
+  }
+
+  private void setSpeedWithLimits(double speed) {
+    if ((speed > .1 & position > ClimberConstants.RAISED_POSITION.in(Meters))
+        || (speed < 0 && position <= ClimberConstants.DOWN_POSITION.in(Meters))) {
+      motor.set(0);
+    }
+    motor.set(speed);
   }
 
   // private boolean isBottomedVision(){
@@ -177,6 +182,14 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
+    return Commands.run(() -> setSpeedWithLimits(speed), this);
+  }
+
+  public Command raiseClimbManualCommand(double speed) {
+    return Commands.run(() -> setSpeedWithLimits(speed), this);
+  }
+
+  public Command overrideCommand(double speed) {
     return Commands.run(() -> setSpeed(speed), this);
   }
 

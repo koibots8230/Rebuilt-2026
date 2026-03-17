@@ -148,7 +148,8 @@ public class Constants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance CLIMB_POSITION = Distance.ofBaseUnits(0.02, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
-    public static final double MANUAL_LOWER_SPEED = -.1; //needa test
+    public static final double MANUAL_LOWER_SPEED = -.1; // needa test
+    public static final double MANUAL_RAISE_SPEED = .1; // needa test
     public static final double CLIMBER_CONVERSION_FACTOR = ((1.0 / 12)) / 39.37;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
