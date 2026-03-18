@@ -145,10 +145,10 @@ public class Constants {
   }
 
   public static class ClimberConstants {
-    public static final Distance DOWN_POSITION = Distance.ofBaseUnits(-0.25, Meters); // 0
-    public static final Distance CLIMB_POSITION = Distance.ofBaseUnits(-0.22, Meters); // .02
-    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0, Meters); // .21
-    public static final double MANUAL_LOWER_SPEED = 0.1; // -.1
+    public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters); // 0
+    public static final Distance CLIMB_POSITION = Distance.ofBaseUnits(.02, Meters); // .02
+    public static final Distance RAISED_POSITION = Distance.ofBaseUnits(.23, Meters); // .21
+    public static final double MANUAL_LOWER_SPEED = -0.1; // -.1
     public static final double CLIMBER_CONVERSION_FACTOR = ((1.0 / 12)) / 39.37;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
