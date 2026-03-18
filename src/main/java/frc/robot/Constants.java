@@ -106,8 +106,8 @@ public class Constants {
   }
 
   public static class PivotConstants {
-    public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(1.6);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(75);
+    public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(fromDegrees(240));
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(120);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
     public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
     public static final PIDGains PID = new PIDGains.Builder().kp(0.6).build();
