@@ -161,10 +161,6 @@ public class Swerve extends SubsystemBase {
                 getChassisSpeeds().omegaRadiansPerSecond * RobotConstants.CLOCK_SPEED.in(Seconds)));
     gyroAngle = simHeading;
 
-    estimatedPosition =
-        odometry.update(
-            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), this.getModulePostitions());
-
     modules.frontLeft.simulationPeriodic();
     modules.frontRight.simulationPeriodic();
     modules.backLeft.simulationPeriodic();
@@ -192,11 +188,6 @@ public class Swerve extends SubsystemBase {
 
   public Rotation2d getGyroAngle() {
     return gyro.getRotation2d().plus(Rotation2d.k180deg);
-  }
-
-  public void setOdometry(Pose2d pose) {
-    simHeading = pose.getRotation();
-    odometry.resetPose(pose);
   }
 
   // ===================== Module Positions ===================== \\

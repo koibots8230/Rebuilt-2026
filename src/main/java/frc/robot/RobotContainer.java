@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -15,7 +16,7 @@ import frc.robot.subsystems.*;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
-  @NotLogged private final XboxController operator;
+  @NotLogged private final GenericHID operator;
   private final Climber climber;
   private final Swerve swerve;
   private final Shooter shooter;
@@ -42,7 +43,7 @@ public class RobotContainer {
             swerve::getIsBlue);
 
     controller = new XboxController(0);
-    operator = new XboxController(1);
+    operator = new GenericHID(1);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
@@ -71,10 +72,10 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(operator::getYButton);
+    Trigger pivotUp = new Trigger(() -> operator.getRawButton(1));
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(operator::getAButton);
+    Trigger pivotDown = new Trigger(() -> operator.getRawButton(2));
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> operator.getPOV() == 0);
