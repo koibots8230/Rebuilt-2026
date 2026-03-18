@@ -72,24 +72,24 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(() -> operator.getRawButton(6));
+    Trigger pivotUp = new Trigger(() -> operator.getRawButton(5));
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(() -> operator.getRawButton(9));
+    Trigger pivotDown = new Trigger(() -> operator.getRawButton(8));
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
-    Trigger raiseClimber = new Trigger(() -> operator.getRawButton(5));
+    Trigger raiseClimber = new Trigger(() -> operator.getRawButton(7));
     raiseClimber.onTrue(climber.raiseClimbManualCommand(ClimberConstants.MANUAL_RAISE_SPEED));
     raiseClimber.onFalse(climber.raiseClimbManualCommand(0));
 
-    Trigger lowerClimber = new Trigger(() -> operator.getRawButton(8));
+    Trigger lowerClimber = new Trigger(() -> operator.getRawButton(10));
     lowerClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
     lowerClimber.onFalse(climber.lowerClimbManualCommand(0));
 
-    Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(7));
+    Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(11));
     raiseClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_RAISE_SPEED));
 
-    Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(10));
+    Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(12));
     lowerClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_LOWER_SPEED));
 
     // Trigger climb = new Trigger(() -> operator.getPOV() == 90);
