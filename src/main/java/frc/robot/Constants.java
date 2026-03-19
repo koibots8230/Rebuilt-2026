@@ -106,13 +106,13 @@ public class Constants {
   }
 
   public static class PivotConstants {
-    public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(fromDegrees(240));
+    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(240);
     public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(120);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
-    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.6).build();
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.025);
+    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.15);
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.7).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(2.5).kg(0.7).build();
+        new FeedforwardGains.Builder().kv(1.29).kg(0.7).build();
 
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
