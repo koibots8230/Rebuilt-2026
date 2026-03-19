@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.LEDMode;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -43,7 +41,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.setIsBlue();
-
   }
 
   @Override

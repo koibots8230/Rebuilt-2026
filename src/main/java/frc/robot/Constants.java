@@ -210,7 +210,7 @@ public class Constants {
     public static final double[] CAM_STDEV_SCALARS = {1.0, 1.0};
   }
 
-  public static class LEDConstants{
+  public static class LEDConstants {
     public static final int BAUD_RATE = 9600;
   }
 
