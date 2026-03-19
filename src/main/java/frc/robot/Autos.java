@@ -28,9 +28,9 @@ public class Autos {
     autoFactory =
         new AutoFactory(
             swerve::getEstimatedPosition,
-            swerve::setOdometry,
+            swerve::resetOdometry,
             swerve::followTrajectory,
-            false,
+            true,
             swerve);
     chooser = new AutoChooser();
 

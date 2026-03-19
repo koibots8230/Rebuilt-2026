@@ -196,7 +196,7 @@ public class SwerveModule {
     this.updateLogs();
     turnGoalState =
         new TrapezoidProfile.State(
-            MathUtil.angleModulus(turnSetpoint.in(Radians)) + offset.getRadians(), 0);
+            MathUtil.angleModulus(turnSetpoint.in(Radians)) + offset.getRadians(), 0); 
 
     turnSetpointState =
         turnProfile.calculate(
@@ -212,7 +212,7 @@ public class SwerveModule {
   public void simulationPeriodic() {
     simDrivePosition = simDrivePosition + driveSetpoint.times(RobotConstants.CLOCK_SPEED).in(Meters);
     drivePosition = simDrivePosition;
-    turnPosition = turnSetpoint.in(Radians);
+    turnPosition =  turnSetpoint.in(Radians);
     driveVelocity = driveSetpoint.in(MetersPerSecond);
   }
 
