@@ -125,10 +125,11 @@ public class Climber extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
+    position = motorSetpoint.position;
   }
 
   private void setGoal(double position, LinearVelocity velocity) {
-    isManual = false;
+    // isManual = false;
     goal = new TrapezoidProfile.State(position, velocity.in(MetersPerSecond));
   }
 
@@ -147,11 +148,13 @@ public class Climber extends SubsystemBase {
   }
 
   private void setSpeedWithLimits(double speed) {
-    if ((speed > .1 & position > ClimberConstants.RAISED_POSITION.in(Meters))
+    if ((speed >= .1 && position > ClimberConstants.RAISED_POSITION.in(Meters))
         || (speed < 0 && position <= ClimberConstants.DOWN_POSITION.in(Meters))) {
       motor.set(0);
+    } else {
+      System.out.println("setSpedWIthLimits");
+      motor.set(speed);
     }
-    motor.set(speed);
   }
 
   // private boolean isBottomedVision(){

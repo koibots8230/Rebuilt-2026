@@ -43,7 +43,7 @@ public class RobotContainer {
             swerve::getIsBlue);
 
     controller = new XboxController(0);
-    operator = new XboxController(1);
+    operator = new GenericHID(1);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
@@ -100,7 +100,8 @@ public class RobotContainer {
     zeroClimber.onFalse(
         Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
 
-    Trigger currentSpike = new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
+    Trigger currentSpike =
+        new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
     currentSpike.onTrue(climber.zeroWhenBottomedCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
