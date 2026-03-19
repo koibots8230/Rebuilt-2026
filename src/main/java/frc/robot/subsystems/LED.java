@@ -52,18 +52,12 @@ public class LED extends SubsystemBase {
         shift = "";
     }
 
+    public void setIsBlue(boolean isBlue){
+        this.isBlue = isBlue;
+    }
+
     public void configureLogic(){
         firstInactiveHub = DriverStation.getGameSpecificMessage();
-        if(ally.isPresent()){
-            switch (ally.get()){
-                case Red:
-                    isBlue = false;
-                case Blue:
-                    isBlue = true;
-                default:
-                    System.out.println("Alliance is not yet defined.");
-            }
-        }
 
         if (firstInactiveHub.length() > 0){
             switch (firstInactiveHub.charAt(0)) {
