@@ -84,13 +84,15 @@ public class RobotContainer {
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
-    raiseClimber.onTrue(
-      Commands.parallel(
-        climber.raiseClimbCommand(), 
-        led.setModeCommand(climbLEDAnimation)));
+    raiseClimber.onTrue(climber.raiseClimbCommand());
+    //Arm is going up, but robot is not.
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
-    lowerClimber.onTrue(climber.lowerClimbCommand());
+    lowerClimber.onTrue(
+      commands.parallel(
+        climber.lowerClimbCommand(),
+        led.setModeCommand(climbLEDAnimation)));
+    //Arm is going down, robot is going up.
 
     Trigger zeroClimber = new Trigger(() -> controller.getYButton());
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
