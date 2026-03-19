@@ -87,14 +87,12 @@ public class RobotContainer {
 
     Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
-    //Arm is going up, but robot is not.
+    // Arm is going up, but robot is not.
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(
-      commands.parallel(
-        climber.lowerClimbCommand(),
-        led.setModeCommand(climbLEDAnimation)));
-    //Arm is going down, robot is going up.
+        commands.parallel(climber.lowerClimbCommand(), led.setModeCommand(climbLEDAnimation)));
+    // Arm is going down, robot is going up.
 
     Trigger zeroClimber = new Trigger(() -> controller.getYButton());
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
@@ -139,13 +137,15 @@ public class RobotContainer {
         SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
-            shooter.setVelocityCommand(RPM.of(0), RPM.of(0)), indexer.setSpeedCommand(0)));
+
+    Trigger configureLEDTrigger =
+        new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    configureLEDTrigger.onTrue(led.configureLogicCommand());
 
     
   }
 
   public Command getAutonomousCommand() {
-    return Commands.parallel(
-      led.setModeCommand(autonomousLEDMode));
+    return Commands.parallel(led.setModeCommand(autonomousLEDMode));
   }
 }
