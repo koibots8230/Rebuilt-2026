@@ -53,6 +53,10 @@ public class LED extends SubsystemBase {
         shift = "";
     }
 
+    public void setIsBlue(boolean isBlue){
+        this.isBlue = isBlue;
+    }
+
     public void configureLogic(){
         firstInactiveHub = DriverStation.getGameSpecificMessage();
 
