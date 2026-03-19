@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.LED.LEDMode;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
+  @NotLogged private final GenericHID operator;
   private final Climber climber;
   private final Swerve swerve;
   private final Shooter shooter;
@@ -48,6 +50,7 @@ public class RobotContainer {
     led = new LED();
 
     controller = new XboxController(0);
+    operator = new GenericHID(1);
     autonomousLEDMode = led.new LEDMode(1, "Autonomous");
     climbLEDAnimation = led.new LEDMode(5, "ClimbAnimation");
 
@@ -79,13 +82,13 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(controller::getAButton);
+    Trigger pivotUp = new Trigger(() -> operator.getRawButton(1));
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(controller::getBButton);
+    Trigger pivotDown = new Trigger(() -> operator.getRawButton(2));
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
-    Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
+    Trigger raiseClimber = new Trigger(() -> operator.getPOV() == 0);
     raiseClimber.onTrue(climber.raiseClimbCommand());
     // Arm is going up, but robot is not.
 
@@ -94,9 +97,13 @@ public class RobotContainer {
         commands.parallel(climber.lowerClimbCommand(), led.setModeCommand(climbLEDAnimation)));
     // Arm is going down, robot is going up.
 
-    Trigger zeroClimber = new Trigger(() -> controller.getYButton());
+    Trigger climb = new Trigger(() -> operator.getPOV() == 90);
+    climb.onTrue(climber.climbCommand());
+
+    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 270);
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
-    zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
+    zeroClimber.onFalse(
+        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.constantClimbCommand()));
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(
@@ -104,16 +111,17 @@ public class RobotContainer {
             shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
-            intake.setSpeedCommand(IntakeConstants.SPEED),
-            Commands.sequence(
-                    pivot.setPositionCommand(PivotConstants.MID_POSITION),
-                    Commands.waitUntil(pivot::atPosition),
-                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
-                    Commands.waitUntil(pivot::atPosition))
-                .repeatedly()));
+            intake.setSpeedCommand(IntakeConstants.SPEED)
+            // Commands.sequence(
+            //         pivot.setPositionCommand(PivotConstants.MID_POSITION),
+            //         Commands.waitUntil(pivot::atPosition),
+            //         pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
+            //         Commands.waitUntil(pivot::atPosition))
+            //     .repeatedly()
+            ));
     shootTrigger.onFalse(
         Commands.parallel(
-            shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),
+            shooter.setVelocityCommand(RPM.of(0), ShooterConstants.IDLE_SPEED),
             indexer.setSpeedCommand(0),
             intake.setSpeedCommand(0),
             pivot.setPositionCommand(PivotConstants.DOWN_POSITION)));

@@ -63,18 +63,18 @@ public class Pivot extends SubsystemBase {
             PivotConstants.FEEDFORWARD.ks,
             PivotConstants.FEEDFORWARD.kg,
             PivotConstants.FEEDFORWARD.kv);
-    goal = new State(motor.getAbsoluteEncoder().getPosition(), 0);
+    goal = new State(PivotConstants.DOWN_POSITION.getRadians(), 0);
     motorSetpoint = new State(motor.getAbsoluteEncoder().getPosition(), 0);
   }
 
   @Override
   public void periodic() {
     motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
-    pid.setSetpoint(
-        motorSetpoint.position,
-        ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
+    // pid.setSetpoint(
+    //     motorSetpoint.position,
+    //     ControlType.kPosition,
+    //     ClosedLoopSlot.kSlot0,
+    //     feedforward.calculate(motorSetpoint.position, motorSetpoint.velocity));
     position = motor.getAbsoluteEncoder().getPosition();
     current = motor.getOutputCurrent();
     voltage = motor.getAppliedOutput() * motor.getBusVoltage();
