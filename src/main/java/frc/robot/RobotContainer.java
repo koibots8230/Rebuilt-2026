@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED.LEDMode;
 
 @Logged
 public class RobotContainer {
@@ -23,6 +25,10 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Intake intake;
   private final Pivot pivot;
+  private final LED led;
+
+  private final LEDMode autonomousLEDMode;
+  private final LEDMode climbLEDAnimation;
   private final Autos autos;
   private final Vision vision;
 
@@ -41,6 +47,7 @@ public class RobotContainer {
             swerve::getGyroAngle,
             swerve::addVisionMeasurement,
             swerve::getIsBlue);
+    led = new LED();
 
     controller = new XboxController(0);
     operator = new GenericHID(1);
@@ -48,12 +55,15 @@ public class RobotContainer {
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
     autos = new Autos(swerve, shooter, indexer, intake, pivot, climber);
+    autonomousLEDMode = led.new LEDMode(1, "Autonomous");
+    climbLEDAnimation = led.new LEDMode(5, "ClimbAnimation");
 
     configureBindings();
   }
 
   public void setIsBlue() {
     swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
+    led.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
   }
 
   private void configureBindings() {
@@ -126,6 +136,10 @@ public class RobotContainer {
 
     Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
     zeroGyro.onTrue(swerve.zeroGyroCommand());
+
+    Trigger configureLEDTrigger =
+        new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    configureLEDTrigger.onTrue(led.configureLogicCommand());
   }
 
   public void setupLiveTuning() {
@@ -140,5 +154,13 @@ public class RobotContainer {
         SmartDashboard.getNumber("flywheelVelocity", ShooterConstants.FLYWHEEL_SPEED.in(RPM));
     shooter.updateLiveTuning();
     pivot.updateLiveTuning();
+
+    Trigger configureLEDTrigger =
+        new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    configureLEDTrigger.onTrue(led.configureLogicCommand());
+  }
+
+  public Command getAutonomousCommand() {
+    return Commands.parallel(led.setModeCommand(autonomousLEDMode));
   }
 }

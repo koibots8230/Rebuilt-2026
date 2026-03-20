@@ -182,8 +182,9 @@ public class Constants {
     public static final Pose3d[] CAMERA_POSITIONS = {
       new Pose3d(
           new Translation3d(-5.85, -7.5, 14).times(0.0254), new Rotation3d(Rotation2d.kCW_90deg)),
-      new Pose3d(
-          new Translation3d(10.2, -11.65, 15.1).times(0.0254), new Rotation3d(Rotation2d.kZero)),
+      //   new Pose3d(
+      //       new Translation3d(10.2, -11.65, 15.1).times(0.0254), new
+      // Rotation3d(Rotation2d.kZero)),
       new Pose3d(
           new Translation3d(-5.85, 11.45, 14).times(0.0254), new Rotation3d(Rotation2d.kCCW_90deg)),
     }; // x is forward, y is left, counterclockwise on rotation
@@ -191,7 +192,7 @@ public class Constants {
     public static final String[][] TOPIC_NAMES = {
       {"Cam1Tvec", "Cam1Rmat", "Cam1Ids"},
       {"Cam2Tvec", "Cam2Rmat", "Cam2Ids"},
-      {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
+      // {"Cam3Tvec", "Cam3Rmat", "Cam3Ids"}
       // {"Cam4Tvec", "Cam4Rvec", "Cam4Ids"}
     };
 
@@ -208,7 +209,11 @@ public class Constants {
     public static final double TRANSLATION_STDEV_ORDER = 1;
     public static final double TRANSLATION_STDEV_SCALAR = 0.5;
 
-    public static final double[] CAM_STDEV_SCALARS = {1.0, 0.75, 1.0};
+    public static final double[] CAM_STDEV_SCALARS = {1.0, 1.0};
+  }
+
+  public static class LEDConstants {
+    public static final int BAUD_RATE = 9600;
   }
 
   public static class RobotConstants {
