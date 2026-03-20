@@ -91,7 +91,7 @@ public class RobotContainer {
 
     Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
     lowerClimber.onTrue(
-        commands.parallel(climber.lowerClimbCommand(), led.setModeCommand(climbLEDAnimation)));
+        Commands.parallel(climber.lowerClimbCommand(), led.setModeCommand(climbLEDAnimation)));
     // Arm is going down, robot is going up.
 
     Trigger zeroClimber = new Trigger(() -> controller.getYButton());
