@@ -59,7 +59,7 @@ public class RobotContainer {
     climbLEDAnimation = led.new LEDMode(5, "ClimbAnimation");
 
     configureBindings();
-  }  
+  }
 
   public void setIsBlue() {
     swerve.setIsBlue(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
@@ -137,7 +137,8 @@ public class RobotContainer {
     Trigger zeroGyro = new Trigger(() -> controller.getAButton() && controller.getYButton());
     zeroGyro.onTrue(swerve.zeroGyroCommand());
 
-    Trigger configureLEDTrigger = new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
+    Trigger configureLEDTrigger =
+        new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
     configureLEDTrigger.onTrue(led.configureLogicCommand());
   }
 
@@ -157,8 +158,6 @@ public class RobotContainer {
     Trigger configureLEDTrigger =
         new Trigger(() -> DriverStation.getGameSpecificMessage().length() > 0);
     configureLEDTrigger.onTrue(led.configureLogicCommand());
-
-    
   }
 
   public Command getAutonomousCommand() {
