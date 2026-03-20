@@ -52,7 +52,7 @@ public class Pivot extends SubsystemBase {
     config.closedLoop.p(PivotConstants.PID.kp);
     config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     config.absoluteEncoder.positionConversionFactor(PivotConstants.CONVERSION_FACTOR);
-    config.absoluteEncoder.inverted(true);
+    config.absoluteEncoder.inverted(false);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     pid = motor.getClosedLoopController();
     profile =
@@ -65,7 +65,7 @@ public class Pivot extends SubsystemBase {
             PivotConstants.FEEDFORWARD.ks,
             PivotConstants.FEEDFORWARD.kg,
             PivotConstants.FEEDFORWARD.kv);
-    goal = new State(PivotConstants.UP_POSITION.getRadians(), 0);
+    goal = new State(motor.getAbsoluteEncoder().getPosition(), 0);
     motorSetpoint = new State(motor.getAbsoluteEncoder().getPosition(), 0);
   }
 

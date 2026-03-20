@@ -110,14 +110,13 @@ public class RobotContainer {
             shooter.setVelocityCommand(ShooterConstants.FEEDER_SPEED, RPM.of(shooterVelocity)),
             Commands.waitUntil(shooter::atSpeed),
             indexer.setSpeedCommand(IndexerConstants.SHOOTING_SPEED),
-            intake.setSpeedCommand(IntakeConstants.SPEED)
-            // Commands.sequence(
-            //         pivot.setPositionCommand(PivotConstants.MID_POSITION),
-            //         Commands.waitUntil(pivot::atPosition),
-            //         pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
-            //         Commands.waitUntil(pivot::atPosition))
-            //     .repeatedly()
-            ));
+            intake.setSpeedCommand(IntakeConstants.SPEED),
+            Commands.sequence(
+                    pivot.setPositionCommand(PivotConstants.MID_POSITION),
+                    Commands.waitUntil(pivot::atPosition),
+                    pivot.setPositionCommand(PivotConstants.DOWN_POSITION),
+                    Commands.waitUntil(pivot::atPosition))
+                .repeatedly()));
     shootTrigger.onFalse(
         Commands.parallel(
             shooter.setVelocityCommand(ShooterConstants.IDLE_SPEED, RPM.of(0)),

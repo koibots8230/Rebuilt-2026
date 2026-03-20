@@ -91,7 +91,7 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final double SHOOTING_SPEED = 0.8;
+    public static final double SHOOTING_SPEED = 0.4;
 
     public static final int MAX_MOTOR_CURRENT_AMPS = 80;
 
@@ -106,14 +106,13 @@ public class Constants {
   }
 
   public static class PivotConstants {
-    public static final Rotation2d UP_POSITION = Rotation2d.fromRadians(1.6);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(75);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.1);
-    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.1);
-    public static final PIDGains PID = new PIDGains.Builder().kp(0.6).build();
+    public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(240);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(120);
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.025);
+    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.15);
+    public static final PIDGains PID = new PIDGains.Builder().kp(0.7).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(2.5).kg(0.7).build();
-
+        new FeedforwardGains.Builder().kv(0).kg(0).build();
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
     public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(360);
@@ -127,7 +126,7 @@ public class Constants {
 
     public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
-    public static final AngularVelocity IDLE_SPEED = RPM.of(0);
+    public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
     public static final FeedforwardGains FLYWHEEL_FEEDFORWARD =
@@ -156,7 +155,7 @@ public class Constants {
     public static final LinearVelocity RAISED_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);
     public static final LinearVelocity VELOCITY_CONSTRAINT =
-        LinearVelocity.ofBaseUnits(0.05, MetersPerSecond);
+        LinearVelocity.ofBaseUnits(5, MetersPerSecond); // placeholder
     public static final LinearAcceleration ACCELERATION_CONSTRAINT =
         LinearAcceleration.ofBaseUnits(0.1, MetersPerSecondPerSecond);
 
@@ -175,7 +174,6 @@ public class Constants {
 
     public static final Time TIME_CONSTANT = Seconds.of(0.1); // might edit this to be lower
     public static final int MOTOR_ID = 50;
-    // public static final int DISTANCE_SWITCH_PORT = 1;
   }
 
   public static class VisionConstants {

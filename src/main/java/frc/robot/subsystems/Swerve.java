@@ -35,6 +35,7 @@ import java.util.function.DoubleSupplier;
 public class Swerve extends SubsystemBase {
   private Pose2d estimatedPosition;
   private Rotation2d simHeading;
+  private Pose2d trajectoryToFollow = new Pose2d();
   private Rotation2d gyroAngle;
   private SwerveModuleState[] setpointStates;
   private final Pigeon2 gyro;
@@ -137,6 +138,10 @@ public class Swerve extends SubsystemBase {
     modules.backRight.periodic();
 
     gyroAngle = gyro.getRotation2d().plus(Rotation2d.k180deg);
+
+    estimatedPosition =
+        odometry.update(
+            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), getModulePostitions());
 
     estimatedPosition =
         odometry.update(

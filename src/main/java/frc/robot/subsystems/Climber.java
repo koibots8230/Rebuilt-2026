@@ -8,7 +8,9 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -67,6 +69,7 @@ public class Climber extends SubsystemBase {
     config.closedLoop.p(ClimberConstants.CLIMBER_PID.kp);
 
     encoder = motor.getEncoder();
+    encoder.setPosition(0);
     encoder.setPosition(0);
 
     current = Current.ofBaseUnits(motor.getOutputCurrent(), Amps);
