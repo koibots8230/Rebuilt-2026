@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
