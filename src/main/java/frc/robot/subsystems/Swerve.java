@@ -137,7 +137,11 @@ public class Swerve extends SubsystemBase {
     modules.backLeft.periodic();
     modules.backRight.periodic();
 
-    gyroAngle = gyro.getRotation2d();
+    gyroAngle = gyro.getRotation2d().plus(Rotation2d.k180deg);
+
+    estimatedPosition =
+        odometry.update(
+            isBlue ? gyroAngle : gyroAngle.minus(Rotation2d.kPi), getModulePostitions());
 
     estimatedPosition =
         odometry.update(
