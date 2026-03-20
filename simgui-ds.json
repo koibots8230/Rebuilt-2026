@@ -90,5 +90,14 @@
       "buttonCount": 0,
       "povCount": 0
     }
+  ],
+  "robotJoysticks": [
+    {
+      "guid": "Keyboard0"
+    },
+    {},
+    {
+      "guid": "030000002620000054f1000000000000"
+    }
   ]
 }

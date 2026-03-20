@@ -52,7 +52,7 @@ public class Indexer extends SubsystemBase {
 
   public void readValues() {
     this.current = Amps.of(this.motor.getOutputCurrent());
-    this.voltage = Volts.of(this.motor.getAppliedOutput());
+    this.voltage = Volts.of(this.motor.getAppliedOutput() * motor.getBusVoltage());
     this.velocity = RPM.of(this.motor.getEncoder().getVelocity());
   }
 

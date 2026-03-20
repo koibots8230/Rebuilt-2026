@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.LED.LEDMode;
 @Logged
 public class RobotContainer {
   @NotLogged private final XboxController controller;
+  @NotLogged private final GenericHID operator;
   private final Climber climber;
   private final Swerve swerve;
   private final Shooter shooter;
@@ -48,6 +50,7 @@ public class RobotContainer {
     led = new LED();
 
     controller = new XboxController(0);
+    operator = new GenericHID(1);
 
     shooterVelocity = ShooterConstants.FLYWHEEL_SPEED.in(RPM);
 
@@ -79,24 +82,37 @@ public class RobotContainer {
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
 
-    Trigger pivotUp = new Trigger(controller::getAButton);
+    Trigger pivotUp = new Trigger(() -> operator.getRawButton(5));
     pivotUp.onTrue(pivot.setPositionCommand(PivotConstants.UP_POSITION));
 
-    Trigger pivotDown = new Trigger(controller::getBButton);
+    Trigger pivotDown = new Trigger(() -> operator.getRawButton(8));
     pivotDown.onTrue(pivot.setPositionCommand(PivotConstants.DOWN_POSITION));
 
-    Trigger raiseClimber = new Trigger(() -> controller.getPOV() == 0);
-    raiseClimber.onTrue(climber.raiseClimbCommand());
-    // Arm is going up, but robot is not.
+    Trigger raiseClimber = new Trigger(() -> operator.getRawButton(7));
+    raiseClimber.onTrue(climber.raiseClimbManualCommand(ClimberConstants.MANUAL_RAISE_SPEED));
+    raiseClimber.onFalse(climber.raiseClimbManualCommand(0));
 
-    Trigger lowerClimber = new Trigger(() -> controller.getPOV() == 180);
-    lowerClimber.onTrue(
-        Commands.parallel(climber.lowerClimbCommand(), led.setModeCommand(climbLEDAnimation)));
-    // Arm is going down, robot is going up.
+    Trigger lowerClimber = new Trigger(() -> operator.getRawButton(10));
+    lowerClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+    lowerClimber.onFalse(climber.lowerClimbManualCommand(0));
 
-    Trigger zeroClimber = new Trigger(() -> controller.getYButton());
+    Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(11));
+    raiseClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_RAISE_SPEED));
+
+    Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(12));
+    lowerClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+
+    // Trigger climb = new Trigger(() -> operator.getPOV() == 90);
+    // climb.onTrue(climber.climbCommand());
+
+    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 0);
     zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
-    zeroClimber.onFalse(climber.lowerClimbManualCommand(0.0));
+    zeroClimber.onFalse(
+        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
+
+    Trigger currentSpike =
+        new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
+    currentSpike.onTrue(climber.zeroWhenBottomedCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(
