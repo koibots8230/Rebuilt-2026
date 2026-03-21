@@ -96,23 +96,23 @@ public class RobotContainer {
     lowerClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
     lowerClimber.onFalse(climber.lowerClimbManualCommand(0));
 
-    Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(11));
-    raiseClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_RAISE_SPEED));
+    // Trigger raiseClimberOverride = new Trigger(() -> operator.getRawButton(11));
+    // raiseClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_RAISE_SPEED));
 
-    Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(12));
-    lowerClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+    // Trigger lowerClimberOverride = new Trigger(() -> operator.getRawButton(12));
+    // lowerClimberOverride.onTrue(climber.overrideCommand(ClimberConstants.MANUAL_LOWER_SPEED));
 
     // Trigger climb = new Trigger(() -> operator.getPOV() == 90);
     // climb.onTrue(climber.climbCommand());
 
-    Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 0);
-    zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
-    zeroClimber.onFalse(
-        Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
+    // Trigger zeroClimber = new Trigger(() -> operator.getPOV() == 0);
+    // zeroClimber.onTrue(climber.lowerClimbManualCommand(ClimberConstants.MANUAL_LOWER_SPEED));
+    // zeroClimber.onFalse(
+    //     Commands.sequence(climber.lowerClimbManualCommand(0.0), climber.zeroEncoderCommand()));
 
-    Trigger currentSpike =
-        new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
-    currentSpike.onTrue(climber.zeroWhenBottomedCommand());
+    // Trigger currentSpike =
+    //     new Trigger(() -> controller.getPOV() == 180); // placeholder button binding
+    // currentSpike.onTrue(climber.zeroWhenBottomedCommand());
 
     Trigger shootTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.15);
     shootTrigger.whileTrue(

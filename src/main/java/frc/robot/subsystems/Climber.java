@@ -104,13 +104,13 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
-    // if (isManual){
-    controller.setSetpoint(
-        motorSetpoint.position,
-        ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        feedForward.calculate((motorSetpoint.velocity)));
+    // motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
+    // // if (isManual){
+    // controller.setSetpoint(
+    //     motorSetpoint.position,
+    //     ControlType.kPosition,
+    //     ClosedLoopSlot.kSlot0,
+    //     feedForward.calculate((motorSetpoint.velocity)));
     // }
 
     position = encoder.getPosition();
@@ -186,11 +186,11 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
-    return Commands.run(() -> setSpeedWithLimits(speed), this);
+    return Commands.run(() -> setSpeed(speed), this);
   }
 
   public Command raiseClimbManualCommand(double speed) {
-    return Commands.run(() -> setSpeedWithLimits(speed), this);
+    return Commands.run(() -> setSpeed(speed), this);
   }
 
   public Command overrideCommand(double speed) {
