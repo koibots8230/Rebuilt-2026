@@ -186,15 +186,15 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
-    return Commands.run(() -> setSpeed(speed), this);
+    return Commands.runOnce(() -> setSpeedWithLimits(speed), this);
   }
 
   public Command raiseClimbManualCommand(double speed) {
-    return Commands.run(() -> setSpeed(speed), this);
+    return Commands.runOnce(() -> setSpeedWithLimits(speed), this);
   }
 
   public Command overrideCommand(double speed) {
-    return Commands.run(() -> setSpeed(speed), this);
+    return Commands.runOnce(() -> setSpeed(speed), this);
   }
 
   public Command zeroEncoderCommand() {
