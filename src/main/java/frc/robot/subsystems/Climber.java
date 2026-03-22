@@ -10,8 +10,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -104,7 +102,8 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint, goal);
+    // motorSetpoint = profile.calculate(RobotConstants.CLOCK_SPEED.in(Seconds), motorSetpoint,
+    // goal);
     // // if (isManual){
     // controller.setSetpoint(
     //     motorSetpoint.position,
@@ -186,11 +185,11 @@ public class Climber extends SubsystemBase {
   }
 
   public Command lowerClimbManualCommand(double speed) {
-    return Commands.runOnce(() -> setSpeedWithLimits(speed), this);
+    return Commands.runOnce(() -> setSpeed(speed), this);
   }
 
   public Command raiseClimbManualCommand(double speed) {
-    return Commands.runOnce(() -> setSpeedWithLimits(speed), this);
+    return Commands.runOnce(() -> setSpeed(speed), this);
   }
 
   public Command overrideCommand(double speed) {

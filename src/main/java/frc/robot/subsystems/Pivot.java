@@ -47,7 +47,7 @@ public class Pivot extends SubsystemBase {
     motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
     config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
-    config.inverted(false);
+    config.inverted(true);
     config.smartCurrentLimit((int) PivotConstants.CURRENT_LIMIT.in(Amps));
     config.closedLoop.p(PivotConstants.PID.kp);
     config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);

@@ -36,14 +36,14 @@ public class Autos {
     chooser.addRoutine("sample auto", () -> sampleAuto(shooter, indexer));
 
     chooser.addRoutine("P2 Shoot", () -> P2_Shoot(shooter, indexer));
-    chooser.addRoutine("P2 Depot", () -> P2_Depot(shooter, indexer, intake, pivot));
+    // chooser.addRoutine("P2 Depot", () -> P2_Depot(shooter, indexer, intake, pivot));
     // chooser.addRoutine(
     //     "P2 Depot & Climb", () -> P2_Depot_Climb(shooter, indexer, intake, pivot, climber));
-    // chooser.addRoutine("P3 Shoot", () -> P3_Shoot(shooter, indexer));
+    chooser.addRoutine("P3 Shoot", () -> P3_Shoot(shooter, indexer));
     // chooser.addRoutine("P3 Shoot & Climb", () -> P3_Shoot_Climb(shooter, indexer, climber));
-    // chooser.addRoutine("P4 Shoot", () -> P4_Shoot(shooter, indexer));
+    chooser.addRoutine("P4 Shoot", () -> P4_Shoot(shooter, indexer));
     // chooser.addRoutine("P4 Shoot & Climb", () -> P4_Shoot_Climb(shooter, indexer, climber));
-    // chooser.addRoutine("P5 Shoot", () -> P5_Shoot(shooter, indexer));
+    chooser.addRoutine("P5 Shoot", () -> P5_Shoot(shooter, indexer));
 
     SmartDashboard.putData("autos", chooser);
     RobotModeTriggers.autonomous().whileTrue(chooser.selectedCommandScheduler());

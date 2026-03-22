@@ -29,18 +29,16 @@ public class LED extends SubsystemBase {
       new SerialPort(LEDConstants.BAUD_RATE, SerialPort.Port.kOnboard);
 
   public class LEDMode {
-    private int modeString;
+    private int modeNumber;
     private String modeName;
-    private byte[] modeByte;
 
-    public LEDMode(int modeString, String modeName) {
-      this.modeString = modeString;
+    public LEDMode(int modeNumber, String modeName) {
+      this.modeNumber = modeNumber;
       this.modeName = modeName;
-      this.modeByte = new byte[] {(byte) modeString};
     }
 
     public void writeModeString() {
-      serialPort.write(modeByte, modeByte.length);
+      serialPort.writeString(Integer.toString(modeNumber));
       System.out.println("Mode string written: " + modeName);
       currentMode = this;
     }

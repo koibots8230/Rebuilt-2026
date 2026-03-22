@@ -107,7 +107,7 @@ public class Constants {
 
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(240);
-    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(120);
+    public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(150);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.025);
     public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.15);
     public static final PIDGains PID = new PIDGains.Builder().kp(0.7).build();
@@ -124,7 +124,7 @@ public class Constants {
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(4800);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5000);
     public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
     public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
@@ -147,8 +147,8 @@ public class Constants {
     public static final Distance DOWN_POSITION = Distance.ofBaseUnits(0, Meters);
     public static final Distance CLIMB_POSITION = Distance.ofBaseUnits(0.02, Meters);
     public static final Distance RAISED_POSITION = Distance.ofBaseUnits(0.21, Meters);
-    public static final double MANUAL_RAISE_SPEED = -.1; // needa test
-    public static final double MANUAL_LOWER_SPEED = .1; // needa test
+    public static final double MANUAL_RAISE_SPEED = -.25; // needa test
+    public static final double MANUAL_LOWER_SPEED = .25; // needa test
     public static final double CLIMBER_CONVERSION_FACTOR = ((1.0 / 12)) / 39.37;
     public static final LinearVelocity DOWN_VELOCITY =
         LinearVelocity.ofBaseUnits(0, MetersPerSecond);

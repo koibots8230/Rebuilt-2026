@@ -77,7 +77,7 @@ public class RobotContainer {
 
     Trigger intakeReverse = new Trigger(controller::getLeftBumperButton);
     intakeReverse.onTrue(
-        Commands.parallel( 
+        Commands.parallel(
             indexer.setSpeedCommand(-IndexerConstants.SHOOTING_SPEED),
             intake.setSpeedCommand(-IntakeConstants.SPEED)));
     intakeReverse.onFalse(Commands.parallel(indexer.setSpeedCommand(0), intake.setSpeedCommand(0)));
