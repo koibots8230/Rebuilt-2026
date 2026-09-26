@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -66,8 +65,8 @@ public class Pivot extends SubsystemBase {
             PivotConstants.FEEDFORWARD.ks,
             PivotConstants.FEEDFORWARD.kg,
             PivotConstants.FEEDFORWARD.kv);
-    goal = new State(motor.getAbsoluteEncoder().getPosition(), PivotConstants.DOWN_POSITION.getPosition());
-    motorSetpoint = new State(motor.getAbsoluteEncoder().getPosition(), 0);
+    goal = new State(PivotConstants.DOWN_POSITION.getRadians(), 0);
+    motorSetpoint = new State(PivotConstants.DOWN_POSITION.getRadians(), 0);
   }
 
   @Override
