@@ -109,7 +109,7 @@ public class Constants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(240);
     public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(150);
     public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.15);
-    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.15);
+    public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.2);
     public static final PIDGains PID = new PIDGains.Builder().kp(0.7).build();
     public static final FeedforwardGains FEEDFORWARD =
         new FeedforwardGains.Builder().kv(1.29).kg(0.7).build();
