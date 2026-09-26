@@ -108,15 +108,15 @@ public class Constants {
   public static class PivotConstants {
     public static final Rotation2d UP_POSITION = Rotation2d.fromDegrees(240);
     public static final Rotation2d MID_POSITION = Rotation2d.fromDegrees(150);
-    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.025);
+    public static final Rotation2d DOWN_POSITION = Rotation2d.fromRadians(0.15);
     public static final Rotation2d MARGIN = Rotation2d.fromRadians(0.15);
     public static final PIDGains PID = new PIDGains.Builder().kp(0.7).build();
     public static final FeedforwardGains FEEDFORWARD =
-        new FeedforwardGains.Builder().kv(0).kg(0).build();
+        new FeedforwardGains.Builder().kv(1.29).kg(0.7).build();
     public static final double CONVERSION_FACTOR = Math.PI * 2;
 
-    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(360);
-    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(180);
+    public static final AngularVelocity MAX_VELOCITY = DegreesPerSecond.of(720);
+    public static final AngularAcceleration MAX_ACCELERATION = DegreesPerSecondPerSecond.of(540);
     public static final Current CURRENT_LIMIT = Amps.of(60);
 
     public static final int MOTOR_ID = 11;
