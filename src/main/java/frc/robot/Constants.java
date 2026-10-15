@@ -21,7 +21,7 @@ import frc.lib.util.PIDGains;
 public class Constants {
 
   public static class SwerveConstants {
-    public static final LinearVelocity MAX_LINEAR_VELOCITY = MetersPerSecond.of(4.25);
+    public static final LinearVelocity MAX_LINEAR_VELOCITY = MetersPerSecond.of(2.125);
     public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(2 * Math.PI);
 
     public static final AngularVelocity MAX_TURN_VELOCITY = RadiansPerSecond.of(60 * Math.PI);
@@ -124,8 +124,8 @@ public class Constants {
 
   public static class ShooterConstants {
 
-    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(5000);
-    public static final AngularVelocity FEEDER_SPEED = RPM.of(4700);
+    public static final AngularVelocity FLYWHEEL_SPEED = RPM.of(2500);
+    public static final AngularVelocity FEEDER_SPEED = RPM.of(2350);
     public static final AngularVelocity IDLE_SPEED = RPM.of(1500);
 
     public static final PIDGains FLYWHEEL_PID = new PIDGains.Builder().kp(0.00055).build();
