@@ -22,7 +22,7 @@ public class Constants {
 
   public static class SwerveConstants {
     public static final LinearVelocity MAX_LINEAR_VELOCITY = MetersPerSecond.of(2.125);
-    public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(2 * Math.PI);
+    public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(Math.PI);
 
     public static final AngularVelocity MAX_TURN_VELOCITY = RadiansPerSecond.of(60 * Math.PI);
     public static final AngularAcceleration MAX_TURN_ACCELRATION =
@@ -58,7 +58,7 @@ public class Constants {
     };
 
     public static final Current TURN_CURRENT_LIMIT = Amps.of(30);
-    public static final Current DRIVE_CURRENT_LIMIT = Amps.of(80);
+    public static final Current DRIVE_CURRENT_LIMIT = Amps.of(60);
 
     public static final double DEADBAND = 0.07;
 
