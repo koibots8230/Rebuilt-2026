@@ -224,23 +224,31 @@ public class Swerve extends SubsystemBase {
 
     Rotation2d direction = new Rotation2d(y, x);
 
-    y =
-        linearMagnitude
-            * -direction.getCos()
-            * SwerveConstants.MAX_LINEAR_VELOCITY.in(MetersPerSecond);
-    x =
-        linearMagnitude
-            * -direction.getSin()
-            * SwerveConstants.MAX_LINEAR_VELOCITY.in(MetersPerSecond);
+    if(linearMagnitude < 1e-6) {
+      // Explicitly stop the drivetrain if the stick is "near" the center
+      driveFieldRelative(
+        MetersPerSecond.of(0),
+        MetersPerSecond.of(0),
+        RadiansPerSecond.of(0));
+    } else {
+      y =
+          linearMagnitude
+              * -direction.getCos()
+              * SwerveConstants.MAX_LINEAR_VELOCITY.in(MetersPerSecond);
+      x =
+          linearMagnitude
+              * -direction.getSin()
+              * SwerveConstants.MAX_LINEAR_VELOCITY.in(MetersPerSecond);
 
-    omega =
-        Math.pow(omega, SwerveConstants.ROTATION_SCALAR)
-            * SwerveConstants.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+      omega =
+          Math.pow(omega, SwerveConstants.ROTATION_SCALAR)
+              * SwerveConstants.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
 
-    driveFieldRelative(
-        MetersPerSecond.of(MathUtil.applyDeadband(x, SwerveConstants.DEADBAND)),
-        MetersPerSecond.of(MathUtil.applyDeadband(y, SwerveConstants.DEADBAND)),
-        RadiansPerSecond.of(MathUtil.applyDeadband(-omega, SwerveConstants.DEADBAND)));
+      driveFieldRelative(
+          MetersPerSecond.of(MathUtil.applyDeadband(x, SwerveConstants.DEADBAND)),
+          MetersPerSecond.of(MathUtil.applyDeadband(y, SwerveConstants.DEADBAND)),
+          RadiansPerSecond.of(MathUtil.applyDeadband(-omega, SwerveConstants.DEADBAND)));
+    }
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
